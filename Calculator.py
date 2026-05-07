@@ -28,7 +28,15 @@ options.load_capabilities({
     "appium:appWaitActivity": "*",
     "appium:autoLaunch": True,
     "appium:appWaitDuration": 30000,
-    "appium:autoGrantPermissions": True
+    "appium:autoGrantPermissions": True,
+    "appium:adbExecTimeout": 60000, # Give it 60s to find the device
+    "appium:uiautomator2ServerInstallTimeout": 60000,
+    "appium:newCommandTimeout": 300,
+    # Important
+    "appium:waitForIdleTimeout": 0,
+    "appium:waitForSelectorTimeout": 10000,
+    # Optional stability improvements
+    "appium:disableWindowAnimation": True
 })
 
 driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
