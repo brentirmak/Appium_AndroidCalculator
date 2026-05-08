@@ -19,17 +19,19 @@ def appium_transaction(name):
 
 options = AppiumOptions()
 options.load_capabilities({
-	"platformName": "Android",
-	"appium:deviceName": "emulator-5554",
-	"appium:automationName": "UiAutomator2",
-	"appium:noReset": True,
-	"appium:appPackage": "com.google.android.apps.nexuslauncher",
-    "appium:appActivity": ".NexusLauncherActivity",
+    "platformName": "Android",
+    "appium:deviceName": "emulator-5554",
+    "appium:automationName": "UiAutomator2",
+    "appium:noReset": True,
+    # calculator.currencyconverter.tipcalculator.unitconverter/com.google.android.gms.ads.AdActivity}
+    "appium:appPackage": "calculator.currencyconverter.tipcalculator.unitconverter",
+    "appium:appActivity": ".MainActivity",
     "appium:appWaitActivity": "*",
+    "appium:forceAppLaunch": True,
     "appium:autoLaunch": True,
     "appium:appWaitDuration": 30000,
     "appium:autoGrantPermissions": True,
-    "appium:adbExecTimeout": 60000, # Give it 60s to find the device
+    "appium:adbExecTimeout": 60000,  # Give it 60s to find the device
     "appium:uiautomator2ServerInstallTimeout": 60000,
     "appium:newCommandTimeout": 300,
     # Important
@@ -40,12 +42,12 @@ options.load_capabilities({
 })
 
 driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+
 driver.implicitly_wait(15)
 
 try:
     print("Successfully connected to Windows Emulator!")
-
-    #time.sleep(100)
+    print("Proceeding...")
 
     with appium_transaction("Home"):
         try:
@@ -61,11 +63,13 @@ try:
 
         try:
             print("Checking to see if a Test Ad was loaded")
-            driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@text="Test Ad"]')
+            driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@text="Test Ad"] | //android.webkit.WebView')
             print("Test Ad displayed - need to close it")
-            #time.sleep(10)
-            driver.find_element(by=AppiumBy.XPATH, value='//android.view.View[@resource-id="dismiss-button"]').click()
-            print("Clicked on dismiss button to close Test Ad")
+            try:
+                driver.find_element(by=AppiumBy.XPATH, value='//android.view.View[@resource-id="dismiss-button"]').click()
+                print("Clicked on dismiss button to close Test Ad")
+            except:
+                print("There was no close button for the Test Add pop-up - proceeding...")
         except:
             try:
                 print("Checking to see if there's a Close Ad link on the upper right corner of the Ad")
@@ -77,7 +81,12 @@ try:
                     driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@text="Continue to app"]').click()
                     print("Found Continue to app link on the upper right corner of the Ad - clicked on it")
                 except:
-                    print("No Ad was found - proceeding...")
+                    try:
+                        print("Checking to see if there's a 'x' icon on the upper right corner")
+                        driver.find_element(by=AppiumBy.XPATH, value='//android.widget.Image').click()
+                        print("Clicked on the 'x' icon on the upper right corner")
+                    except:
+                        print("No ad pop-up was displayed - proceeding...")
 
     with appium_transaction("Access Basic Calculator"):
         try:
@@ -92,12 +101,12 @@ try:
         print("Basic Calculator header was found")
 
     with appium_transaction("Perform Basic Calculation"):
-        print("Looking for the '=' icon")
-        driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_result"]')
-        print("Found the '=' icon")
+        print("Looking for the delete icon")
+        driver.find_element(by=AppiumBy.XPATH, value='//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_delete"]')
+        print("Found the delete icon")
 
         print("Looking for the 'C' button")
-        driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_result"]').click()
+        driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_clear"]').click()
         print("Found the 'C' button - clicked on it")
 
         print("Clicking on 9")
@@ -134,10 +143,13 @@ try:
         driver.find_element(by=AppiumBy.XPATH, value='//android.widget.TextView[@text="Tip Calculator"]')
         print("Found the Tip Calculator option")
 
+        print("************************************")
+        print("Script terminated successfully")
+        print("************************************")
+
 finally:
     print("Terminating the application")
-    driver.terminate_app('com.google.android.apps.nexuslauncher')
-    driver.execute_script("mobile: terminateApp", {"appId": "com.google.android.apps.nexuslauncher"})
+    driver.terminate_app("calculator.currencyconverter.tipcalculator.unitconverter")
 
     time.sleep(2)
     print("Quitting the driver")
