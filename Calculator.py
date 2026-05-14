@@ -3,56 +3,9 @@ from appium.webdriver.common.appiumby import AppiumBy
 import time
 from appium.options.common import AppiumOptions
 from contextlib import contextmanager
-import mysql.connector
-from datetime import datetime
-import pytz
+import StoreToMySQL
 
 trx_dict = {}
-
-def store_to_mysql(trx_dict):
-    print(trx_dict)
-    #print(type(trx_dict['Home']))
-    #print(type(trx_dict['Access Basic Calculator']))
-    #print(type(trx_dict['Perform Basic Calculation']))
-    #print(type(trx_dict['Go Back To Home']))
-
-    if "Home" in trx_dict:
-        home_transaction = round(trx_dict['Home'],4)
-    else:
-        home_transaction = 'NULL'
-    if "Access Basic Calculator" in trx_dict:
-        access_basic_calculator_transaction = round(trx_dict['Access Basic Calculator'],4)
-    else:
-        access_basic_calculator_transaction = 'NULL'
-    if "Perform Basic Calculation" in trx_dict:
-        perform_basic_calculation_transaction = round(trx_dict['Perform Basic Calculation'],4)
-    else:
-        perform_basic_calculation_transaction = 'NULL'
-    if "Go Back To Home" in trx_dict:
-        go_back_to_home_transaction = round(trx_dict['Go Back To Home'],4)
-    else:
-        go_back_to_home_transaction = 'NULL'
-
-
-    current_timestamp = datetime.now(pytz.timezone('America/Los_Angeles'))
-
-    conn = mysql.connector.connect(
-        user = "selenium",
-        password = "Selenium#123#",
-        host = "192.168.239.1",
-        database="appium"
-    )
-    cursor = conn.cursor()
-    cursor.execute(
-        """INSERT INTO appium_calculator
-               (RunTimeStamp, Home, AccessBasicCalculator, PerformBasicCalculation, GoBackToHome)
-           VALUES (%s, %s, %s, %s, %s)""",
-        (current_timestamp,home_transaction,access_basic_calculator_transaction,perform_basic_calculation_transaction,go_back_to_home_transaction)
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-
 
 @contextmanager
 def appium_transaction(name):
@@ -199,7 +152,7 @@ try:
 
 
 finally:
-    store_to_mysql(trx_dict)
+    StoreToMySQL.store_to_mysql(trx_dict)
 
     print("Terminating the application")
     driver.terminate_app("calculator.currencyconverter.tipcalculator.unitconverter")
