@@ -2,8 +2,17 @@ import mysql.connector
 from datetime import datetime
 import pytz
 
-def store_to_mysql(trx_dict):
+def store_to_mysql(trx_dict, device_info):
     print("We are inside the store_to_mysql function")
+
+    # platformName
+    print(device_info[0])
+    # platformVersion
+    print(device_info[1])
+    # deviceModel
+    print(device_info[2])
+    # deviceManufacturer
+    print(device_info[3])
 
     if "Home" in trx_dict:
         home_transaction = round(trx_dict['Home'],4)
@@ -34,9 +43,10 @@ def store_to_mysql(trx_dict):
     cursor = conn.cursor()
     cursor.execute(
         """INSERT INTO appium_calculator
-               (RunTimeStamp, Home, AccessBasicCalculator, PerformBasicCalculation, GoBackToHome)
-           VALUES (%s, %s, %s, %s, %s)""",
-        (current_timestamp,home_transaction,access_basic_calculator_transaction,perform_basic_calculation_transaction,go_back_to_home_transaction)
+        (RunTimeStamp, Home, AccessBasicCalculator, PerformBasicCalculation, GoBackToHome, PlatformName, PlatformVersion, DeviceModel, DeviceManufacturer)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+(current_timestamp,home_transaction,access_basic_calculator_transaction,perform_basic_calculation_transaction,go_back_to_home_transaction,
+        device_info[0],device_info[1],device_info[2],device_info[3])
     )
     conn.commit()
     print("We have stored the results into MySQL")

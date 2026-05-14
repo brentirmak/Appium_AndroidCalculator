@@ -6,6 +6,7 @@ from contextlib import contextmanager
 import StoreToMySQL
 
 trx_dict = {}
+device_info = []
 
 @contextmanager
 def appium_transaction(name):
@@ -45,6 +46,23 @@ options.load_capabilities({
 })
 
 driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+
+caps = driver.capabilities
+info = driver.execute_script("mobile: deviceInfo")
+
+platformName = caps.get("platformName")
+platformVersion = caps.get("platformVersion")
+
+if info["model"] == "sdk_gphone16k_x86_64":
+    info["model"] = "Pixel 10 Emulator"
+
+deviceModel = info["model"]
+deviceManufacturer = info["manufacturer"]
+
+device_info.append(platformName)
+device_info.append(platformVersion)
+device_info.append(deviceModel)
+device_info.append(deviceManufacturer)
 
 driver.implicitly_wait(15)
 
@@ -152,7 +170,7 @@ try:
 
 
 finally:
-    StoreToMySQL.store_to_mysql(trx_dict)
+    StoreToMySQL.store_to_mysql(trx_dict, device_info)
 
     print("Terminating the application")
     driver.terminate_app("calculator.currencyconverter.tipcalculator.unitconverter")
