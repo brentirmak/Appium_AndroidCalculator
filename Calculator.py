@@ -6,6 +6,14 @@ from contextlib import contextmanager
 import StoreToMySQL
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+
+# 1. Load the environment variables from the .env file
+load_dotenv()
+
+# 2. Retrieve the secrets using os.getenv()
+webdriver_remote_url = os.getenv("WEBDRIVER_REMOTE_URL")
 
 trx_dict = {}
 device_info = []
@@ -61,7 +69,7 @@ options.load_capabilities({
     "appium:disableWindowAnimation": True
 })
 
-driver = webdriver.Remote("http://127.0.0.1:4723", options=options)
+driver = webdriver.Remote(webdriver_remote_url, options=options)
 
 caps = driver.capabilities
 info = driver.execute_script("mobile: deviceInfo")

@@ -1,6 +1,18 @@
 import mysql.connector
 from datetime import datetime
 import pytz
+from dotenv import load_dotenv
+import os
+
+
+# 1. Load the environment variables from the .env file
+load_dotenv()
+
+# 2. Retrieve the secrets using os.getenv()
+mysql_host = os.getenv("MYSQL_URL")
+mysql_username = os.getenv("MYSQL_USERNAME")
+mysql_password = os.getenv("MYSQL_PASSWORD")
+
 
 def store_to_mysql(trx_dict, device_info):
     print("We are inside the store_to_mysql function")
@@ -34,10 +46,11 @@ def store_to_mysql(trx_dict, device_info):
     current_timestamp = datetime.now(pytz.timezone('America/Los_Angeles'))
 
     print("We are connecting to MySQL")
+    
     conn = mysql.connector.connect(
-        user = "selenium",
-        password = "Selenium#123#",
-        host = "192.168.239.1",
+        user = mysql_username,
+        password = mysql_password,
+        host = mysql_host,
         database="appium"
     )
     cursor = conn.cursor()
