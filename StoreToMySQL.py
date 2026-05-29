@@ -46,7 +46,7 @@ def store_to_mysql(trx_dict, device_info):
     current_timestamp = datetime.now(pytz.timezone('America/Los_Angeles'))
 
     print("We are connecting to MySQL")
-    
+
     conn = mysql.connector.connect(
         user = mysql_username,
         password = mysql_password,
