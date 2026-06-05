@@ -55,7 +55,7 @@ def store_to_mysql(trx_dict, device_info):
     )
     cursor = conn.cursor()
     cursor.execute(
-        """INSERT INTO appium_calculator
+        """INSERT INTO appium_android_calculator
         (RunTimeStamp, Home, AccessBasicCalculator, PerformBasicCalculation, GoBackToHome, PlatformName, PlatformVersion, DeviceModel, DeviceManufacturer)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
 (current_timestamp,home_transaction,access_basic_calculator_transaction,perform_basic_calculation_transaction,go_back_to_home_transaction,
