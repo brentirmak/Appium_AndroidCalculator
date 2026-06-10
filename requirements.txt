@@ -5,3 +5,4 @@ pytest-html==4.1.1
 python-dotenv
 pytz
 mysql-connector-python
+pytest-timeout

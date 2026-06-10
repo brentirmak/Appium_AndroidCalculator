@@ -1,30 +1,44 @@
-import pytest
-import StoreToMySQL
 from appium.webdriver.common.appiumby import AppiumBy
-from helpers import appium_transaction, capture_error_snapshot, trx_dict
+from utils.helpers import appium_transaction, capture_error_snapshot
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+import pytest
 
+TIMEOUT = 10
+
+# requires pytest-timeout
+@pytest.mark.timeout(45)
 
 class TestCalculator:
 
     def test_home(self, driver):
+        wait = WebDriverWait(driver, TIMEOUT)
         with appium_transaction("Home"):
             try:
-                driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Home"]')
+                wait.until(EC.presence_of_element_located((AppiumBy.XPATH, '//android.widget.TextView[@text="Home"]')))
                 print("Home header found")
-                driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Basic Calculator"] ')
+                wait.until(EC.presence_of_element_located(
+                    (AppiumBy.XPATH, '//android.widget.TextView[@text="Basic Calculator"]')))
                 print("Basic Calculator icon found")
             except:
                 try:
-                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Test Ad"] | //android.webkit.WebView')
-                    driver.find_element(AppiumBy.XPATH, '//android.view.View[@resource-id="dismiss-button"]').click()
+                    wait.until(EC.presence_of_element_located(
+                        (AppiumBy.XPATH, '//android.widget.TextView[@text="Test Ad"] | //android.webkit.WebView')))
+                    wait.until(EC.element_to_be_clickable(
+                        (AppiumBy.XPATH, '//android.view.View[@resource-id="dismiss-button"]'))).click()
+                    print("Clicked on Dismiss button")
                 except:
                     try:
-                        driver.find_element(AppiumBy.XPATH, '//android.view.View[@resource-id="close-button"]/android.view.View/android.view.View/android.widget.Image').click()
+                        wait.until(EC.element_to_be_clickable((AppiumBy.XPATH,
+                            '//android.view.View[@resource-id="close-button"]/android.view.View/android.view.View/android.widget.Image'))).click()
                     except:
                         try:
-                            driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Continue to app"]').click()
-                            driver.find_element(AppiumBy.XPATH, '//android.widget.Image').click()
+                            wait.until(EC.element_to_be_clickable(
+                                (AppiumBy.XPATH, '//android.widget.TextView[@text="Continue to app"]'))).click()
+                            wait.until(EC.element_to_be_clickable((AppiumBy.XPATH, '//android.widget.Image'))).click()
+                            print("Clicked on Continue to app button")
                         except:
+                            print("Failing transaction - could not get passed Home step")
                             capture_error_snapshot(driver, "Home")
                             raise
 
@@ -41,6 +55,7 @@ class TestCalculator:
                 print("Basic Calculator header found")
             except Exception:
                 capture_error_snapshot(driver, "AccessBasicCalculator")
+                print("Failing AccessBasicCalculator transaction")
                 raise
 
     def test_perform_basic_calculation(self, driver):
@@ -61,6 +76,7 @@ class TestCalculator:
 
             except Exception:
                 capture_error_snapshot(driver, "PerformBasicCalculation")
+                print("Failing PerformBasicCalculation transaction")
                 raise
 
     def test_go_back_to_home(self, driver):
@@ -72,4 +88,5 @@ class TestCalculator:
                 print("Found Tip Calculator option — back at Home")
             except Exception:
                 capture_error_snapshot(driver, "GoBackToHome")
+                print("Failing GoBackToHome transaction")
                 raise

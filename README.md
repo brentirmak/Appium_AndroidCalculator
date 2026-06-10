@@ -1,4 +1,4 @@
-Appium script that runs against the Calculator mobile app on Android<br>
+(6/9) Appium script that runs against the Calculator mobile app on Android<br>
 
 <b>Summary</b><br>
 1) Calculator mobile app running on Pixel 10 - Android 17.0 - API 37 via Android Studio on Windows<br>

@@ -1,10 +1,10 @@
 import pytest
 import os
-import StoreToMySQL
+from utils import StoreToMySQL
 from appium import webdriver
 from appium.options.common import AppiumOptions
 from dotenv import load_dotenv
-from helpers import trx_dict
+from utils.helpers import trx_dict
 
 # Shared container so pytest_sessionfinish can access device_info
 collected_device_info = []
@@ -67,3 +67,7 @@ def pytest_sessionfinish(session, exitstatus):
     print("\nStoring results to MySQL...")
     StoreToMySQL.store_to_mysql(trx_dict, collected_device_info)
     print("Results stored successfully")
+
+def pytest_runtest_makereport(item, call):
+    if call.excinfo is not None:
+        item.session._shouldstop = True

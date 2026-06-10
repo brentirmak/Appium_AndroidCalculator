@@ -26,6 +26,10 @@ def store_to_mysql(trx_dict, device_info):
     # deviceManufacturer
     print(device_info[3])
 
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    print(trx_dict)
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+
     if "Home" in trx_dict:
         home_transaction = round(trx_dict['Home'],4)
     else:
