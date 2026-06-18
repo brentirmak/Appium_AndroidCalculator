@@ -18,16 +18,20 @@ def store_to_mysql(trx_dict, device_info):
     print("We are inside the store_to_mysql function")
 
     # platformName
-    print(device_info[0])
+    #print(device_info[0])
     # platformVersion
-    print(device_info[1])
+    #print(device_info[1])
     # deviceModel
-    print(device_info[2])
+    #print(device_info[2])
     # deviceManufacturer
-    print(device_info[3])
+    #print(device_info[3])
 
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-    print(trx_dict)
+    print("Device Info Dict: ", device_info)
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    print("Transaction Dict: ", trx_dict)
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
     if "Home" in trx_dict:

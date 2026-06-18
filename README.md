@@ -1,4 +1,4 @@
-(6/9) Appium script that runs against the Calculator mobile app on Android<br>
+(6/18) Appium script that runs against the Calculator mobile app on Android<br>
 
 <b>Summary</b><br>
 1) Calculator mobile app running on Pixel 10 - Android 17.0 - API 37 via Android Studio on Windows<br>
@@ -17,3 +17,4 @@
    a) adb start-server<br>
    b) adb connect 192.168.150.1:5555 (ip is captured via ipconfig on the Windows machine)<br>
    c) adb devices (to confirm that the Android Emulator is connected)<br>
+5) The steps above are NOT baked into the Jenkins job
