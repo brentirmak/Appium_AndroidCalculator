@@ -2,7 +2,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from utils.helpers import appium_transaction, capture_error_snapshot
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import pytest
+import pytest, time
 
 TIMEOUT = 10
 
@@ -78,6 +78,63 @@ class TestCalculator:
                 capture_error_snapshot(driver, "PerformBasicCalculation")
                 print("Failing PerformBasicCalculation transaction")
                 raise
+
+    def test_access_tip_calculator(self, driver):
+        with appium_transaction("Access Tip Calculator"):
+            try:
+                driver.find_element(AppiumBy.XPATH, '//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_open_side_menu"]').click()
+                print("Clicked on Menu (upper left corner)")
+                try:
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Tip Calculator"]').click()
+                    print("Clicked on Tip Calculator option")
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_tip_on"]')
+                except:
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@text="Tip Calculator"]').click()
+                    print("2nd try - Clicked on Tip Calculator option")
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_tip_on"]')
+            except Exception:
+                capture_error_snapshot(driver, "AccessTipCalculator")
+                print("Failing AccessTipCalculator transaction")
+                raise
+
+    def test_perform_tip_calculation(self, driver):
+        with appium_transaction("Perform Tip Calculation"):
+            try:
+                try:
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_more"]').click()
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/recycleActions"]').click()
+                    driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save"]').click()
+                except:
+                    print("Nothing to clear")
+
+                driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_tip_on"]')
+
+                driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_bill"]').click()
+                driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_bill"]').send_keys("100")
+                #time.sleep(2)
+                driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_tip"]').clear()
+                driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_tip"]').click()
+                driver.find_element(AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_tip"]').send_keys("20")
+                time.sleep(1)
+                driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_equal"]').click()
+                output = driver.find_element(AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_average_amount_value"]').text
+                print(f"Total per person {output}")
+                #time.sleep(10)
+                assert output == "120.00", f"Expected 120.00 but got {output}"
+
+            except Exception:
+                capture_error_snapshot(driver, "PerformTipCalculation")
+                print("Failing PerformTipCalculation transaction")
+                raise
+
+
+
+
+
+
+
+
+
 
     def test_go_back_to_home(self, driver):
         with appium_transaction("Go Back To Home"):
