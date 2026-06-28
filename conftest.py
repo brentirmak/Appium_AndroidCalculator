@@ -19,7 +19,6 @@ def driver():
         "platformName": "Android",
         "appium:deviceName": "emulator-5554",
         "appium:automationName": "UiAutomator2",
-        "appium:noReset": True,
         "appium:appPackage": "calculator.currencyconverter.tipcalculator.unitconverter",
         "appium:appActivity": ".MainActivity",
         "appium:appWaitActivity": "*",
