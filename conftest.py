@@ -30,7 +30,7 @@ def driver():
         "appium:uiautomator2ServerLaunchTimeout": 60000,  # ms — time to launch UIA2 server
         "appium:uiautomator2ServerInstallTimeout": 60000,  # already have this — good
         "appium:mjpegServerPort": 7810,  # avoid port conflicts with UIA2 stream
-        "appium:skipServerInstallation": False,  # ensure fresh UIA2 server each session
+        "appium:skipServerInstallation": True,
         "appium:newCommandTimeout": 300,
         "appium:waitForIdleTimeout": 0,
         "appium:waitForSelectorTimeout": 10000,
