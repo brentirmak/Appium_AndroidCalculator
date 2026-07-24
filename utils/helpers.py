@@ -1,32 +1,40 @@
 import time
 import os
-from contextlib import contextmanager
 from datetime import datetime
+from utils.StoreToMySQL import store_transaction_result
 
-trx_dict = {}
-
-@contextmanager
 def appium_transaction(name):
-    start_time = time.time()
-    duration = "NULL"
-    print(f"\nStarting Transaction: {name}")
-    try:
-        yield
-        duration = round(time.time() - start_time, 2)
-    except Exception:
-        duration = "NULL"
-        raise
-    finally:
-        if duration != "NULL":
-            print(f"Transaction {name} took {duration:.2f} seconds" )
-            trx_dict.update({name: duration})
-        else:
-            print(f"Transaction {name} FAILED")
+    class TransactionContext:
+        def __enter__(self):
+            print(f"Starting transaction: {name}")
+            self.start_time = time.time()
+            return self
 
-def capture_error_snapshot(driver, test_name):
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            duration = round(time.time() - self.start_time, 2)
+            status = "PASS" if exc_type is None else "FAIL"
+
+            print(f"Ending transaction: {name} | Status: {status} | Duration: {duration}s")
+
+            # Log to MySQL
+            store_transaction_result(
+                transaction=name,
+                status=status,
+                duration=duration,
+                timestamp=datetime.now()
+            )
+
+            return False  # rethrow exceptions if any
+
+    return TransactionContext()
+
+
+def capture_error_snapshot(driver, name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    folder = f"Error_Snapshots/{test_name}"
-    os.makedirs(folder, exist_ok=True)
-    screenshot_path = os.path.join(folder, f"error_{timestamp}.png")
-    driver.save_screenshot(screenshot_path)
-    print(f"Saved screenshot: {screenshot_path}")
+    filename = f"error_{name}_{timestamp}.png"
+    path = os.path.join("snapshots", filename)
+
+    os.makedirs("snapshots", exist_ok=True)
+    driver.save_screenshot(path)
+
+    print(f"Saved error snapshot: {path}")
