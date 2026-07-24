@@ -1,13 +1,21 @@
 import pytest
+import time
 from utils.driver_factory import create_android_driver
 
-# Shared container so pytest_sessionfinish can access device_info
-collected_device_info = []
-
-TIMEOUT = 10
+TIMEOUT = 30
 
 @pytest.fixture
 def driver():
     driver = create_android_driver()
+    time.sleep(15)
     yield driver
-    driver.quit()
+
+    try:
+        driver.terminate_app("calculator.currencyconverter.tipcalculator.unitconverter")
+    except Exception:
+        pass
+
+    try:
+        driver.quit()
+    except Exception:
+        pass

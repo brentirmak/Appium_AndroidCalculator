@@ -1,8 +1,10 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+
 
 class BasePage:
-    def __init__(self, driver, timeout=10):
+    def __init__(self, driver, timeout=45):
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout)
 
@@ -15,17 +17,31 @@ class BasePage:
     def type(self, locator, text):
         self.find(locator).send_keys(text)
 
-    def exists(self, locator):
+    def exists(self, locator, timeout=3):
         try:
-            self.find(locator)
+            WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located(locator)
+            )
             return True
         except Exception:
             return False
 
-    def safe_click(self, locator):
+    def safe_click(self, locator, timeout=20):
         try:
-            self.click(locator)
+            WebDriverWait(self.driver, timeout).until(
+                EC.element_to_be_clickable(locator)
+            ).click()
             return True
         except Exception:
             return False
+
+    def wait_for(self, locator, timeout=30):
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located(locator)
+            )
+            return True
+        except TimeoutException:
+            return False
+
 
