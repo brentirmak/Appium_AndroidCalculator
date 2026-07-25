@@ -44,4 +44,13 @@ class BasePage:
         except TimeoutException:
             return False
 
+    def visible(self, locator):
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.visibility_of_element_located(locator)
+            )
+            return True
+        except:
+            return False
+
 

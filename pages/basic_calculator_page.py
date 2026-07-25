@@ -24,19 +24,31 @@ class BasicCalculatorPage(BasePage):
     OUTPUT = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/tvResult')
 
     def open_from_home(self):
+        print("Will click on the Basic Calculator option")
         self.click(self.HOME_ICON_BASIC_CALC)
+        assert self.verify_loaded(), "Basic Calculator did not load after clicking"
+        print("Basic Calculator option has been clicked")
 
     def verify_loaded(self):
-        return self.exists(self.HEADER)
+        print("Will verify that the Basic Calculator header has loaded")
+        return self.visible(self.HEADER)
 
     def calculate_9_plus_9(self):
-        self.find(self.DELETE_IMG)
-        self.click(self.CLEAR_BTN)
+        print("Preparing calculator")
 
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will click on the '9' button")
         self.click(self.NUM9)
+        print("Clicked on the '9' button - will click on the '+' button")
         self.click(self.PLUS)
+        print("Clicked on the '+' button - will click on the '9' button")
         self.click(self.NUM9)
+        print("Clicked on '9' button - will click on the '=' button")
         self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
 
         return self.find(self.OUTPUT).text
 
