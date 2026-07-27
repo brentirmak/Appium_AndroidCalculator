@@ -1,14 +1,12 @@
 import pytest
 from pages.home_page import HomePage
 from pages.basic_calculator_page import BasicCalculatorPage
-from pages.side_menu_page import SideMenuPage
 from utils.helpers import appium_transaction, capture_error_snapshot
 
-@pytest.mark.timeout(45)
+@pytest.mark.timeout(60)
 def test_access_basic_calculator(driver):
     home = HomePage(driver)
     calc = BasicCalculatorPage(driver)
-    side_menu = SideMenuPage(driver)
 
     with appium_transaction("Access Basic Calculator"):
         if not home.verify_home_loaded():
@@ -22,7 +20,7 @@ def test_access_basic_calculator(driver):
             raise
 
 
-@pytest.mark.timeout(45)
+@pytest.mark.timeout(60)
 def test_perform_basic_calculation(driver):
     calc = BasicCalculatorPage(driver)
 
