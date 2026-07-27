@@ -6,7 +6,7 @@ from utils.StoreToMySQL import store_transaction_result
 def appium_transaction(name):
     class TransactionContext:
         def __enter__(self):
-            print(f"Starting transaction: {name}")
+            print(f"\nStarting transaction: {name}")
             self.start_time = time.time()
             return self
 
