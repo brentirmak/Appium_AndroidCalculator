@@ -63,6 +63,9 @@ class HomePage(BasePage):
     def verify_home_header(self):
         print("Verifying Home header")
 
+        # Temp added for testing purposes
+        time.sleep(30)
+
         try:
             WebDriverWait(self.driver, 45).until(
                 EC.visibility_of_element_located(self.HOME_HEADER)
