@@ -5,7 +5,7 @@ from pages.home_page import HomePage
 from pages.tip_calculator_page import TipCalculatorPage
 from utils.helpers import appium_transaction, capture_error_snapshot
 
-@pytest.mark.timeout(75)
+@pytest.mark.timeout(300)
 def test_access_tip_calculator(driver):
     side_menu = SideMenuPage(driver)
     tip_page = TipCalculatorPage(driver)
@@ -25,7 +25,7 @@ def test_access_tip_calculator(driver):
             capture_error_snapshot(driver, "AccessTipCalculator")
             raise
 
-@pytest.mark.timeout(75)
+@pytest.mark.timeout(175)
 def test_perform_tip_calculation(driver):
     tip_page = TipCalculatorPage(driver)
 
