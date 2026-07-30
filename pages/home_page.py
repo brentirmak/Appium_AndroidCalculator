@@ -23,7 +23,7 @@ class HomePage(BasePage):
         locator = (AppiumBy.XPATH, '//android.widget.TextView[@text="Test Ad"]')
         end_time = time.time() + 30
 
-        time.sleep(5)
+        time.sleep(15)
 
         def is_ad_visible():
             try:
