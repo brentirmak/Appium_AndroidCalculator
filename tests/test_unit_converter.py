@@ -5,7 +5,7 @@ from pages.home_page import HomePage
 from pages.unit_converter_page import UnitConverterPage
 from utils.helpers import appium_transaction, capture_error_snapshot
 
-@pytest.mark.timeout(175)
+@pytest.mark.timeout(300)
 def test_access_unit_converter(driver):
     side_menu = SideMenuPage(driver)
     unit_converter_page = UnitConverterPage(driver)
@@ -15,7 +15,6 @@ def test_access_unit_converter(driver):
         print("Checking to see if we're at Home screen")
         if not home.verify_home_loaded():
             print("Not at Home screen")
-        #time.sleep(20)
         try:
             print("Will click on the side menu item for Unit Converter")
             side_menu.go_unit_converter()

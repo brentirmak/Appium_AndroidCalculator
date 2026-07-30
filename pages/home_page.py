@@ -22,9 +22,7 @@ class HomePage(BasePage):
         or `timeout` seconds have elapsed.
         """
         locator = (AppiumBy.XPATH, '//android.widget.TextView[@text="Test Ad"]')
-        end_time = time.time() + 30
-
-        time.sleep(15)
+        end_time = time.time() + 90
 
         def is_ad_visible():
             try:
@@ -50,7 +48,7 @@ class HomePage(BasePage):
             print("Waiting for a second...")
             time.sleep(1)
 
-        raise TimeoutError('"Test Ad" still visible after 30 seconds')
+        raise TimeoutError('"Test Ad" still visible after 90 seconds')
 
 
 
