@@ -32,7 +32,7 @@ class HomePage(BasePage):
 
         if os.getenv("RUNNING_IN_JENKINS") == "true":
             print("We are running script from Jenkins - added sleep time")
-            time.sleep(30)
+            time.sleep(60)
         else:
             print("We are NOT running script from Jenkins")
 
