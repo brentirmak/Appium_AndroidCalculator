@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 
 import time
+import os
 
 class HomePage(BasePage):
 
@@ -30,6 +31,12 @@ class HomePage(BasePage):
                 return self.driver.find_element(*locator).is_displayed()
             except (NoSuchElementException, StaleElementReferenceException):
                 return False
+
+        if os.getenv("RUNNING_IN_JENKINS") == "true":
+            print("We are running script from Jenkins - added sleep time")
+            time.sleep(30)
+        else:
+            print("We are NOT running script from Jenkins")
 
         while time.time() < end_time:
             print("Checking if Test Ad is visible")
