@@ -6,7 +6,7 @@ class SideMenuPage(BasePage):
 
     MENU_BTN = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_open_side_menu')
     HOME = (AppiumBy.XPATH, '//android.widget.TextView[@text="Home"]')
-    TIP_CALC = (AppiumBy.XPATH, '//android.widget.TextView[@text="Tip Calculator"]')
+    TIP_CALC = (AppiumBy.XPATH, '//android.widget.LinearLayout[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_tip"]')
     UNIT_CONV = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Unit Converter").instance(1)')
 
     def open_menu(self):
@@ -30,5 +30,4 @@ class SideMenuPage(BasePage):
         self.open_menu()
         print("Will click on the Unit Conversion option")
         self.click(self.UNIT_CONV)
-        time.sleep(10)
         print("Clicked on the Unit Conversion option")

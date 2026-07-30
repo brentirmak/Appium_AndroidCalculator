@@ -16,10 +16,10 @@ def test_access_tip_calculator(driver):
         if not home.verify_home_loaded():
             print("Not at Home screen")
 
-        time.sleep(20)
-
         try:
+            print("Will click on the Tip Calculator option")
             side_menu.go_tip_calculator()
+            print("Clicked on the Tip Calculator option")
             assert tip_page.verify_loaded(), "Tip header not found"
         except Exception:
             capture_error_snapshot(driver, "AccessTipCalculator")
