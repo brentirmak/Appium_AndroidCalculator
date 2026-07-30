@@ -1,0 +1,24 @@
+*** Start Access Unit Converter Test ***
+
+1) Check to see if we're at Home screen
+2a) If not at Home screen, check to see if an Ad (Test Ad) is visible
+2b) If Ad is visible, wait until it loads, then click 'x' to close it
+3a) If still not at Home screen, check for Language header on new screen
+3b) Click on confirm icon
+3c) Click on the next 3 "Next" buttons
+4) Verify Home header is found
+5) Click on the side menu item
+6) Verify that the side menu has been opened
+7) Click on the Unit Conversion option
+8) Verify that the Unit Converter header has loaded on the Unit Converter page
+
+*** End Access Unit Converter Test ***
+
+*** Start Perform Unit Conversion Test ***
+
+1) Click/highlight the first text field (cm)
+1) Click on the '1' button
+2) Click on the '1' button again
+3) Verify that the result in the 2nd text field (inches) is 4.3307
+
+*** End Perform Unit Conversion Test ***
