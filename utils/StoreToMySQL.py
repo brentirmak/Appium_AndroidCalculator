@@ -21,7 +21,7 @@ def store_transaction_result(transaction, status, duration, timestamp):
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO appium_android_calculator_new (RunTimeStamp, Transaction, Status, Duration)
+            INSERT INTO appium_android_calculator (RunTimeStamp, Transaction, Status, Duration)
             VALUES (%s, %s, %s, %s)
         """, (timestamp, transaction, status, duration))
 
