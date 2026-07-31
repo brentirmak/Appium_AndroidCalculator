@@ -1,0 +1,31 @@
+*** Start Access Tip Calculator Test ***
+
+1) Check to see if we're at Home screen
+2a) If not at Home screen, check to see if an Ad (Test Ad) is visible
+2b) If Ad is visible, wait until it loads, then click 'x' to close it
+3a) If still not at Home screen, check for Language header on new screen
+3b) Click on confirm icon
+3c) Click on the next 3 "Next" buttons
+4) Verify Home header is found
+5) Click on the side menu item
+6) Verify that the side menu has been opened
+7) Click on the Tip Calculator option
+8) Verify that the Tip Calculator header has loaded on the Tip Calculator page
+
+*** End Access Tip Calculator Test ***
+
+*** Start Perform Tip Calculation Test ***
+
+1) Clear previous input on the Tip Page
+2) Click on the Clear-More button
+3) Verify Tip Calculator header is displayed
+4) Verify Tip Calculator header
+5) Click on the Bill field
+6) Enter Bill value (100) into the Bill field
+7) Clear the Tip field 
+8) Enter the Tip value (20) into the Tip field
+9) Click on the '=' icon
+10) Capture the output
+11) Verify the total bill is 120.00
+
+*** End Perform Tip Calculation Test ***

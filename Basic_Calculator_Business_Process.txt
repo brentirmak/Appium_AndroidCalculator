@@ -1,0 +1,28 @@
+*** Start Access Basic Calculator Test ***
+
+1) Check to see if we're at Home screen
+2a) If not at Home screen, check to see if an Ad (Test Ad) is visible
+2b) If Ad is visible, wait until it loads, then click 'x' to close it
+3a) If still not at Home screen, check for Language header on new screen
+3b) Click on confirm icon
+3c) Click on the next 3 "Next" buttons
+4) Verify Home header is found
+5) Click on the side menu item
+6) Verify that the side menu has been opened
+7) Click on the Basic Calculator option
+8) Verify that the Basic Calculator header has loaded on the Basic Calculator page
+
+*** End Access Basic Calculator Test ***
+
+*** Start Perform Bassic Calculation Test ***
+
+1) Clear previous input on the Basic Calculator Page
+2) Click on the Clear button
+3) Click on the '9' button
+4) Click on the '+' button
+5) Click on the '9' button
+6) Click on the '=' button
+7) Capture the output
+8) Verify the output is 18
+
+*** End Perform Basic Calculation Test ***
