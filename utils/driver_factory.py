@@ -14,7 +14,8 @@ def create_android_driver():
     options.app_package = "calculator.currencyconverter.tipcalculator.unitconverter"
 
     # Allow Appium to wait for ANY activity to load after launch
-    options.set_capability("appium:udid", "192.168.150.1:5555")
+    #options.set_capability("appium:udid", "192.168.150.1:5555")
+    options.set_capability("appium:udid", "127.0.0.1:5555")
     options.set_capability("appium:systemPort", 8200)
     options.set_capability("appium:deviceName", "sdk_gphone16k_x86_64")
     options.set_capability("appium:appWaitActivity", "*")
