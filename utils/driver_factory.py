@@ -10,8 +10,8 @@ def create_android_driver():
     options.automation_name = "UiAutomator2"
 
     # Bind EXPLICITLY to the Windows Pixel 10 emulator
-    options.set_capability("appium:udid", "emulator-5554")
-    options.set_capability("appium:deviceName", "Windows-Pixel10")
+    options.set_capability("appium:udid", "127.0.0.1:5555")
+    options.set_capability("appium:deviceName", "Tunneled-Pixel10")
 
     # App Settings (correct values from dumpsys)
     options.app_package = "calculator.currencyconverter.tipcalculator.unitconverter"
