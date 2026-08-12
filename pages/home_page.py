@@ -31,10 +31,11 @@ class HomePage(BasePage):
                 return False
 
         if os.getenv("RUNNING_IN_JENKINS") == "true":
-            print("We are running script from Jenkins - added sleep time")
+            print("We are running script from Jenkins - added 60s sleep time")
             time.sleep(60)
         else:
-            print("We are NOT running script from Jenkins")
+            print("We are NOT running script from Jenkins - added 10s sleep time")
+            time.sleep(10)
 
         while time.time() < end_time:
             print("Checking if Test Ad is visible")
