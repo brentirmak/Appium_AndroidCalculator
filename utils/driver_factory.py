@@ -39,7 +39,7 @@ def create_android_driver():
     # Speed Optimizations
     options.set_capability("appium:disableWindowAnimation", True)
 
-    # Initialize Driver (Windows Appium server)
+    # Initialize Driver (Ubuntu Appium server)
     driver = webdriver.Remote(
         command_executor="http://127.0.0.1:4723",
         options=options
