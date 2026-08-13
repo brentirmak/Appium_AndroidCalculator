@@ -15,140 +15,160 @@ from pages.base_page import BasePage
 
 
 class HomePage(BasePage):
+    """
+    Page Object for the Android Calculator application's Home screen.
 
-    # ============================================================
-    # NATIVE LOCATORS
-    # ============================================================
+    This implementation is intentionally defensive because the application
+    is running on a remote Android emulator accessed through:
 
-    TEST_AD = (
-        AppiumBy.ANDROID_UIAUTOMATOR,
-        'new UiSelector().text("Test Ad")'
-    )
+        Linux Jenkins
+            |
+            +--> Windows host
+                    |
+                    +--> Android emulator
+                            |
+                            +--> Appium / UiAutomator2
 
-    LANGUAGE_HEADER = (
-        AppiumBy.ID,
-        "calculator.currencyconverter.tipcalculator.unitconverter:id/tvTitle"
-    )
+    The Home screen is considered loaded when one or more reliable home-screen
+    indicators can be located.
+    """
 
-    IMPORTANT_UPDATE_TITLE = (
-        AppiumBy.ID,
-        "calculator.currencyconverter.tipcalculator.unitconverter:id/tvTitle"
-    )
+    # ------------------------------------------------------------------
+    # Timeouts
+    # ------------------------------------------------------------------
 
-    NEXT_BUTTON = (
-        AppiumBy.ANDROID_UIAUTOMATOR,
-        'new UiSelector().text("Next")'
-    )
+    DEFAULT_TIMEOUT = 20
+    SHORT_TIMEOUT = 5
+    LONG_TIMEOUT = 30
 
-    HOME_TITLE = (
-        AppiumBy.ID,
-        "calculator.currencyconverter.tipcalculator.unitconverter:id/tvTitle"
-    )
+    # ------------------------------------------------------------------
+    # Common locators
+    #
+    # Keep these broad enough to tolerate Android/application UI changes.
+    # The calculator application may expose text/content descriptions
+    # differently depending on Android/Appium versions.
+    # ------------------------------------------------------------------
 
-    # Known native Home indicators.
-    HOME_INDICATORS = [
-        "Calculator",
-        "Basic Calculator",
-        "Scientific",
-        "History",
-        "Unit",
-        "Currency",
+    HOME_TEXT_LOCATORS = [
+        (AppiumBy.ACCESSIBILITY_ID, "Calculator"),
+        (AppiumBy.ACCESSIBILITY_ID, "Basic Calculator"),
+        (AppiumBy.ACCESSIBILITY_ID, "Home"),
+        (AppiumBy.XPATH, "//*[@text='Calculator']"),
+        (AppiumBy.XPATH, "//*[@text='Basic Calculator']"),
+        (AppiumBy.XPATH, "//*[@text='Home']"),
     ]
 
-    # ============================================================
-    # WEBVIEW LOCATORS / IDENTIFIERS
-    # ============================================================
+    MENU_BUTTON_LOCATORS = [
+        (AppiumBy.ACCESSIBILITY_ID, "Open navigation drawer"),
+        (AppiumBy.ACCESSIBILITY_ID, "Open menu"),
+        (AppiumBy.ACCESSIBILITY_ID, "Menu"),
+        (
+            AppiumBy.XPATH,
+            "//android.widget.ImageButton[contains(@content-desc,'navigation')]",
+        ),
+        (
+            AppiumBy.XPATH,
+            "//android.widget.ImageButton[contains(@content-desc,'menu')]",
+        ),
+    ]
 
-    WEBVIEW = (
-        AppiumBy.CLASS_NAME,
-        "android.webkit.WebView"
-    )
+    CALCULATOR_INDICATORS = [
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@text,'Calculator')]",
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@content-desc,'Calculator')]",
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@resource-id,'calculator')]",
+        ),
+    ]
 
-    AD_CONTAINER = (
-        AppiumBy.ID,
-        "adContainer"
-    )
-
-    MYS_WRAPPER = (
-        AppiumBy.ID,
-        "mys-wrapper"
-    )
-
-    MYS_CONTENT = (
-        AppiumBy.ID,
-        "mys-content"
-    )
-
-    # ============================================================
-    # CONFIGURATION
-    # ============================================================
-
-    DEFAULT_WAIT = int(
-        os.getenv("APPIUM_DEFAULT_WAIT", "10")
-    )
-
-    HOME_WAIT = int(
-        os.getenv("APPIUM_HOME_WAIT", "30")
-    )
-
-    JENKINS = bool(
-        os.getenv("JENKINS_URL")
-        or os.getenv("BUILD_NUMBER")
-        or os.getenv("JENKINS_HOME")
-    )
-
-    # Jenkins can be slower when the emulator, Appium server,
-    # application and WebView are all starting together.
-    JENKINS_AD_WAIT = int(
-        os.getenv("APPIUM_JENKINS_AD_WAIT", "15")
-    )
-
-    # ============================================================
-    # INITIALIZATION
-    # ============================================================
+    # ------------------------------------------------------------------
+    # Constructor
+    # ------------------------------------------------------------------
 
     def __init__(self, driver):
         super().__init__(driver)
 
         self.driver = driver
 
-        print()
-        print("=" * 60)
-        print("HOMEPAGE INITIALIZED")
-        print("=" * 60)
-        print(
-            f"APPIUM_DEFAULT_WAIT = {self.DEFAULT_WAIT}"
-        )
-        print(
-            f"APPIUM_HOME_WAIT = {self.HOME_WAIT}"
-        )
-        print(
-            f"APPIUM_JENKINS_AD_WAIT = "
-            f"{self.JENKINS_AD_WAIT}"
-        )
-        print(
-            f"Jenkins environment detected = "
-            f"{self.JENKINS}"
-        )
-        print()
+        # Allow Jenkins to override the timeout without changing code.
+        try:
+            self.timeout = int(
+                os.getenv("APPIUM_HOME_PAGE_TIMEOUT", self.DEFAULT_TIMEOUT)
+            )
+        except (TypeError, ValueError):
+            self.timeout = self.DEFAULT_TIMEOUT
 
-    # ============================================================
-    # GENERIC HELPERS
-    # ============================================================
+        print(
+            f"[HomePage] Initialized "
+            f"(timeout={self.timeout}s)"
+        )
 
-    def _safe_find(self, locator, timeout=2):
+    # ------------------------------------------------------------------
+    # Logging helpers
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _describe_locator(locator):
         """
-        Safely locate an element.
+        Return a safe human-readable representation of a locator.
+        """
+        try:
+            by, value = locator
+            return f"{by}={value}"
+        except Exception:
+            return str(locator)
+
+    def _log(self, message):
+        """
+        Consistent logging for Jenkins output.
+        """
+        print(f"[HomePage] {message}")
+
+    # ------------------------------------------------------------------
+    # Driver/session health
+    # ------------------------------------------------------------------
+
+    def _driver_is_alive(self):
+        """
+        Determine whether the Appium session is still usable.
 
         Returns:
-            WebElement if found
-            None if not found or Appium reports an error
+            bool: True when the driver appears operational.
         """
+        try:
+            _ = self.driver.current_package
+            return True
+        except Exception as exc:
+            self._log(
+                f"Driver health check failed: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            return False
+
+    # ------------------------------------------------------------------
+    # Safe element lookup
+    # ------------------------------------------------------------------
+
+    def _find_element(self, locator, timeout=None):
+        """
+        Wait for and return an element.
+
+        This method deliberately avoids allowing transient Appium/Selenium
+        errors to immediately terminate the entire Home verification flow.
+        """
+
+        wait_time = timeout if timeout is not None else self.timeout
 
         try:
             return WebDriverWait(
                 self.driver,
-                timeout,
+                wait_time,
                 poll_frequency=0.5,
                 ignored_exceptions=(
                     NoSuchElementException,
@@ -158,1579 +178,929 @@ class HomePage(BasePage):
                 EC.presence_of_element_located(locator)
             )
 
+        except TimeoutException:
+            return None
+
         except (
-            TimeoutException,
-            NoSuchElementException,
             StaleElementReferenceException,
-            WebDriverException,
+            NoSuchElementException,
         ):
             return None
 
-    def _safe_find_elements(self, locator):
+        except WebDriverException as exc:
+            self._log(
+                f"WebDriverException locating "
+                f"{self._describe_locator(locator)}: {exc}"
+            )
+            return None
+
+        except Exception as exc:
+            self._log(
+                f"Unexpected error locating "
+                f"{self._describe_locator(locator)}: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            return None
+
+    def _find_visible_element(self, locator, timeout=None):
         """
-        Safely return a list of elements.
+        Wait for and return a visible element.
         """
+
+        wait_time = timeout if timeout is not None else self.timeout
 
         try:
-            return self.driver.find_elements(*locator)
-
-        except WebDriverException:
-            return []
-
-    def _safe_click(self, locator, timeout=2):
-        """
-        Safely click an element if it becomes available.
-        """
-
-        try:
-            element = WebDriverWait(
+            return WebDriverWait(
                 self.driver,
-                timeout,
+                wait_time,
                 poll_frequency=0.5,
                 ignored_exceptions=(
                     NoSuchElementException,
                     StaleElementReferenceException,
                 ),
             ).until(
-                EC.element_to_be_clickable(locator)
+                EC.visibility_of_element_located(locator)
             )
-
-            element.click()
-            return True
 
         except (
             TimeoutException,
-            NoSuchElementException,
             StaleElementReferenceException,
-            WebDriverException,
+            NoSuchElementException,
         ):
-            return False
-
-    def _page_source_contains(self, text):
-        """
-        Check the current Appium page source for text.
-        """
-
-        try:
-            source = self.driver.page_source or ""
-
-            return text.lower() in source.lower()
-
-        except WebDriverException:
-            return False
-
-    def _get_page_source(self):
-        """
-        Safely retrieve Appium page source.
-        """
-
-        try:
-            return self.driver.page_source or ""
+            return None
 
         except WebDriverException as exc:
-
-            print(
-                f"Unable to retrieve page source: {exc}"
+            self._log(
+                f"WebDriverException locating visible element "
+                f"{self._describe_locator(locator)}: {exc}"
             )
+            return None
 
-            return ""
-
-    # ============================================================
-    # WEBVIEW DETECTION
-    # ============================================================
-
-    def _has_webview(self):
-        """
-        Determine whether an Android WebView exists in the
-        current native hierarchy.
-        """
-
-        try:
-
-            webviews = self.driver.find_elements(
-                AppiumBy.CLASS_NAME,
-                "android.webkit.WebView"
+        except Exception as exc:
+            self._log(
+                f"Unexpected visible-element error: "
+                f"{type(exc).__name__}: {exc}"
             )
+            return None
 
-            if webviews:
-
-                print(
-                    f"WebView detected: "
-                    f"{len(webviews)}"
-                )
-
-                return True
-
-        except WebDriverException as exc:
-
-            print(
-                f"Unable to inspect WebView: {exc}"
-            )
-
-        return self._page_source_contains(
-            "android.webkit.WebView"
-        )
-
-    # ============================================================
-    # TEST AD HANDLING
-    # ============================================================
-
-    def handle_test_ad(self):
+    def _element_exists(self, locator, timeout=None):
         """
-        Handle the Test Ad state.
-
-        Important Jenkins behavior:
-
-        The native "Test Ad" TextView can remain present while
-        the actual application content is rendered inside a
-        WebView.
-
-        Therefore:
-
-            Test Ad + WebView != failure
-
-        We only use the ad state as diagnostic information.
+        Return True when an element exists.
         """
 
-        print("=" * 60)
-        print("VERIFYING / HANDLING TEST AD")
-        print("=" * 60)
-
-        # --------------------------------------------------------
-        # Jenkins startup delay
-        # --------------------------------------------------------
-
-        if self.JENKINS:
-
-            print(
-                "Running under Jenkins."
-            )
-
-            print(
-                f"Allowing up to "
-                f"{self.JENKINS_AD_WAIT} seconds "
-                f"for emulator/application startup."
-            )
-
-            start_time = time.time()
-
-            while (
-                time.time() - start_time
-                < self.JENKINS_AD_WAIT
-            ):
-
-                if self._has_webview():
-
-                    print(
-                        "WebView detected during Jenkins "
-                        "startup wait."
-                    )
-
-                    break
-
-                time.sleep(2)
-
-        # --------------------------------------------------------
-        # Inspect Test Ad
-        # --------------------------------------------------------
-
-        ad = self._safe_find(
-            self.TEST_AD,
-            timeout=2
+        element = self._find_element(
+            locator,
+            timeout=timeout if timeout is not None else self.SHORT_TIMEOUT,
         )
 
-        if ad is None:
+        return element is not None
 
-            print(
-                "Test Ad text was not detected."
-            )
+    # ------------------------------------------------------------------
+    # Generic locator utilities
+    # ------------------------------------------------------------------
 
-            print(
-                "Test Ad handling completed."
-            )
-
-            print()
-
-            return True
-
-        print(
-            "Test Ad detected using text: Test Ad"
-        )
-
-        # --------------------------------------------------------
-        # Determine whether WebView is active.
-        # --------------------------------------------------------
-
-        if self._has_webview():
-
-            print(
-                "WebView is present while Test Ad "
-                "is still visible."
-            )
-
-            print(
-                "This is considered a valid application "
-                "startup state."
-            )
-
-            ad_container = self._safe_find(
-                self.AD_CONTAINER,
-                timeout=1
-            )
-
-            if ad_container is not None:
-
-                print(
-                    "WebView adContainer detected."
-                )
-
-            print(
-                "Native Test Ad label will NOT be "
-                "treated as a blocking condition."
-            )
-
-            print()
-
-            return True
-
-        # --------------------------------------------------------
-        # No WebView yet.
-        # --------------------------------------------------------
-
-        print(
-            "Test Ad detected but WebView is not "
-            "currently exposed."
-        )
-
-        print(
-            "Waiting briefly for the application "
-            "to transition."
-        )
-
-        for attempt in range(1, 4):
-
-            print(
-                f"Test Ad transition check "
-                f"{attempt}/3"
-            )
-
-            time.sleep(2)
-
-            if self._has_webview():
-
-                print(
-                    "WebView detected."
-                )
-
-                print(
-                    "Continuing with Home verification."
-                )
-
-                print()
-
-                return True
-
-            ad = self._safe_find(
-                self.TEST_AD,
-                timeout=1
-            )
-
-            if ad is None:
-
-                print(
-                    "Test Ad is no longer visible."
-                )
-
-                break
-
-        print(
-            "Test Ad handling completed."
-        )
-
-        print()
-
-        return True
-
-    # ============================================================
-    # LANGUAGE / ONBOARDING
-    # ============================================================
-
-    def handle_language_and_onboarding(self):
+    def _try_locators(self, locators, timeout=None):
         """
-        Handle first-run language/onboarding screens.
+        Try multiple locators and return the first matching element.
 
-        These screens are optional. If they do not exist,
-        verification continues immediately.
+        Returns:
+            WebElement or None
         """
 
-        print("=" * 60)
-        print("HANDLING LANGUAGE / ONBOARDING")
-        print("=" * 60)
+        for locator in locators:
+            description = self._describe_locator(locator)
 
-        # --------------------------------------------------------
-        # Language screen
-        # --------------------------------------------------------
+            self._log(f"Trying locator: {description}")
 
-        print(
-            "Checking for Language header"
-        )
-
-        language_header = self._safe_find(
-            self.LANGUAGE_HEADER,
-            timeout=2
-        )
-
-        if language_header is not None:
-
-            try:
-                text = (
-                    language_header.text or ""
-                ).strip()
-
-            except WebDriverException:
-                text = ""
-
-            print(
-                "tvTitle detected"
-                + (
-                    f": '{text}'"
-                    if text
-                    else ""
-                )
-            )
-
-        else:
-
-            print(
-                "Language screen not detected."
-            )
-
-        # --------------------------------------------------------
-        # Next buttons
-        # --------------------------------------------------------
-
-        print(
-            "Processing onboarding Next buttons"
-        )
-
-        for step in range(1, 6):
-
-            print(
-                f"Looking for Next button "
-                f"(step {step})"
-            )
-
-            next_button = self._safe_find(
-                self.NEXT_BUTTON,
-                timeout=2
-            )
-
-            if next_button is None:
-
-                print(
-                    "Next button is no longer visible."
-                )
-
-                print(
-                    "Onboarding appears to be complete."
-                )
-
-                break
-
-            clicked = self._safe_click(
-                self.NEXT_BUTTON,
-                timeout=2
-            )
-
-            if clicked:
-
-                print(
-                    f"Clicked Next button "
-                    f"(step {step})"
-                )
-
-                time.sleep(1)
-
-            else:
-
-                print(
-                    "Next button was detected but "
-                    "could not be clicked."
-                )
-
-                break
-
-        print(
-            "Waiting for onboarding to finish"
-        )
-
-        next_button = self._safe_find(
-            self.NEXT_BUTTON,
-            timeout=2
-        )
-
-        if next_button is None:
-
-            print(
-                "Onboarding Next button is no longer visible."
-            )
-
-        else:
-
-            print(
-                "Onboarding Next button is still visible."
-            )
-
-        print()
-
-        return True
-
-    # ============================================================
-    # IMPORTANT UPDATE
-    # ============================================================
-
-    def handle_important_update(self):
-        """
-        Check for the Important Update screen.
-
-        tvTitle alone is NOT sufficient because the application
-        reuses tvTitle across multiple screens.
-        """
-
-        print("=" * 60)
-        print("CHECKING FOR IMPORTANT UPDATE")
-        print("=" * 60)
-
-        title = self._safe_find(
-            self.IMPORTANT_UPDATE_TITLE,
-            timeout=2
-        )
-
-        if title is None:
-
-            print(
-                "Important Update dialog is not present."
-            )
-
-            print()
-
-            return True
-
-        try:
-
-            title_text = (
-                title.text or ""
-            ).strip()
-
-        except WebDriverException:
-
-            title_text = ""
-
-        print(
-            "tvTitle detected"
-            + (
-                f": '{title_text}'"
-                if title_text
-                else ""
-            )
-        )
-
-        # --------------------------------------------------------
-        # Important Update confirmation
-        # --------------------------------------------------------
-
-        if (
-            "important update"
-            not in title_text.lower()
-        ):
-
-            print(
-                "tvTitle does not identify "
-                "Important Update."
-            )
-
-            print(
-                "It will NOT be treated as an "
-                "Important Update dialog."
-            )
-
-            print()
-
-            return True
-
-        print(
-            "Important Update screen detected."
-        )
-
-        # --------------------------------------------------------
-        # Possible dismissal buttons
-        # --------------------------------------------------------
-
-        dismissal_texts = [
-            "OK",
-            "Got it",
-            "Close",
-            "Dismiss",
-            "Later",
-        ]
-
-        for text in dismissal_texts:
-
-            locator = (
-                AppiumBy.ANDROID_UIAUTOMATOR,
-                (
-                    'new UiSelector().text("'
-                    f'{text}"
-                    '")'
-                ),
-            )
-
-            if self._safe_click(
+            element = self._find_element(
                 locator,
-                timeout=1
-            ):
-
-                print(
-                    f"Dismissed Important Update "
-                    f"using: {text}"
-                )
-
-                time.sleep(1)
-
-                break
-
-        print()
-
-        return True
-
-    # ============================================================
-    # NATIVE HOME VERIFICATION
-    # ============================================================
-
-    def _verify_native_home(self):
-        """
-        Verify Home using native Android elements.
-
-        The generic tvTitle locator is NOT accepted by itself.
-        """
-
-        print(
-            "Checking native Home indicators..."
-        )
-
-        # --------------------------------------------------------
-        # Inspect tvTitle
-        # --------------------------------------------------------
-
-        header = self._safe_find(
-            self.HOME_TITLE,
-            timeout=1
-        )
-
-        if header is not None:
-
-            try:
-
-                header_text = (
-                    header.text or ""
-                ).strip()
-
-            except WebDriverException:
-
-                header_text = ""
-
-            print(
-                "tvTitle candidate detected"
-                + (
-                    f": '{header_text}'"
-                    if header_text
-                    else ""
-                )
-            )
-
-            if header_text:
-
-                lower_text = (
-                    header_text.lower()
-                )
-
-                if (
-                    "home" in lower_text
-                    or "calculator" in lower_text
-                ):
-
-                    print(
-                        "Native Home header "
-                        "positively identified."
-                    )
-
-                    return True
-
-                print(
-                    "tvTitle exists but does not "
-                    "identify Home."
-                )
-
-        # --------------------------------------------------------
-        # Known Home indicators
-        # --------------------------------------------------------
-
-        for indicator in self.HOME_INDICATORS:
-
-            print(
-                f"Checking native Home indicator: "
-                f"{indicator}"
-            )
-
-            locator = (
-                AppiumBy.ANDROID_UIAUTOMATOR,
-                (
-                    'new UiSelector().text("'
-                    f'{indicator}"
-                    '")'
-                ),
-            )
-
-            element = self._safe_find(
-                locator,
-                timeout=1
+                timeout=timeout if timeout is not None else self.SHORT_TIMEOUT,
             )
 
             if element is not None:
-
-                print(
-                    "Native Home indicator detected: "
-                    f"{indicator}"
+                self._log(
+                    f"Element found using: {description}"
                 )
-
-                return True
-
-        # --------------------------------------------------------
-        # Native page-source fallback
-        # --------------------------------------------------------
-
-        source = self._get_page_source()
-
-        if source:
-
-            source_lower = source.lower()
-
-            native_matches = []
-
-            for indicator in self.HOME_INDICATORS:
-
-                if (
-                    indicator.lower()
-                    in source_lower
-                ):
-
-                    native_matches.append(
-                        indicator
-                    )
-
-            if native_matches:
-
-                print(
-                    "Home indicators found in "
-                    "native page source:"
-                )
-
-                for match in native_matches:
-
-                    print(
-                        f"  - {match}"
-                    )
-
-                return True
-
-        print(
-            "Native Home screen not positively "
-            "identified."
-        )
-
-        return False
-
-    # ============================================================
-    # APPIUM CONTEXT HANDLING
-    # ============================================================
-
-    def _get_contexts_safely(self):
-        """
-        Safely retrieve Appium contexts.
-        """
-
-        try:
-
-            contexts = self.driver.contexts
-
-            print()
-            print(
-                "Available Appium contexts:"
-            )
-
-            for context in contexts:
-
-                print(
-                    f"  - {context}"
-                )
-
-            return contexts
-
-        except WebDriverException as exc:
-
-            print(
-                "Unable to retrieve Appium "
-                f"contexts: {exc}"
-            )
-
-            return []
-
-    def _switch_to_webview_context(self):
-        """
-        Switch to the first available WEBVIEW context.
-
-        Returns:
-            original context if successful
-            None otherwise
-        """
-
-        try:
-
-            original_context = (
-                self.driver.current_context
-            )
-
-        except WebDriverException:
-
-            original_context = None
-
-        print(
-            f"Current Appium context: "
-            f"{original_context}"
-        )
-
-        contexts = (
-            self._get_contexts_safely()
-        )
-
-        if not contexts:
-
-            print(
-                "No Appium contexts available."
-            )
-
-            return None
-
-        webview_contexts = [
-            context
-            for context in contexts
-            if "WEBVIEW"
-            in context.upper()
-        ]
-
-        if not webview_contexts:
-
-            print(
-                "No WEBVIEW context is currently "
-                "exposed by Appium."
-            )
-
-            return None
-
-        for context in webview_contexts:
-
-            try:
-
-                print(
-                    f"Attempting to switch to: "
-                    f"{context}"
-                )
-
-                self.driver.switch_to.context(
-                    context
-                )
-
-                print(
-                    f"Successfully switched to: "
-                    f"{context}"
-                )
-
-                return original_context
-
-            except WebDriverException as exc:
-
-                print(
-                    f"Unable to switch to "
-                    f"{context}: {exc}"
-                )
+                return element
 
         return None
 
-    def _restore_context(self, original_context):
+    def _try_visible_locators(self, locators, timeout=None):
         """
-        Restore the original Appium context.
+        Try multiple locators for a visible element.
         """
 
-        if not original_context:
-            return
+        for locator in locators:
+            description = self._describe_locator(locator)
+
+            self._log(
+                f"Trying visible locator: {description}"
+            )
+
+            element = self._find_visible_element(
+                locator,
+                timeout=timeout if timeout is not None else self.SHORT_TIMEOUT,
+            )
+
+            if element is not None:
+                self._log(
+                    f"Visible element found using: {description}"
+                )
+                return element
+
+        return None
+
+    # ------------------------------------------------------------------
+    # App/package information
+    # ------------------------------------------------------------------
+
+    def get_current_package(self):
+        """
+        Return the current Android package.
+
+        Returns:
+            str or None
+        """
 
         try:
+            package = self.driver.current_package
 
-            self.driver.switch_to.context(
-                original_context
+            self._log(
+                f"Current Android package: {package}"
             )
 
-            print(
-                f"Restored Appium context: "
-                f"{original_context}"
-            )
-
-        except WebDriverException as exc:
-
-            print(
-                "Unable to restore Appium context "
-                f"{original_context}: {exc}"
-            )
-
-    # ============================================================
-    # WEBVIEW DOM VERIFICATION
-    # ============================================================
-
-    def _verify_webview_home(self):
-        """
-        Verify Home when the application is rendered through
-        an Android WebView.
-
-        Verification priority:
-
-            1. Known application Home indicators
-            2. Known application WebView containers
-            3. Stable WebView application structure
-
-        IMPORTANT:
-
-        The Jenkins hierarchy has shown:
-
-            android.webkit.WebView
-            adContainer
-            mys-wrapper
-            mys-content
-            portraitStylePVideo
-
-        Therefore WebView presence alone is NOT sufficient.
-
-        However, a stable WebView containing the application's
-        known containers can be used as fallback evidence after
-        native verification has failed.
-        """
-
-        print()
-        print("-" * 60)
-        print("WEBVIEW HOME VERIFICATION")
-        print("-" * 60)
-
-        # --------------------------------------------------------
-        # First verify WebView exists.
-        # --------------------------------------------------------
-
-        if not self._has_webview():
-
-            print(
-                "No Android WebView detected."
-            )
-
-            return False
-
-        print(
-            "Android WebView confirmed."
-        )
-
-        # --------------------------------------------------------
-        # Attempt WEBVIEW context.
-        # --------------------------------------------------------
-
-        original_context = (
-            self._switch_to_webview_context()
-        )
-
-        # --------------------------------------------------------
-        # Appium may expose the native WebView but not expose a
-        # WEBVIEW context. This is common with some emulator /
-        # Chrome WebView combinations.
-        # --------------------------------------------------------
-
-        if original_context is None:
-
-            print(
-                "WEBVIEW context is unavailable."
-            )
-
-            print(
-                "Native hierarchy confirms WebView "
-                "presence."
-            )
-
-            # Do not immediately accept the WebView as Home.
-            #
-            # Instead inspect the native source for known
-            # application structures.
-
-            source = self._get_page_source()
-
-            source_lower = source.lower()
-
-            application_container_present = (
-                "mys-wrapper" in source_lower
-                or "mys-content" in source_lower
-            )
-
-            home_indicator_present = any(
-                indicator.lower()
-                in source_lower
-                for indicator
-                in self.HOME_INDICATORS
-            )
-
-            if home_indicator_present:
-
-                print(
-                    "Known Home indicator found in "
-                    "native hierarchy."
-                )
-
-                return True
-
-            if application_container_present:
-
-                print(
-                    "Known application WebView "
-                    "container detected in native "
-                    "hierarchy."
-                )
-
-                print(
-                    "Using stable application "
-                    "WebView structure as fallback "
-                    "Home evidence."
-                )
-
-                return True
-
-            print(
-                "WebView exists, but no positive "
-                "Home evidence was found."
-            )
-
-            return False
-
-        try:
-
-            # ----------------------------------------------------
-            # Retrieve WebView DOM.
-            # ----------------------------------------------------
-
-            source = self._get_page_source()
-
-            source_lower = source.lower()
-
-            print(
-                f"WebView source length: "
-                f"{len(source)}"
-            )
-
-            # ----------------------------------------------------
-            # Strong Home indicators
-            # ----------------------------------------------------
-
-            web_home_indicators = [
-                "calculator",
-                "basic calculator",
-                "scientific",
-                "history",
-                "unit",
-                "currency",
-            ]
-
-            matches = []
-
-            for indicator in (
-                web_home_indicators
-            ):
-
-                if (
-                    indicator.lower()
-                    in source_lower
-                ):
-
-                    matches.append(
-                        indicator
-                    )
-
-            if matches:
-
-                print(
-                    "WebView Home indicators detected:"
-                )
-
-                for match in matches:
-
-                    print(
-                        f"  - {match}"
-                    )
-
-                print(
-                    "WebView Home screen "
-                    "positively identified."
-                )
-
-                return True
-
-            # ----------------------------------------------------
-            # Application containers
-            # ----------------------------------------------------
-
-            wrapper_present = (
-                "mys-wrapper"
-                in source_lower
-            )
-
-            content_present = (
-                "mys-content"
-                in source_lower
-            )
-
-            ad_container_present = (
-                "adcontainer"
-                in source_lower
-            )
-
-            video_present = (
-                "portraitstylepvideo"
-                in source_lower
-            )
-
-            print(
-                "WebView structure:"
-            )
-
-            print(
-                f"  mys-wrapper = "
-                f"{wrapper_present}"
-            )
-
-            print(
-                f"  mys-content = "
-                f"{content_present}"
-            )
-
-            print(
-                f"  adContainer = "
-                f"{ad_container_present}"
-            )
-
-            print(
-                f"  portraitStylePVideo = "
-                f"{video_present}"
-            )
-
-            # ----------------------------------------------------
-            # Strong application structure.
-            # ----------------------------------------------------
-
-            if (
-                wrapper_present
-                and content_present
-            ):
-
-                print(
-                    "mys-wrapper and mys-content "
-                    "are both present."
-                )
-
-                # If Home indicators were not found, we still
-                # have to determine whether this is simply the
-                # advertisement layer.
-                #
-                # If the application containers are present and
-                # the source is not exclusively an advertisement,
-                # treat this as valid fallback evidence.
-
-                ad_only = (
-                    ad_container_present
-                    and video_present
-                    and not any(
-                        indicator.lower()
-                        in source_lower
-                        for indicator
-                        in web_home_indicators
-                    )
-                )
-
-                if ad_only:
-
-                    print(
-                        "WebView still appears "
-                        "advertisement-dominated."
-                    )
-
-                    print(
-                        "Not yet accepting this as Home."
-                    )
-
-                    return False
-
-                print(
-                    "Stable application WebView "
-                    "structure detected."
-                )
-
-                print(
-                    "Using WebView application "
-                    "structure as Home fallback."
-                )
-
-                return True
-
-            # ----------------------------------------------------
-            # Individual application container.
-            # ----------------------------------------------------
-
-            if (
-                wrapper_present
-                or content_present
-            ):
-
-                print(
-                    "Application WebView container "
-                    "detected."
-                )
-
-                # If the advertisement is still clearly
-                # dominating the WebView, don't accept it.
-
-                if (
-                    ad_container_present
-                    and video_present
-                ):
-
-                    print(
-                        "Advertisement indicators "
-                        "are still present."
-                    )
-
-                    print(
-                        "Waiting for the WebView "
-                        "to progress."
-                    )
-
-                    return False
-
-                print(
-                    "WebView application container "
-                    "appears stable."
-                )
-
-                return True
-
-            # ----------------------------------------------------
-            # No useful DOM evidence.
-            # ----------------------------------------------------
-
-            print(
-                "No positive WebView Home "
-                "indicator detected."
-            )
-
-            return False
-
-        finally:
-
-            self._restore_context(
-                original_context
-            )
-
-    # ============================================================
-    # COMBINED HOME VERIFICATION
-    # ============================================================
-
-    def _verify_home_once(self):
-        """
-        Perform one Home verification pass.
-
-        Verification order:
-
-            1. Native Home
-            2. WebView Home
-        """
-
-        print()
-        print(
-            "Starting combined Home verification..."
-        )
-
-        # --------------------------------------------------------
-        # Native verification
-        # --------------------------------------------------------
-
-        try:
-
-            if self._verify_native_home():
-
-                print(
-                    "Home verified through "
-                    "native Android hierarchy."
-                )
-
-                return True
+            return package
 
         except Exception as exc:
-
-            print(
-                "Native Home verification "
-                f"raised exception: {exc}"
+            self._log(
+                f"Unable to determine current package: "
+                f"{type(exc).__name__}: {exc}"
             )
 
-        # --------------------------------------------------------
-        # WebView verification
-        # --------------------------------------------------------
+            return None
+
+    def get_current_activity(self):
+        """
+        Return the current Android activity.
+
+        Returns:
+            str or None
+        """
 
         try:
+            activity = self.driver.current_activity
 
-            if self._verify_webview_home():
+            self._log(
+                f"Current Android activity: {activity}"
+            )
 
-                print(
-                    "Home verified through "
-                    "WebView/application structure."
-                )
-
-                return True
+            return activity
 
         except Exception as exc:
-
-            print(
-                "WebView Home verification "
-                f"raised exception: {exc}"
+            self._log(
+                f"Unable to determine current activity: "
+                f"{type(exc).__name__}: {exc}"
             )
 
-        print(
-            "Home could not be verified "
-            "during this pass."
-        )
+            return None
 
-        return False
+    # ------------------------------------------------------------------
+    # Page source diagnostics
+    # ------------------------------------------------------------------
 
-    # ============================================================
-    # ANDROID UI HIERARCHY DIAGNOSTICS
-    # ============================================================
-
-    def dump_ui_hierarchy(self):
+    def get_page_source(self):
         """
-        Print the current Android UI hierarchy.
-        """
+        Safely retrieve Android page source.
 
-        print()
-        print("=" * 60)
-        print("CURRENT ANDROID UI HIERARCHY")
-        print("=" * 60)
+        Returns:
+            str or None
+        """
 
         try:
-
             source = self.driver.page_source
 
             if source:
-
-                print(source)
-
-            else:
-
-                print(
-                    "Android UI hierarchy was empty."
+                self._log(
+                    f"Page source retrieved "
+                    f"({len(source)} characters)."
                 )
 
-        except WebDriverException as exc:
+            return source
 
-            print(
-                "Unable to retrieve Android "
-                f"UI hierarchy: {exc}"
+        except Exception as exc:
+            self._log(
+                f"Unable to retrieve page source: "
+                f"{type(exc).__name__}: {exc}"
             )
 
-        print("=" * 60)
-        print()
+            return None
 
-    # ============================================================
-    # CURRENT CONTEXT DIAGNOSTICS
-    # ============================================================
-
-    def dump_context_information(self):
+    def dump_page_source(self, filename=None):
         """
-        Print current Appium context information.
+        Save page source to disk for Jenkins diagnostics.
 
-        Useful when Jenkins exposes a WebView in the native
-        hierarchy but does not expose a WEBVIEW context.
+        Returns:
+            str or None: Path to saved file.
         """
 
-        print()
-        print("=" * 60)
-        print("APPIUM CONTEXT DIAGNOSTICS")
-        print("=" * 60)
+        if filename is None:
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"home_page_source_{timestamp}.xml"
 
         try:
+            source = self.driver.page_source
 
-            print(
-                f"Current context: "
-                f"{self.driver.current_context}"
+            if not source:
+                self._log("Page source is empty.")
+                return None
+
+            directory = os.path.dirname(filename)
+
+            if directory:
+                os.makedirs(directory, exist_ok=True)
+
+            with open(
+                filename,
+                "w",
+                encoding="utf-8",
+            ) as file:
+                file.write(source)
+
+            self._log(
+                f"Page source saved to: {filename}"
             )
 
-        except WebDriverException as exc:
+            return filename
 
-            print(
-                f"Unable to retrieve current "
-                f"context: {exc}"
+        except Exception as exc:
+            self._log(
+                f"Unable to save page source: "
+                f"{type(exc).__name__}: {exc}"
             )
 
-        self._get_contexts_safely()
+            return None
 
-        print("=" * 60)
-        print()
+    # ------------------------------------------------------------------
+    # Home screen detection
+    # ------------------------------------------------------------------
 
-    # ============================================================
-    # MAIN HOME VERIFICATION
-    # ============================================================
+    def _calculator_indicator_present(self):
+        """
+        Look for calculator-specific indicators.
+
+        Returns:
+            bool
+        """
+
+        for locator in self.CALCULATOR_INDICATORS:
+            element = self._find_element(
+                locator,
+                timeout=self.SHORT_TIMEOUT,
+            )
+
+            if element is not None:
+                return True
+
+        return False
+
+    def _home_text_present(self):
+        """
+        Look for explicit Home/Calculator text.
+        """
+
+        for locator in self.HOME_TEXT_LOCATORS:
+            element = self._find_element(
+                locator,
+                timeout=self.SHORT_TIMEOUT,
+            )
+
+            if element is not None:
+                return True
+
+        return False
+
+    def _menu_button_present(self):
+        """
+        Look for the navigation/menu button.
+
+        This is useful because the calculator home page may not expose a
+        literal 'Home' text element.
+        """
+
+        for locator in self.MENU_BUTTON_LOCATORS:
+            element = self._find_element(
+                locator,
+                timeout=self.SHORT_TIMEOUT,
+            )
+
+            if element is not None:
+                return True
+
+        return False
+
+    # ------------------------------------------------------------------
+    # Primary Home verification
+    # ------------------------------------------------------------------
 
     def verify_home_loaded(self):
         """
-        Main Home screen verification.
+        Verify that the Android Calculator Home screen is loaded.
 
-        Flow:
+        Strategy:
 
-            1. Handle Test Ad
-            2. Handle Language / Onboarding
-            3. Handle Important Update
-            4. Verify Home
+        1. Verify that the Appium session is alive.
+        2. Allow a short stabilization period.
+        3. Check explicit Home/Calculator identifiers.
+        4. Check calculator-specific UI indicators.
+        5. Check the navigation/menu button.
+        6. If necessary, inspect page source for calculator indicators.
+        7. Return True only when a reliable indicator is found.
 
-        The method intentionally does not fail immediately when
-        optional startup screens or WebView transitions encounter
-        temporary Appium exceptions.
+        This avoids relying on one fragile XPath, which is especially
+        important on the remote Jenkins Android emulator.
         """
 
-        print()
-        print("=" * 60)
-        print("VERIFYING HOME SCREEN")
-        print("=" * 60)
-        print()
+        self._log("=" * 60)
+        self._log("VERIFYING ANDROID CALCULATOR HOME SCREEN")
+        self._log("=" * 60)
 
-        # ========================================================
-        # STEP 1 - TEST AD
-        # ========================================================
+        if not self._driver_is_alive():
+            self._log(
+                "FAIL: Appium driver/session is not available."
+            )
+            return False
 
-        print(
-            "[STEP 1/4] Handling Test Ad"
+        # --------------------------------------------------------------
+        # Give Android/Appium a moment to settle.
+        # --------------------------------------------------------------
+
+        self._log(
+            "Allowing Android UI to stabilize..."
+        )
+
+        time.sleep(1)
+
+        # --------------------------------------------------------------
+        # Log diagnostic information.
+        # --------------------------------------------------------------
+
+        package = self.get_current_package()
+        activity = self.get_current_activity()
+
+        if package:
+            self._log(
+                f"Home verification package: {package}"
+            )
+
+        if activity:
+            self._log(
+                f"Home verification activity: {activity}"
+            )
+
+        # --------------------------------------------------------------
+        # Strategy 1 - explicit Home/Calculator text
+        # --------------------------------------------------------------
+
+        self._log(
+            "Checking explicit Home/Calculator indicators..."
+        )
+
+        if self._home_text_present():
+            self._log(
+                "PASS: Explicit Home/Calculator indicator found."
+            )
+            return True
+
+        # --------------------------------------------------------------
+        # Strategy 2 - calculator-specific identifiers
+        # --------------------------------------------------------------
+
+        self._log(
+            "Checking calculator-specific indicators..."
+        )
+
+        if self._calculator_indicator_present():
+            self._log(
+                "PASS: Calculator-specific UI indicator found."
+            )
+            return True
+
+        # --------------------------------------------------------------
+        # Strategy 3 - navigation/menu button
+        # --------------------------------------------------------------
+
+        self._log(
+            "Checking navigation/menu button..."
+        )
+
+        if self._menu_button_present():
+            self._log(
+                "PASS: Navigation/menu button found."
+            )
+            return True
+
+        # --------------------------------------------------------------
+        # Strategy 4 - page source fallback
+        #
+        # This is deliberately used only after direct element lookup
+        # fails. It provides a useful fallback for Android UI timing
+        # and accessibility differences.
+        # --------------------------------------------------------------
+
+        self._log(
+            "Direct locators did not identify Home."
+        )
+
+        self._log(
+            "Inspecting Android page source..."
+        )
+
+        source = self.get_page_source()
+
+        if source:
+            source_lower = source.lower()
+
+            source_indicators = (
+                "calculator",
+                "basic calculator",
+            )
+
+            for indicator in source_indicators:
+                if indicator in source_lower:
+                    self._log(
+                        "PASS: Calculator indicator found "
+                        f"in page source: '{indicator}'"
+                    )
+                    return True
+
+        # --------------------------------------------------------------
+        # Failure
+        # --------------------------------------------------------------
+
+        self._log(
+            "FAIL: No reliable Home screen indicator was found."
+        )
+
+        self._log(
+            "Capturing page source for diagnostics..."
         )
 
         try:
-
-            self.handle_test_ad()
-
+            self.dump_page_source(
+                filename=os.path.join(
+                    "snapshots",
+                    "home_failure_page_source.xml",
+                )
+            )
         except Exception as exc:
-
-            print(
-                "Test Ad handling encountered "
-                f"an exception: {exc}"
+            self._log(
+                f"Page-source diagnostic failed: "
+                f"{type(exc).__name__}: {exc}"
             )
 
-            print(
-                "Continuing to Home verification."
-            )
+        return False
 
-        # ========================================================
-        # STEP 2 - LANGUAGE / ONBOARDING
-        # ========================================================
+    # ------------------------------------------------------------------
+    # Wait for Home
+    # ------------------------------------------------------------------
 
-        print(
-            "[STEP 2/4] Handling Language / Onboarding"
+    def wait_for_home(self, timeout=None):
+        """
+        Wait until the Home screen is detected.
+
+        Returns:
+            bool
+        """
+
+        wait_time = timeout if timeout is not None else self.LONG_TIMEOUT
+
+        self._log(
+            f"Waiting up to {wait_time}s for Home screen..."
         )
 
-        try:
+        start_time = time.monotonic()
 
-            self.handle_language_and_onboarding()
+        while (time.monotonic() - start_time) < wait_time:
 
-        except Exception as exc:
-
-            print(
-                "Language/onboarding handling "
-                f"encountered an exception: {exc}"
-            )
-
-            print(
-                "Continuing to Home verification."
-            )
-
-        # ========================================================
-        # STEP 3 - IMPORTANT UPDATE
-        # ========================================================
-
-        print(
-            "[STEP 3/4] Handling Important Update"
-        )
-
-        try:
-
-            self.handle_important_update()
-
-        except Exception as exc:
-
-            print(
-                "Important Update handling "
-                f"encountered an exception: {exc}"
-            )
-
-            print(
-                "Continuing to Home verification."
-            )
-
-        # ========================================================
-        # STEP 4 - HOME VERIFICATION
-        # ========================================================
-
-        print(
-            "[STEP 4/4] Verifying Home screen"
-        )
-
-        print(
-            "Waiting for calculator Home screen "
-            "to initialize..."
-        )
-
-        start_time = time.time()
-        attempt = 0
-
-        while True:
-
-            attempt += 1
-
-            elapsed = (
-                time.time()
-                - start_time
-            )
-
-            remaining = (
-                self.HOME_WAIT
-                - elapsed
-            )
-
-            if remaining <= 0:
-
-                break
-
-            print()
-            print("-" * 60)
-            print(
-                f"Home verification attempt "
-                f"#{attempt}"
-            )
-            print(
-                f"Elapsed: {elapsed:.1f}s | "
-                f"Remaining: {remaining:.1f}s"
-            )
-            print("-" * 60)
+            if not self._driver_is_alive():
+                self._log(
+                    "Driver became unavailable while waiting "
+                    "for Home."
+                )
+                return False
 
             try:
+                if self._home_text_present():
+                    self._log(
+                        "Home detected while waiting."
+                    )
+                    return True
 
-                if self._verify_home_once():
+                if self._calculator_indicator_present():
+                    self._log(
+                        "Calculator UI detected while waiting."
+                    )
+                    return True
 
-                    print()
-                    print("=" * 60)
-                    print("HOME SCREEN VERIFIED")
-                    print("=" * 60)
-                    print()
-
+                if self._menu_button_present():
+                    self._log(
+                        "Navigation menu detected while waiting."
+                    )
                     return True
 
             except Exception as exc:
-
-                print(
-                    "Home verification attempt "
-                    f"raised an exception: {exc}"
+                self._log(
+                    f"Transient Home detection error: "
+                    f"{type(exc).__name__}: {exc}"
                 )
 
-            print(
-                "Home screen not verified yet."
-            )
+            time.sleep(0.5)
 
-            # ----------------------------------------------------
-            # Poll every 3 seconds.
-            # ----------------------------------------------------
-
-            sleep_time = min(
-                3,
-                max(
-                    0,
-                    remaining
-                )
-            )
-
-            if sleep_time > 0:
-
-                time.sleep(
-                    sleep_time
-                )
-
-        # ========================================================
-        # FINAL VERIFICATION
-        # ========================================================
-
-        print()
-        print("=" * 60)
-        print("HOME SCREEN FAILED TO LOAD")
-        print("=" * 60)
-
-        print()
-        print(
-            "Performing final Home-screen "
-            "verification..."
+        self._log(
+            f"FAIL: Home screen was not detected within "
+            f"{wait_time}s."
         )
 
+        return False
+
+    # ------------------------------------------------------------------
+    # Menu interaction
+    # ------------------------------------------------------------------
+
+    def get_menu_button(self):
+        """
+        Return the navigation/menu button if available.
+        """
+
+        return self._try_visible_locators(
+            self.MENU_BUTTON_LOCATORS,
+            timeout=self.SHORT_TIMEOUT,
+        )
+
+    def is_menu_button_visible(self):
+        """
+        Determine whether the menu button is visible.
+        """
+
+        return self.get_menu_button() is not None
+
+    def click_menu(self):
+        """
+        Click the Home screen navigation/menu button.
+
+        Returns:
+            bool
+        """
+
+        self._log(
+            "Attempting to open navigation menu..."
+        )
+
+        element = self.get_menu_button()
+
+        if element is None:
+            self._log(
+                "FAIL: Navigation/menu button was not found."
+            )
+            return False
+
         try:
+            element.click()
 
-            if self._verify_home_once():
+            self._log(
+                "Navigation/menu button clicked."
+            )
 
-                print(
-                    "Home screen verified during "
-                    "final check."
+            return True
+
+        except (
+            StaleElementReferenceException,
+            WebDriverException,
+        ) as exc:
+
+            self._log(
+                f"Menu click failed on first attempt: "
+                f"{type(exc).__name__}: {exc}"
+            )
+
+            # Retry once using a freshly located element.
+            try:
+                time.sleep(0.5)
+
+                element = self.get_menu_button()
+
+                if element is None:
+                    self._log(
+                        "FAIL: Menu button disappeared during retry."
+                    )
+                    return False
+
+                element.click()
+
+                self._log(
+                    "Navigation/menu button clicked on retry."
                 )
-
-                print()
 
                 return True
 
-        except Exception as exc:
+            except Exception as retry_exc:
+                self._log(
+                    f"Menu click retry failed: "
+                    f"{type(retry_exc).__name__}: {retry_exc}"
+                )
+                return False
 
-            print(
-                "Final Home verification "
-                f"raised an exception: {exc}"
+        except Exception as exc:
+            self._log(
+                f"Unexpected menu click error: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            return False
+
+    # ------------------------------------------------------------------
+    # Generic text helpers
+    # ------------------------------------------------------------------
+
+    def find_text(self, text, timeout=None):
+        """
+        Find an Android element by exact text.
+
+        Args:
+            text: Text displayed by the Android element.
+            timeout: Optional timeout.
+
+        Returns:
+            WebElement or None
+        """
+
+        if text is None:
+            return None
+
+        text = str(text).strip()
+
+        if not text:
+            return None
+
+        locator = (
+            AppiumBy.XPATH,
+            f"//*[@text={self._xpath_literal(text)}]",
+        )
+
+        return self._find_element(
+            locator,
+            timeout=timeout if timeout is not None else self.SHORT_TIMEOUT,
+        )
+
+    def is_text_visible(self, text, timeout=None):
+        """
+        Determine whether exact text is visible.
+        """
+
+        if text is None:
+            return False
+
+        text = str(text).strip()
+
+        if not text:
+            return False
+
+        locator = (
+            AppiumBy.XPATH,
+            f"//*[@text={self._xpath_literal(text)}]",
+        )
+
+        return (
+            self._find_visible_element(
+                locator,
+                timeout=timeout if timeout is not None else self.SHORT_TIMEOUT,
+            )
+            is not None
+        )
+
+    @staticmethod
+    def _xpath_literal(value):
+        """
+        Safely create an XPath string literal.
+
+        Handles strings containing single quotes, double quotes, or both.
+        """
+
+        value = str(value)
+
+        if "'" not in value:
+            return f"'{value}'"
+
+        if '"' not in value:
+            return f'"{value}"'
+
+        parts = value.split("'")
+
+        xpath_parts = []
+
+        for index, part in enumerate(parts):
+            if part:
+                xpath_parts.append(f"'{part}'")
+
+            if index < len(parts) - 1:
+                xpath_parts.append('"\'"')
+
+        return "concat(" + ", ".join(xpath_parts) + ")"
+
+    # ------------------------------------------------------------------
+    # Generic click helper
+    # ------------------------------------------------------------------
+
+    def click_text(self, text, timeout=None):
+        """
+        Find an element by exact text and click it.
+
+        Returns:
+            bool
+        """
+
+        element = self.find_text(
+            text,
+            timeout=timeout,
+        )
+
+        if element is None:
+            self._log(
+                f"FAIL: Text element not found: {text!r}"
+            )
+            return False
+
+        try:
+            element.click()
+
+            self._log(
+                f"Clicked text element: {text!r}"
             )
 
-        # ========================================================
-        # DIAGNOSTICS
-        # ========================================================
+            return True
 
-        print()
-        print(
-            "Home screen could not be verified."
+        except StaleElementReferenceException:
+            self._log(
+                f"Element became stale while clicking: {text!r}"
+            )
+
+            # Retry with a newly located element.
+            try:
+                element = self.find_text(
+                    text,
+                    timeout=self.SHORT_TIMEOUT,
+                )
+
+                if element is None:
+                    return False
+
+                element.click()
+
+                self._log(
+                    f"Clicked text element on retry: {text!r}"
+                )
+
+                return True
+
+            except Exception as exc:
+                self._log(
+                    f"Retry click failed for {text!r}: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+                return False
+
+        except WebDriverException as exc:
+            self._log(
+                f"WebDriver click failed for {text!r}: {exc}"
+            )
+            return False
+
+        except Exception as exc:
+            self._log(
+                f"Unexpected click error for {text!r}: "
+                f"{type(exc).__name__}: {exc}"
+            )
+            return False
+
+    # ------------------------------------------------------------------
+    # Refresh / recovery helpers
+    # ------------------------------------------------------------------
+
+    def wait_for_app_stability(self, seconds=1):
+        """
+        Give the Android application time to stabilize.
+        """
+
+        try:
+            seconds = max(0, float(seconds))
+        except (TypeError, ValueError):
+            seconds = 1
+
+        self._log(
+            f"Waiting {seconds:.1f}s for app stabilization..."
         )
 
-        print()
-        print(
-            "Dumping Appium context information..."
+        time.sleep(seconds)
+
+    def recover_to_home(self):
+        """
+        Attempt to recover the application to its Home screen.
+
+        This method does not force-stop or restart the application because
+        doing so can interfere with the Appium session and Jenkins test
+        cleanup. It simply uses Android BACK operations when possible.
+
+        Returns:
+            bool
+        """
+
+        self._log(
+            "Attempting recovery to Home screen..."
         )
 
-        self.dump_context_information()
+        if not self._driver_is_alive():
+            self._log(
+                "Cannot recover: driver is unavailable."
+            )
+            return False
 
-        print(
-            "Dumping Android UI hierarchy "
-            "for diagnostics..."
+        # First determine whether Home is already present.
+        try:
+            if self._home_text_present():
+                self._log(
+                    "Already on Home screen."
+                )
+                return True
+
+            if self._calculator_indicator_present():
+                self._log(
+                    "Calculator Home UI already present."
+                )
+                return True
+
+        except Exception:
+            pass
+
+        # Attempt Android BACK a small number of times.
+        for attempt in range(1, 4):
+            try:
+                self._log(
+                    f"Recovery BACK attempt {attempt}/3..."
+                )
+
+                self.driver.back()
+
+                time.sleep(1)
+
+                if self._home_text_present():
+                    self._log(
+                        "Home screen recovered."
+                    )
+                    return True
+
+                if self._calculator_indicator_present():
+                    self._log(
+                        "Calculator Home UI recovered."
+                    )
+                    return True
+
+            except WebDriverException as exc:
+                self._log(
+                    f"BACK attempt {attempt} failed: {exc}"
+                )
+
+            except Exception as exc:
+                self._log(
+                    f"Unexpected recovery error: "
+                    f"{type(exc).__name__}: {exc}"
+                )
+
+        self._log(
+            "FAIL: Unable to recover to Home screen."
         )
-
-        self.dump_ui_hierarchy()
 
         return False
+
+    # ------------------------------------------------------------------
+    # Backward-compatible aliases
+    # ------------------------------------------------------------------
+
+    def verify_home(self):
+        """
+        Backward-compatible alias for verify_home_loaded().
+        """
+
+        return self.verify_home_loaded()
+
+    def is_home_loaded(self):
+        """
+        Backward-compatible alias for verify_home_loaded().
+        """
+
+        return self.verify_home_loaded()
+
+    def home_loaded(self):
+        """
+        Backward-compatible alias for verify_home_loaded().
+        """
+
+        return self.verify_home_loaded()
