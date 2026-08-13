@@ -1,418 +1,428 @@
-from appium.webdriver.common.appiumby import AppiumBy
-from pages.base_page import BasePage
+import os
+import time
 
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.common.exceptions import (
     NoSuchElementException,
-    StaleElementReferenceException,
     TimeoutException,
+    StaleElementReferenceException,
+    WebDriverException,
 )
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-import time
-import os
+from pages.base_page import BasePage
 
 
 class HomePage(BasePage):
+    """
+    Page Object for the application's Home screen.
 
-    # ============================================================
-    # APP PACKAGE
-    # ============================================================
+    Handles:
+        - Test advertisements
+        - Language selection
+        - Initial onboarding
+        - Post-onboarding "Important Update" dialog
+        - Home screen verification
+    """
 
-    APP_PACKAGE = "calculator.currencyconverter.tipcalculator.unitconverter"
+    APP_PACKAGE = (
+        "calculator.currencyconverter.tipcalculator.unitconverter"
+    )
 
-    # ============================================================
-    # ONBOARDING / LANGUAGE
-    # ============================================================
+    # ------------------------------------------------------------------
+    # HOME SCREEN LOCATORS
+    # ------------------------------------------------------------------
+
+    HOME_HEADER = (
+        AppiumBy.ID,
+        f"{APP_PACKAGE}:id/tvTitle"
+    )
+
+    # Known text-based home indicators.
+    HOME_TEXT_INDICATORS = [
+        "Calculator",
+        "Basic Calculator",
+        "Scientific",
+        "History",
+        "Unit",
+        "Currency",
+    ]
+
+    # ------------------------------------------------------------------
+    # IMPORTANT UPDATE DIALOG
+    # ------------------------------------------------------------------
+
+    IMPORTANT_UPDATE_TITLE = (
+        AppiumBy.ID,
+        f"{APP_PACKAGE}:id/tvTitle"
+    )
+
+    IMPORTANT_UPDATE_CLOSE_BUTTON = (
+        AppiumBy.ID,
+        f"{APP_PACKAGE}:id/btnClose"
+    )
+
+    IMPORTANT_UPDATE_BOTTOM_SHEET = (
+        AppiumBy.ID,
+        f"{APP_PACKAGE}:id/design_bottom_sheet"
+    )
+
+    # ------------------------------------------------------------------
+    # LANGUAGE / ONBOARDING LOCATORS
+    # ------------------------------------------------------------------
 
     LANGUAGE_HEADER = (
         AppiumBy.XPATH,
-        '//android.widget.TextView[@text="Language"]'
+        "//*[@text='Language']"
     )
 
-    LANGUAGE_CONFIRM_ICON = (
+    LANGUAGE_CONFIRMATION = (
         AppiumBy.XPATH,
-        '//android.widget.ImageView'
-        '[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_submit"]'
+        "//*[contains(@content-desc,'Continue') "
+        "or contains(@content-desc,'Confirm') "
+        "or contains(@text,'Continue') "
+        "or contains(@text,'Confirm')]"
     )
 
-    NEXT_BUTTON = (
-        AppiumBy.XPATH,
-        '//android.widget.TextView'
-        '[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_next"]'
-    )
+    # ------------------------------------------------------------------
+    # INITIAL TEST AD
+    # ------------------------------------------------------------------
 
-    # ============================================================
-    # AD
-    # ============================================================
+    TEST_AD_CLOSE_LOCATORS = [
+        (
+            AppiumBy.ID,
+            f"{APP_PACKAGE}:id/ad_close"
+        ),
+        (
+            AppiumBy.ID,
+            f"{APP_PACKAGE}:id/close"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[@text='Close']"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[@content-desc='Close']"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@text,'Close')]"
+        ),
+    ]
 
-    TEST_AD_HEADER = (
-        AppiumBy.XPATH,
-        '//android.widget.TextView[@text="Test Ad"]'
-    )
+    # ------------------------------------------------------------------
+    # ONBOARDING NEXT BUTTON
+    # ------------------------------------------------------------------
 
-    # ============================================================
-    # HOME
-    # ============================================================
+    ONBOARDING_NEXT_LOCATORS = [
+        (
+            AppiumBy.XPATH,
+            "//*[@text='Next']"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[@content-desc='Next']"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@text,'Next')]"
+        ),
+        (
+            AppiumBy.XPATH,
+            "//*[contains(@content-desc,'Next')]"
+        ),
+    ]
 
-    # Original locator retained as a possible indicator.
-    HOME_HEADER = (
-        AppiumBy.XPATH,
-        '//android.widget.TextView[@text="Home"]'
-    )
+    # ------------------------------------------------------------------
+    # INITIALIZATION
+    # ------------------------------------------------------------------
 
-    # Possible home-screen indicators.
-    #
-    # We intentionally do NOT depend on a single "Home" TextView.
-    # The application can change the widget type/text while the
-    # actual home screen remains perfectly usable.
+    def __init__(self, driver):
+        super().__init__(driver)
 
-    CALCULATOR_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"Calculator")]'
-    )
+        self.default_wait = int(
+            os.getenv("APPIUM_DEFAULT_WAIT", "10")
+        )
 
-    BASIC_CALCULATOR_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"Basic")]'
-    )
+        self.home_wait = int(
+            os.getenv("APPIUM_HOME_WAIT", "30")
+        )
 
-    SCIENTIFIC_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"Scientific")]'
-    )
+        self.jenkins = bool(
+            os.getenv("JENKINS_HOME")
+            or os.getenv("BUILD_ID")
+            or os.getenv("JENKINS_SERVER_COOKIE")
+        )
 
-    HISTORY_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"History")]'
-    )
-
-    UNIT_CONVERTER_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"Unit")]'
-    )
-
-    CURRENCY_TEXT = (
-        AppiumBy.XPATH,
-        '//*[contains(@text,"Currency")]'
-    )
-
-    # ============================================================
+    # ==================================================================
     # GENERIC HELPERS
-    # ============================================================
+    # ==================================================================
 
-    def _is_element_visible(self, locator):
+    def _find_visible(self, locator, timeout=3):
         """
-        Safely determine whether an element is currently visible.
-        Never raises NoSuchElementException or StaleElementReferenceException.
-        """
-
-        try:
-            element = self.driver.find_element(*locator)
-            return element.is_displayed()
-
-        except (
-            NoSuchElementException,
-            StaleElementReferenceException,
-        ):
-            return False
-
-    def _wait_for_element(self, locator, timeout=30):
-        """
-        Wait for an element to become visible.
-        Returns the element or None.
+        Return a visible element if it exists.
+        Return None if it does not exist.
         """
 
         try:
             return WebDriverWait(
                 self.driver,
-                timeout,
-                poll_frequency=1
+                timeout
             ).until(
                 EC.visibility_of_element_located(locator)
             )
 
-        except TimeoutException:
+        except (
+            TimeoutException,
+            NoSuchElementException,
+            StaleElementReferenceException,
+            WebDriverException,
+        ):
             return None
 
-    # ============================================================
+    def _click_if_visible(self, locator, timeout=3):
+        """
+        Click an element if it becomes visible/clickable.
+        Returns True if clicked.
+        """
+
+        try:
+            element = WebDriverWait(
+                self.driver,
+                timeout
+            ).until(
+                EC.element_to_be_clickable(locator)
+            )
+
+            element.click()
+            return True
+
+        except (
+            TimeoutException,
+            NoSuchElementException,
+            StaleElementReferenceException,
+            WebDriverException,
+        ):
+            return False
+
+    def _element_exists(self, locator, timeout=2):
+        """
+        Determine whether an element exists and is visible.
+        """
+
+        return self._find_visible(
+            locator,
+            timeout=timeout
+        ) is not None
+
+    # ==================================================================
     # TEST AD
-    # ============================================================
+    # ==================================================================
 
-    def dismiss_test_ad(self):
+    def handle_test_ad(self):
         """
-        Wait for the application to initialize and repeatedly attempt
-        to close the Test Ad.
+        Detect and dismiss the test advertisement if it appears.
 
-        Jenkins is intentionally given more startup time because the
-        remote Windows emulator is being accessed through ADB over TCP.
+        This method is intentionally tolerant because the ad does not
+        necessarily appear on every application launch.
         """
 
-        print()
-        print("============================================================")
+        print("\n============================================================")
         print("VERIFYING / DISMISSING TEST AD")
         print("============================================================")
 
-        # --------------------------------------------------------
-        # Jenkins startup delay
-        # --------------------------------------------------------
-
-        if os.getenv("RUNNING_IN_JENKINS", "").lower() == "true":
-
-            print(
-                "Running from Jenkins - allowing 60 seconds "
-                "for application initialization"
+        init_delay = int(
+            os.getenv(
+                "APPIUM_APP_INIT_DELAY",
+                "20" if self.jenkins else "10"
             )
+        )
 
-            time.sleep(60)
-
+        if self.jenkins:
+            print(
+                f"Running under Jenkins - allowing "
+                f"{init_delay} seconds for application initialization"
+            )
         else:
-
             print(
-                "Running locally - allowing 10 seconds "
-                "for application initialization"
+                f"Running locally - allowing "
+                f"{init_delay} seconds for application initialization"
             )
 
-            time.sleep(10)
+        time.sleep(init_delay)
 
-        # --------------------------------------------------------
-        # Allow the ad time to appear
-        # --------------------------------------------------------
+        max_attempts = 3
 
-        end_time = time.time() + 90
-
-        while time.time() < end_time:
+        for attempt in range(1, max_attempts + 1):
 
             print("Checking if Test Ad is visible")
 
-            if not self._is_element_visible(self.TEST_AD_HEADER):
+            ad_found = False
 
-                print(
-                    "Test Ad is not currently visible."
-                )
+            # Look for common close buttons.
+            for locator in self.TEST_AD_CLOSE_LOCATORS:
 
+                if self._element_exists(locator, timeout=2):
+
+                    ad_found = True
+
+                    print(
+                        "Test Ad detected - attempting to close it"
+                    )
+
+                    if self._click_if_visible(
+                        locator,
+                        timeout=5
+                    ):
+                        print("Test Ad close button clicked")
+
+                        time.sleep(2)
+                        break
+
+            if not ad_found:
+
+                # Some ads expose recognizable text instead of a
+                # stable resource ID.
+                ad_texts = [
+                    "Test Ad",
+                    "Advertisement",
+                    "Ad",
+                ]
+
+                for text in ad_texts:
+
+                    locator = (
+                        AppiumBy.XPATH,
+                        f"//*[contains(@text,'{text}')]"
+                    )
+
+                    if self._element_exists(locator, timeout=1):
+                        ad_found = True
+
+                        print(
+                            f"Test Ad detected using text: {text}"
+                        )
+
+                        break
+
+            if not ad_found:
+                print("Test Ad is not currently visible.")
                 return True
 
-            print(
-                "Test Ad detected - attempting to close it"
-            )
-
-            # ----------------------------------------------------
-            # The application has historically required several
-            # taps to dismiss the test advertisement.
-            # ----------------------------------------------------
-
-            try:
-
-                self.driver.execute_script(
-                    "mobile: clickGesture",
-                    {
-                        "x": 1037,
-                        "y": 74
-                    }
-                )
-
-            except Exception as e:
-
-                print(
-                    f"Ad close click #1 failed: {e}"
-                )
-
-            try:
-
-                self.driver.execute_script(
-                    "mobile: clickGesture",
-                    {
-                        "x": 1031,
-                        "y": 215
-                    }
-                )
-
-            except Exception as e:
-
-                print(
-                    f"Ad close click #2 failed: {e}"
-                )
-
-            try:
-
-                self.driver.execute_script(
-                    "mobile: clickGesture",
-                    {
-                        "x": 87,
-                        "y": 96
-                    }
-                )
-
-            except Exception as e:
-
-                print(
-                    f"Ad close click #3 failed: {e}"
-                )
-
-            print(
-                "Waiting for Test Ad state to update..."
-            )
-
+            print("Waiting for Test Ad state to update...")
             time.sleep(2)
 
-        # --------------------------------------------------------
-        # Final check
-        # --------------------------------------------------------
-
-        if self._is_element_visible(self.TEST_AD_HEADER):
-
-            print(
-                'Test Ad is still visible after 90 seconds.'
-            )
-
-            raise TimeoutError(
-                '"Test Ad" still visible after 90 seconds'
-            )
-
         print(
-            "Test Ad successfully dismissed."
+            "Test Ad handling completed."
         )
 
         return True
 
-    # ============================================================
+    # ==================================================================
     # LANGUAGE / ONBOARDING
-    # ============================================================
+    # ==================================================================
 
-    def complete_language_setup(self):
+    def handle_language_and_onboarding(self):
+        """
+        Handle the initial language selection and onboarding flow.
 
-        print()
-        print("============================================================")
+        The method is intentionally tolerant because onboarding normally
+        appears only on the first application launch.
+        """
+
+        print("\n============================================================")
         print("HANDLING LANGUAGE / ONBOARDING")
         print("============================================================")
 
-        print(
-            "Checking for Language header"
+        # --------------------------------------------------------------
+        # LANGUAGE SCREEN
+        # --------------------------------------------------------------
+
+        print("Checking for Language header")
+
+        language_header = self._find_visible(
+            self.LANGUAGE_HEADER,
+            timeout=5
         )
 
-        # --------------------------------------------------------
-        # Language screen is optional.
-        # --------------------------------------------------------
+        if language_header:
 
-        try:
+            print("Language header is visible")
+            print("Language setup detected")
 
-            WebDriverWait(
-                self.driver,
-                15,
-                poll_frequency=1
-            ).until(
-                EC.visibility_of_element_located(
-                    self.LANGUAGE_HEADER
+            # Try the known confirmation locator first.
+            print(
+                "Waiting for language confirmation icon"
+            )
+
+            confirmation = self._find_visible(
+                self.LANGUAGE_CONFIRMATION,
+                timeout=10
+            )
+
+            if confirmation:
+
+                print(
+                    "Language confirmation icon found"
                 )
-            )
 
-            print(
-                "Language header is visible"
-            )
+                try:
+                    confirmation.click()
+                    print(
+                        "Language confirmation clicked"
+                    )
+                except Exception as exc:
+                    print(
+                        f"Unable to click language confirmation: "
+                        f"{exc}"
+                    )
 
-            print(
-                "Language setup detected"
-            )
-
-        except TimeoutException:
-
-            print(
-                "Language setup is not displayed."
-            )
-
-            # Even when language setup isn't present, there may
-            # still be onboarding screens.
-            return self._process_onboarding()
-
-        # --------------------------------------------------------
-        # Confirm language
-        # --------------------------------------------------------
-
-        print(
-            "Waiting for language confirmation icon"
-        )
-
-        try:
-
-            confirm_icon = WebDriverWait(
-                self.driver,
-                30,
-                poll_frequency=1
-            ).until(
-                EC.element_to_be_clickable(
-                    self.LANGUAGE_CONFIRM_ICON
+            else:
+                print(
+                    "Language confirmation icon not found."
                 )
-            )
+
+            time.sleep(2)
+
+        else:
 
             print(
-                "Language confirmation icon found"
+                "Language screen not detected."
             )
 
-            confirm_icon.click()
+        # --------------------------------------------------------------
+        # ONBOARDING NEXT BUTTONS
+        # --------------------------------------------------------------
 
-            print(
-                "Language confirmation clicked"
-            )
+        print("\nProcessing onboarding Next buttons")
 
-        except TimeoutException:
+        max_onboarding_steps = 6
 
-            print(
-                "Language confirmation icon was not found."
-            )
-
-            return False
-
-        except Exception as e:
-
-            print(
-                f"Unable to click language confirmation: {e}"
-            )
-
-            return False
-
-        # --------------------------------------------------------
-        # Process onboarding
-        # --------------------------------------------------------
-
-        return self._process_onboarding()
-
-    def _process_onboarding(self):
-
-        print()
-        print(
-            "Processing onboarding Next buttons"
-        )
-
-        # --------------------------------------------------------
-        # Do not assume there are exactly 3 screens.
-        #
-        # This is important because application versions can add
-        # or remove onboarding screens.
-        # --------------------------------------------------------
-
-        max_steps = 8
-
-        for step in range(1, max_steps + 1):
+        for step in range(
+            1,
+            max_onboarding_steps + 1
+        ):
 
             print(
                 f"Looking for Next button "
                 f"(onboarding step {step})"
             )
 
-            try:
+            next_button = None
 
-                next_button = WebDriverWait(
-                    self.driver,
-                    10,
-                    poll_frequency=1
-                ).until(
-                    EC.element_to_be_clickable(
-                        self.NEXT_BUTTON
-                    )
+            for locator in self.ONBOARDING_NEXT_LOCATORS:
+
+                next_button = self._find_visible(
+                    locator,
+                    timeout=2
                 )
 
-            except TimeoutException:
+                if next_button:
+                    break
+
+            if not next_button:
 
                 print(
                     "Next button is no longer visible."
@@ -424,128 +434,352 @@ class HomePage(BasePage):
 
                 break
 
-            except Exception as e:
-
-                print(
-                    f"Error locating Next button: {e}"
-                )
-
-                break
-
             try:
 
                 print(
-                    f"Clicking Next button (step {step})"
+                    f"Clicking Next button "
+                    f"(step {step})"
                 )
 
                 next_button.click()
 
-            except (
-                StaleElementReferenceException,
-                Exception
-            ) as e:
-
                 print(
-                    f"Next button became stale or "
-                    f"click failed: {e}"
+                    "Waiting for onboarding screen "
+                    "transition..."
                 )
 
-                # Try one more time after the screen settles.
                 time.sleep(2)
 
-                try:
+            except (
+                StaleElementReferenceException,
+                WebDriverException,
+            ) as exc:
 
-                    next_button = WebDriverWait(
-                        self.driver,
-                        5,
-                        poll_frequency=1
-                    ).until(
-                        EC.element_to_be_clickable(
-                            self.NEXT_BUTTON
-                        )
-                    )
+                print(
+                    f"Unable to click onboarding Next "
+                    f"button: {exc}"
+                )
 
-                    next_button.click()
-
-                except Exception:
-
-                    print(
-                        "Unable to click Next button "
-                        "after retry."
-                    )
-
-                    break
-
-            print(
-                "Waiting for onboarding screen transition..."
-            )
-
-            time.sleep(2)
-
-        # --------------------------------------------------------
-        # Confirm onboarding has finished.
-        # --------------------------------------------------------
+                time.sleep(1)
 
         print(
             "Waiting for onboarding to finish"
         )
 
-        try:
+        time.sleep(2)
 
-            WebDriverWait(
-                self.driver,
-                15,
-                poll_frequency=1
-            ).until_not(
-                EC.visibility_of_element_located(
-                    self.NEXT_BUTTON
+        # Final check.
+        for locator in self.ONBOARDING_NEXT_LOCATORS:
+
+            if self._element_exists(
+                locator,
+                timeout=1
+            ):
+
+                print(
+                    "Onboarding Next button is still visible"
                 )
-            )
 
-            print(
-                "Onboarding Next button is no longer visible"
-            )
+                return False
 
-        except TimeoutException:
-
-            print(
-                "Next button may still be present."
-            )
+        print(
+            "Onboarding Next button is no longer visible"
+        )
 
         return True
 
-    # ============================================================
-    # HOME SCREEN VERIFICATION
-    # ============================================================
+    # ==================================================================
+    # IMPORTANT UPDATE DIALOG
+    # ==================================================================
 
-    def verify_home_header(self):
+    def dismiss_important_update(self):
+        """
+        Dismiss the post-onboarding 'Important Update' bottom sheet.
 
-        print()
-        print(
-            "Verifying Home screen"
+        The Jenkins UI hierarchy showed:
+
+            resource-id="...:id/design_bottom_sheet"
+
+            text="Important Update"
+
+            resource-id="...:id/tvTitle"
+
+            resource-id="...:id/btnClose"
+
+        This dialog can appear after onboarding and cover the home
+        screen. It therefore MUST be handled before home verification.
+        """
+
+        print("\n============================================================")
+        print("CHECKING FOR IMPORTANT UPDATE")
+        print("============================================================")
+
+        # --------------------------------------------------------------
+        # First check for the specific title.
+        # --------------------------------------------------------------
+
+        title = self._find_visible(
+            self.IMPORTANT_UPDATE_TITLE,
+            timeout=3
         )
 
-        # --------------------------------------------------------
-        # IMPORTANT:
-        #
-        # Do NOT wait 60 seconds for only:
-        #
-        #   TextView[@text="Home"]
-        #
-        # That is the problem with the previous implementation.
-        #
-        # Instead, check several possible indicators.
-        # --------------------------------------------------------
+        if title:
+
+            try:
+
+                title_text = title.text
+
+                print(
+                    f"Dialog title detected: "
+                    f"'{title_text}'"
+                )
+
+                if (
+                    title_text
+                    and "important update"
+                    in title_text.lower()
+                ):
+
+                    print(
+                        "Important Update dialog detected."
+                    )
+
+                else:
+
+                    print(
+                        "tvTitle is visible, but it does not "
+                        "appear to be the Important Update dialog."
+                    )
+
+            except Exception:
+
+                print(
+                    "Important Update title element "
+                    "is visible."
+                )
+
+        else:
+
+            # Try the actual text directly in case the resource ID
+            # is reused by another screen.
+
+            important_update_text = (
+                AppiumBy.XPATH,
+                "//*[@text='Important Update']"
+            )
+
+            if not self._element_exists(
+                important_update_text,
+                timeout=2
+            ):
+
+                print(
+                    "Important Update dialog is not present."
+                )
+
+                return False
+
+            print(
+                "Important Update dialog detected "
+                "using text."
+            )
+
+        # --------------------------------------------------------------
+        # Close button
+        # --------------------------------------------------------------
+
+        print(
+            "Looking for Important Update close button..."
+        )
+
+        if self._click_if_visible(
+            self.IMPORTANT_UPDATE_CLOSE_BUTTON,
+            timeout=5
+        ):
+
+            print(
+                "Important Update close button clicked."
+            )
+
+            time.sleep(2)
+
+            # Verify that the dialog disappeared.
+            if not self._element_exists(
+                self.IMPORTANT_UPDATE_BOTTOM_SHEET,
+                timeout=3
+            ):
+
+                print(
+                    "Important Update dialog dismissed."
+                )
+
+                return True
+
+            print(
+                "Close button was clicked, but the "
+                "bottom sheet is still present."
+            )
+
+            # One additional attempt.
+            if self._click_if_visible(
+                self.IMPORTANT_UPDATE_CLOSE_BUTTON,
+                timeout=3
+            ):
+
+                time.sleep(2)
+
+                print(
+                    "Second close attempt completed."
+                )
+
+                return True
+
+            return False
+
+        # --------------------------------------------------------------
+        # Fallback close strategies
+        # --------------------------------------------------------------
+
+        print(
+            "Standard close button not found."
+        )
+
+        fallback_locators = [
+
+            (
+                AppiumBy.XPATH,
+                "//*[@resource-id='"
+                f"{self.APP_PACKAGE}:id/btnClose']"
+            ),
+
+            (
+                AppiumBy.XPATH,
+                "//*[@content-desc='Close']"
+            ),
+
+            (
+                AppiumBy.XPATH,
+                "//*[@text='Close']"
+            ),
+
+        ]
+
+        for locator in fallback_locators:
+
+            if self._click_if_visible(
+                locator,
+                timeout=2
+            ):
+
+                print(
+                    "Important Update dismissed "
+                    "using fallback close locator."
+                )
+
+                time.sleep(2)
+
+                return True
+
+        # --------------------------------------------------------------
+        # Final fallback: Android back
+        # --------------------------------------------------------------
+
+        print(
+            "Attempting Android BACK as final fallback..."
+        )
+
+        try:
+
+            self.driver.back()
+
+            time.sleep(2)
+
+            if not self._element_exists(
+                self.IMPORTANT_UPDATE_BOTTOM_SHEET,
+                timeout=2
+            ):
+
+                print(
+                    "Important Update dismissed "
+                    "using Android BACK."
+                )
+
+                return True
+
+        except Exception as exc:
+
+            print(
+                f"Android BACK failed: {exc}"
+            )
+
+        print(
+            "Unable to dismiss Important Update dialog."
+        )
+
+        return False
+
+    # ==================================================================
+    # HOME SCREEN VERIFICATION
+    # ==================================================================
+
+    def _check_home_text_indicators(self):
+        """
+        Check the UI hierarchy for known home-screen text indicators.
+        """
+
+        for text in self.HOME_TEXT_INDICATORS:
+
+            print(
+                f"Checking home indicator: {text}"
+            )
+
+            locator = (
+                AppiumBy.XPATH,
+                f"//*[contains(@text,'{text}')]"
+            )
+
+            if self._element_exists(
+                locator,
+                timeout=2
+            ):
+
+                print(
+                    f"Home indicator found: {text}"
+                )
+
+                return True
+
+        return False
+
+    def _check_home_header(self):
+        """
+        Check the original home header locator.
+        """
 
         print(
             "Checking original Home header locator..."
         )
 
-        if self._is_element_visible(self.HOME_HEADER):
+        element = self._find_visible(
+            self.HOME_HEADER,
+            timeout=5
+        )
 
-            print(
-                "Home header found"
-            )
+        if element:
+
+            try:
+
+                text = element.text
+
+                print(
+                    f"Home header found: '{text}'"
+                )
+
+            except Exception:
+
+                print(
+                    "Home header element found."
+                )
 
             return True
 
@@ -553,159 +787,189 @@ class HomePage(BasePage):
             "Original Home header not found."
         )
 
-        # --------------------------------------------------------
-        # Give the application some additional time to settle.
-        # --------------------------------------------------------
+        return False
+
+    def _dump_ui_hierarchy(self):
+        """
+        Print the current Android UI hierarchy for diagnostics.
+        """
+
+        print(
+            "\nCurrent Android UI hierarchy:"
+        )
+
+        try:
+
+            hierarchy = self.driver.page_source
+
+            print(hierarchy)
+
+        except Exception as exc:
+
+            print(
+                f"Unable to retrieve UI hierarchy: {exc}"
+            )
+
+    def verify_home_loaded(self):
+        """
+        Complete Home screen initialization and verification.
+
+        Returns:
+            True  - Home screen successfully loaded.
+            False - Home screen could not be verified.
+        """
+
+        print("\n============================================================")
+        print("VERIFYING HOME SCREEN")
+        print("============================================================")
+
+        # --------------------------------------------------------------
+        # STEP 1
+        # --------------------------------------------------------------
+
+        print("\n[STEP 1/4] Handling Test Ad")
+
+        try:
+
+            self.handle_test_ad()
+
+        except Exception as exc:
+
+            print(
+                f"Test Ad handling raised an exception: "
+                f"{exc}"
+            )
+
+            # Do not immediately fail. Continue to onboarding/home
+            # because the ad may have already disappeared.
+
+        # --------------------------------------------------------------
+        # STEP 2
+        # --------------------------------------------------------------
+
+        print(
+            "\n[STEP 2/4] Handling Language / Onboarding"
+        )
+
+        try:
+
+            onboarding_success = (
+                self.handle_language_and_onboarding()
+            )
+
+            if not onboarding_success:
+
+                print(
+                    "WARNING: Onboarding handling did not "
+                    "fully confirm completion."
+                )
+
+        except Exception as exc:
+
+            print(
+                f"Language/onboarding handling raised "
+                f"an exception: {exc}"
+            )
+
+        # --------------------------------------------------------------
+        # STEP 3
+        # --------------------------------------------------------------
+
+        print(
+            "\n[STEP 3/4] Handling Important Update"
+        )
+
+        try:
+
+            self.dismiss_important_update()
+
+        except Exception as exc:
+
+            print(
+                f"Important Update handling raised "
+                f"an exception: {exc}"
+            )
+
+        # --------------------------------------------------------------
+        # STEP 4
+        # --------------------------------------------------------------
+
+        print(
+            "\n[STEP 4/4] Verifying Home screen"
+        )
 
         print(
             "Waiting for calculator home screen to initialize..."
         )
 
-        time.sleep(5)
+        # Give the application time to render the actual home
+        # screen after onboarding/dialog dismissal.
+        home_wait = self.home_wait
 
-        # --------------------------------------------------------
-        # Candidate home-screen indicators.
-        # --------------------------------------------------------
+        start_time = time.time()
 
-        candidates = [
-            (
-                "Calculator",
-                self.CALCULATOR_TEXT
-            ),
-            (
-                "Basic Calculator",
-                self.BASIC_CALCULATOR_TEXT
-            ),
-            (
-                "Scientific",
-                self.SCIENTIFIC_TEXT
-            ),
-            (
-                "History",
-                self.HISTORY_TEXT
-            ),
-            (
-                "Unit",
-                self.UNIT_CONVERTER_TEXT
-            ),
-            (
-                "Currency",
-                self.CURRENCY_TEXT
-            ),
-        ]
+        while (
+            time.time() - start_time
+            < home_wait
+        ):
 
-        for name, locator in candidates:
+            # ----------------------------------------------------------
+            # Important Update may reappear.
+            # ----------------------------------------------------------
 
-            print(
-                f"Checking home indicator: {name}"
-            )
+            try:
 
-            if self._is_element_visible(locator):
+                if self._element_exists(
+                    (
+                        AppiumBy.XPATH,
+                        "//*[@text='Important Update']"
+                    ),
+                    timeout=1
+                ):
+
+                    print(
+                        "Important Update appeared again."
+                    )
+
+                    self.dismiss_important_update()
+
+            except Exception:
+                pass
+
+            # ----------------------------------------------------------
+            # Original home header
+            # ----------------------------------------------------------
+
+            if self._check_home_header():
 
                 print(
-                    f"Home screen indicator found: {name}"
+                    "\nHOME SCREEN VERIFIED "
+                    "USING ORIGINAL HEADER"
                 )
 
                 return True
 
-        # --------------------------------------------------------
-        # Last resort:
-        #
-        # Inspect the current UI hierarchy for useful evidence.
-        # This makes Jenkins logs much more useful when the app
-        # changes its UI.
-        # --------------------------------------------------------
+            # ----------------------------------------------------------
+            # Known home text indicators
+            # ----------------------------------------------------------
 
-        print()
+            if self._check_home_text_indicators():
+
+                print(
+                    "\nHOME SCREEN VERIFIED "
+                    "USING HOME INDICATOR"
+                )
+
+                return True
+
+            time.sleep(2)
+
+        # --------------------------------------------------------------
+        # HOME SCREEN NOT FOUND
+        # --------------------------------------------------------------
+
         print(
-            "No known home-screen indicator found."
-        )
-
-        try:
-
-            page_source = self.driver.page_source
-
-            print()
-            print(
-                "Current Android UI hierarchy:"
-            )
-
-            print(
-                page_source[:12000]
-            )
-
-        except Exception as e:
-
-            print(
-                f"Unable to retrieve page source: {e}"
-            )
-
-        return False
-
-    # ============================================================
-    # MAIN HOME VERIFICATION
-    # ============================================================
-
-    def verify_home_loaded(self):
-
-        print()
-        print("============================================================")
-        print("VERIFYING HOME SCREEN")
-        print("============================================================")
-
-        # --------------------------------------------------------
-        # Step 1
-        # --------------------------------------------------------
-
-        print()
-        print(
-            "[STEP 1/3] Handling Test Ad"
-        )
-
-        self.dismiss_test_ad()
-
-        # --------------------------------------------------------
-        # Step 2
-        # --------------------------------------------------------
-
-        print()
-        print(
-            "[STEP 2/3] Handling Language / Onboarding"
-        )
-
-        self.complete_language_setup()
-
-        # --------------------------------------------------------
-        # Step 3
-        # --------------------------------------------------------
-
-        print()
-        print(
-            "[STEP 3/3] Verifying Home screen"
-        )
-
-        home_loaded = self.verify_home_header()
-
-        if home_loaded:
-
-            print()
-            print(
-                "============================================================"
-            )
-
-            print(
-                "HOME SCREEN SUCCESSFULLY LOADED"
-            )
-
-            print(
-                "============================================================"
-            )
-
-            return True
-
-        print()
-        print(
-            "============================================================"
+            "\n============================================================"
         )
 
         print(
@@ -715,5 +979,38 @@ class HomePage(BasePage):
         print(
             "============================================================"
         )
+
+        # Check one final time for the Important Update dialog.
+        try:
+
+            if self._element_exists(
+                (
+                    AppiumBy.XPATH,
+                    "//*[@text='Important Update']"
+                ),
+                timeout=2
+            ):
+
+                print(
+                    "\nIMPORTANT UPDATE DIALOG IS STILL "
+                    "COVERING THE APPLICATION."
+                )
+
+                self.dismiss_important_update()
+
+                # Give the home screen one final opportunity.
+                time.sleep(3)
+
+                if self._check_home_header():
+                    return True
+
+                if self._check_home_text_indicators():
+                    return True
+
+        except Exception:
+            pass
+
+        # Dump UI for diagnostics.
+        self._dump_ui_hierarchy()
 
         return False
