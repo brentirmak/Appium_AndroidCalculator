@@ -76,8 +76,8 @@ def create_android_driver():
     # =========================================================================
 
     options.auto_grant_permissions = True
-
-    options.no_reset = False
+    # If the target app is already installed on Pixel_10, set noReset to True in your Appium capabilities setup
+    options.no_reset = True
 
     # =========================================================================
     # JENKINS / SLOW EMULATOR TIMEOUTS
