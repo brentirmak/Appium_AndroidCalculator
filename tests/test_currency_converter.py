@@ -25,10 +25,10 @@ def test_access_currency_converter(driver):
 
 
 @pytest.mark.timeout(175)
-def test_perform_currency_conversion(driver):
+def test_perform_usd_to_yen_conversion(driver):
     currency_converter_page = CurrencyConverterPage(driver)
 
-    with appium_transaction("Perform Currency Conversion"):
+    with appium_transaction("Perform USD to Yen Currency Conversion"):
         try:
             print("Will calculate the USD to Japanese Yen")
             output = currency_converter_page.convert_usd_to_yen()
@@ -40,5 +40,25 @@ def test_perform_currency_conversion(driver):
                 f"Expected value between 15,000 and 16,500 but got {output}"
             )
         except Exception:
-            capture_error_snapshot(driver, "PerformCurrencyConversion")
+            capture_error_snapshot(driver, "PerformUSDToYenCurrencyConversion")
+            raise
+
+
+@pytest.mark.timeout(175)
+def test_perform_gbp_to_lira_conversion(driver):
+    currency_converter_page = CurrencyConverterPage(driver)
+
+    with appium_transaction("Perform GBP to TR Lira Currency Conversion"):
+        try:
+            print("Will calculate the GBP to Turkish Lira")
+            output = currency_converter_page.convert_gbp_to_trl()
+
+            output_value = float(output.replace(",", ""))
+
+            print("Calculated the $ conversion- will confirm it's between 575 and 700 Yen")
+            assert 575 <= output_value <= 700, (
+                f"Expected value between 575 and 700 but got {output}"
+            )
+        except Exception:
+            capture_error_snapshot(driver, "PerformGBPToTRLiraCurrencyConversion")
             raise

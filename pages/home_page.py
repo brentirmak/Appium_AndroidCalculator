@@ -35,8 +35,8 @@ class HomePage(BasePage):
             print("We are running script from Jenkins - added 60s sleep time")
             time.sleep(60)
         else:
-            print("We are NOT running script from Jenkins - added 10s sleep time")
-            time.sleep(10)
+            print("We are NOT running script from Jenkins - added 5s sleep time")
+            time.sleep(5)
 
         while time.time() < end_time:
             print("Checking if Test Ad is visible")
@@ -58,7 +58,7 @@ class HomePage(BasePage):
         print("Checking for Language header")
 
         try:
-            WebDriverWait(self.driver, 45).until(
+            WebDriverWait(self.driver, 15).until(
                 EC.visibility_of_element_located(self.LANGUAGE_HEADER)
             )
             print("Language header visible — clicking confirm icon")
