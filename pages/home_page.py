@@ -32,11 +32,11 @@ class HomePage(BasePage):
                 return False
 
         if os.getenv("RUNNING_IN_JENKINS") == "true":
-            print("We are running script from Jenkins - added 60s sleep time")
-            time.sleep(60)
+            print("We are running script from Jenkins - added 25s sleep time")
+            time.sleep(25)
         else:
-            print("We are NOT running script from Jenkins - added 5s sleep time")
-            time.sleep(5)
+            print("We are NOT running script from Jenkins - added 15s sleep time")
+            time.sleep(15)
 
         while time.time() < end_time:
             print("Checking if Test Ad is visible")
@@ -58,7 +58,7 @@ class HomePage(BasePage):
         print("Checking for Language header")
 
         try:
-            WebDriverWait(self.driver, 15).until(
+            WebDriverWait(self.driver, 5).until(
                 EC.visibility_of_element_located(self.LANGUAGE_HEADER)
             )
             print("Language header visible — clicking confirm icon")
@@ -67,14 +67,16 @@ class HomePage(BasePage):
                 EC.element_to_be_clickable(self.LANGUAGE_CONFIRM_ICON)
             )
             confirm_icon.click()
+            print("Clicked on Confirm button")
 
-            print("Clicking Next buttons")
             next_button = WebDriverWait(self.driver, 45).until(
                 EC.element_to_be_clickable(self.NEXT_BUTTON)
             )
 
             for _ in range(3):
+                print("Clicking Next button...")
                 next_button.click()
+                print("Clicked Next button.")
                 time.sleep(1)
 
             return True
@@ -88,24 +90,14 @@ class HomePage(BasePage):
 
         try:
             WebDriverWait(self.driver, 45).until(
-                EC.visibility_of_element_located(self.HOME_HEADER)
-            )
+                EC.visibility_of_element_located(self.HOME_HEADER))
             print("Home header found")
             return True
         except:
             print("Home header NOT found")
 
             try:
-                #print("Checking to see if there's a Important Update popup")
-                #close_popup_icon = WebDriverWait(self.driver, 45).until(
-                #    EC.element_to_be_clickable(self.LANGUAGE_CONFIRM_ICON)
-                #)
-                #print("Important Update popup found - clicking on x to close it out")
-                #close_popup_icon.click()
-                #print("Closed Important Update popup")
-                #WebDriverWait(self.driver, 45).until(
-                #    EC.visibility_of_element_located(self.CLOSE_POPUP_ICON)
-                #)
+                print("Clicking on the x,y coordinates to attempt to close the Ad")
                 self.driver.execute_script("mobile: clickGesture", {"x": 973, "y": 1525})
                 print("Home header found")
                 return True
