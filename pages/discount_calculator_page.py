@@ -56,14 +56,36 @@ class DiscountCalculatorPage(BasePage):
 
         print("Entered the tax rate value - now will enter the original price")
         self.click(self.ORIGINAL_PRICE_FIELD)
-        self.click(self.NUM1)
-        self.click(self.NUM0)
-        self.click(self.NUM0)
+        #self.click(self.NUM1)
+        #self.click(self.NUM0)
+        #self.click(self.NUM0)
+
+        print("---------------------------------")
+        original_price_str = str(original_price)
+
+        for x in original_price_str:
+            if x == "1":
+                self.click(self.NUM1)
+            elif x == "0":
+                self.click(self.NUM0)
+        print("---------------------------------")
+
         #self.type(self.TAX_RATE_FIELD, 100)
 
         print("Entered the original price - now will enter the discount percentage")
         self.click(self.DISCOUNT_PERCENTAGE_FIELD)
-        self.click(self.NUM5)
+        #self.click(self.NUM5)
+
+        print("---------------------------------")
+        discount_str = str(discount)
+
+        for x in discount_str:
+            if x == "5":
+                self.click(self.NUM5)
+            elif x == "0":
+                self.click(self.NUM0)
+        print("---------------------------------")
+
         #self.type(self.DISCOUNT_PERCENTAGE_FIELD, 5)
 
         print("Entered the discount percentage - will now click on the Equal button")
