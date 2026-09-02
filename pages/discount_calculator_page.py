@@ -10,9 +10,18 @@ class DiscountCalculatorPage(BasePage):
     TAX_RATE_FIELD = (AppiumBy.XPATH,'//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_tax_rate"]')
     ORIGINAL_PRICE_FIELD = (AppiumBy.XPATH,'//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_origin_price"]')
     DISCOUNT_PERCENTAGE_FIELD = (AppiumBy.XPATH,'//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_discount"]')
+
+    NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_9"]')
+    NUM8 = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_8"]')
+    NUM7 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_7"]')
+    NUM6 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_6"]')
     NUM5 = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_5"]')
+    NUM4 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_4"]')
+    NUM3 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_3"]')
+    NUM2 = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_2"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
+
     CLEAR_BUTTON = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac"]')
     EQUAL_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_equal")')
     RESULT_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_result_title")')
@@ -40,53 +49,89 @@ class DiscountCalculatorPage(BasePage):
 
         self.click(self.TAX_RATE_FIELD)
 
-        print("---------------------------------")
+        print("--- Performing Tax Rate clicks ---")
         tax_str = str(tax)
 
         for x in tax_str:
-            if x == "1":
+            if x == "0":
+                self.click(self.NUM0)
+            elif x == "1":
                 self.click(self.NUM1)
+            elif x == "2":
+                self.click(self.NUM2)
+            elif x == "3":
+                self.click(self.NUM3)
+            elif x == "4":
+                self.click(self.NUM4)
             elif x == "5":
                 self.click(self.NUM5)
+            elif x == "6":
+                self.click(self.NUM6)
+            elif x == "7":
+                self.click(self.NUM7)
+            elif x == "8":
+                self.click(self.NUM8)
+            elif x == "9":
+                self.click(self.NUM9)
         print("---------------------------------")
-
-        #self.click(self.NUM1)
-        #self.click(self.NUM5)
-        #self.type(self.TAX_RATE_FIELD, 15)
 
         print("Entered the tax rate value - now will enter the original price")
         self.click(self.ORIGINAL_PRICE_FIELD)
-        #self.click(self.NUM1)
-        #self.click(self.NUM0)
-        #self.click(self.NUM0)
 
-        print("---------------------------------")
+        print("--- Performing Original Price clicks ---")
         original_price_str = str(original_price)
 
         for x in original_price_str:
-            if x == "1":
-                self.click(self.NUM1)
-            elif x == "0":
+            if x == "0":
                 self.click(self.NUM0)
+            elif x == "1":
+                self.click(self.NUM1)
+            elif x == "2":
+                self.click(self.NUM2)
+            elif x == "3":
+                self.click(self.NUM3)
+            elif x == "4":
+                self.click(self.NUM4)
+            elif x == "5":
+                self.click(self.NUM5)
+            elif x == "6":
+                self.click(self.NUM6)
+            elif x == "7":
+                self.click(self.NUM7)
+            elif x == "8":
+                self.click(self.NUM8)
+            elif x == "9":
+                self.click(self.NUM9)
         print("---------------------------------")
-
-        #self.type(self.TAX_RATE_FIELD, 100)
 
         print("Entered the original price - now will enter the discount percentage")
         self.click(self.DISCOUNT_PERCENTAGE_FIELD)
-        #self.click(self.NUM5)
 
-        print("---------------------------------")
+        print("--- Performing Discount Percentage clicks ---")
         discount_str = str(discount)
 
         for x in discount_str:
-            if x == "5":
-                self.click(self.NUM5)
-            elif x == "0":
+            if x == "0":
                 self.click(self.NUM0)
+            elif x == "1":
+                self.click(self.NUM1)
+            elif x == "2":
+                self.click(self.NUM2)
+            elif x == "3":
+                self.click(self.NUM3)
+            elif x == "4":
+                self.click(self.NUM4)
+            elif x == "5":
+                self.click(self.NUM5)
+            elif x == "6":
+                self.click(self.NUM6)
+            elif x == "7":
+                self.click(self.NUM7)
+            elif x == "8":
+                self.click(self.NUM8)
+            elif x == "9":
+                self.click(self.NUM9)
         print("---------------------------------")
-
-        #self.type(self.DISCOUNT_PERCENTAGE_FIELD, 5)
 
         print("Entered the discount percentage - will now click on the Equal button")
         self.click(self.EQUAL_BUTTON)
