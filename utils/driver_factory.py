@@ -83,6 +83,11 @@ def create_android_driver():
     # JENKINS / SLOW EMULATOR TIMEOUTS
     # =========================================================================
 
+    # Added 9/9
+    options.set_capability(
+        "appium:appiumSettingsStartupTimeout",
+        30000)  # 30 seconds
+
     options.set_capability(
         "appium:adbExecTimeout",
         300000
