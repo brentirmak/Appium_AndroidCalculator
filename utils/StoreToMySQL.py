@@ -11,14 +11,11 @@ load_dotenv()
 mysql_host = os.getenv("MYSQL_URL")
 mysql_username = os.getenv("MYSQL_USERNAME")
 mysql_password = os.getenv("MYSQL_PASSWORD")
-run_type = ""
 
-if "JENKINS_SERVER_COOKIE" in os.environ or "BUILD_NUMBER" in os.environ:
-    print("\nWe are running from Jenkins")
-    run_type = "jenkins"
-else:
-    print("\nWe are NOT running from Jenkins - need to set MySQL URL accordingly")
-    run_type = "manual"
+def get_run_type():
+    if "JENKINS_SERVER_COOKIE" in os.environ or "BUILD_NUMBER" in os.environ:
+        return "jenkins"
+    return "manual"
 
 def store_transaction_result(test_name, transaction, status, duration, timestamp):
     try:
@@ -29,6 +26,8 @@ def store_transaction_result(test_name, transaction, status, duration, timestamp
             database="appium",
         )
         cursor = conn.cursor()
+
+        run_type = get_run_type()
 
         cursor.execute(
             """

@@ -1,6 +1,39 @@
 import pytest
-import time
+from datetime import datetime
 from utils.driver_factory import create_android_driver
+from utils.StoreToMySQL import store_transaction_result
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+
+    current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    test_name = item.name  # Extracts function name, e.g., 'test_access_currency_converter'
+
+    # Case 1: Test failed during SETUP phase (e.g., Appium driver crashed before running test)
+    if report.when == "setup" and report.failed:
+        store_transaction_result(
+            test_name=test_name,
+            transaction="N/A",
+            status="FAIL",
+            duration="N/A",
+            timestamp=current_timestamp
+        )
+
+    # Case 2: Test executed during CALL phase (Normal test completion or runtime failure)
+    elif report.when == "call":
+        status = "PASS" if report.passed else "FAIL"
+        duration = f"{report.duration:.2f}s"
+        transaction = getattr(item, "transaction_name", "Execution")  # Fallback transaction name
+
+        store_transaction_result(
+            test_name=test_name,
+            transaction=transaction,
+            status=status,
+            duration=duration,
+            timestamp=current_timestamp
+        )
 
 TIMEOUT = 30
 @pytest.fixture(scope="session")
