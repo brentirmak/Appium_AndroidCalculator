@@ -1,32 +1,9 @@
 from appium import webdriver
 from appium.options.android import UiAutomator2Options
 import os
-import subprocess
-import time
 
 
-def _clean_settings_app(device_serial: str):
-    """
-    Remove any stale/crashed io.appium.settings (and uiautomator2 server)
-    installs. Called after a failed session attempt (not before every
-    attempt) so a retry gets a fresh install if the prior one was
-    corrupted or resource-starved -- avoiding the
-    'Appium Settings app is not running after 5000ms' error -- without
-    adding adb uninstall overhead to the common happy-path case.
-    """
-    for pkg in (
-        "io.appium.settings",
-        "io.appium.uiautomator2.server",
-        "io.appium.uiautomator2.server.test",
-    ):
-        subprocess.run(
-            ["adb", "-s", device_serial, "uninstall", pkg],
-            capture_output=True,
-            timeout=30,
-        )
-
-
-def create_android_driver(retries: int = 2, backoff_seconds: int = 5):
+def create_android_driver():
     options = UiAutomator2Options()
 
     # =========================================================================
@@ -106,13 +83,10 @@ def create_android_driver(retries: int = 2, backoff_seconds: int = 5):
     # JENKINS / SLOW EMULATOR TIMEOUTS
     # =========================================================================
 
-    # NOTE: "appium:appiumSettingsStartupTimeout" (added 9/9) is not a
-    # recognized UiAutomator2 capability as of this writing -- Appium
-    # silently ignores unknown "appium:" capabilities rather than erroring,
-    # so this was likely a no-op. The "Appium Settings app is not running
-    # after 5000ms" check uses a hard-coded wait inside the driver and isn't
-    # currently tunable via capability. Left out below; see
-    # _clean_settings_app() and the retry loop for the actual fix.
+    # Added 9/9
+    options.set_capability(
+        "appium:appiumSettingsStartupTimeout",
+        30000)  # 30 seconds
 
     options.set_capability(
         "appium:adbExecTimeout",
@@ -179,28 +153,12 @@ def create_android_driver(retries: int = 2, backoff_seconds: int = 5):
     print()
 
     # =========================================================================
-    # CREATE APPIUM SESSION (with settings-app cleanup + retry)
+    # CREATE APPIUM SESSION
     # =========================================================================
 
-    last_exc = None
-    for attempt in range(1, retries + 2):
-        try:
-            driver = webdriver.Remote(
-                command_executor="http://127.0.0.1:4723",
-                options=options
-            )
-            return driver
-        except Exception as exc:
-            last_exc = exc
-            print(
-                f"[driver_factory] Session creation failed "
-                f"(attempt {attempt}/{retries + 1}): {exc}"
-            )
-            if attempt <= retries:
-                # Only clean up the settings app once we know this attempt
-                # failed -- avoids the adb uninstall overhead on the common
-                # happy path where the first attempt succeeds.
-                _clean_settings_app(android_device)
-                time.sleep(backoff_seconds)
+    driver = webdriver.Remote(
+        command_executor="http://127.0.0.1:4723",
+        options=options
+    )
 
-    raise last_exc
+    return driver
