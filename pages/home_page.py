@@ -16,102 +16,37 @@ class HomePage(BasePage):
     HOME_HEADER = (AppiumBy.XPATH, '//android.widget.TextView[@text="Home"]')
     CLOSE_POPUP_ICON = (AppiumBy.XPATH, '//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btnClose"]')
 
-    def dismiss_test_ad(self):
-        """
-        Repeatedly taps the ad close button while "Test Ad" is visible,
-        waiting `poll_interval` seconds between checks, until it's gone
-        or `timeout` seconds have elapsed.
-        """
-        locator = (AppiumBy.XPATH, '//android.widget.TextView[@text="Test Ad"]')
-        end_time = time.time() + 90
 
-        def is_ad_visible():
-            try:
-                return self.driver.find_element(*locator).is_displayed()
-            except (NoSuchElementException, StaleElementReferenceException):
-                return False
-
-        if os.getenv("RUNNING_IN_JENKINS") == "true":
-            print("We are running script from Jenkins - added 25s sleep time")
-            time.sleep(25)
-        else:
-            print("We are NOT running script from Jenkins - added 15s sleep time")
-            time.sleep(15)
-
-        while time.time() < end_time:
-            print("Checking if Test Ad is visible")
-            if not is_ad_visible():
-                print("Test Ad is no longer visible - exiting loop")
-                return True  # ad is gone
-            print("Perform a couple of clicks to close out the Ad..")
-            self.driver.execute_script("mobile: clickGesture", {"x": 1037, "y": 74})
-            self.driver.execute_script("mobile: clickGesture", {"x": 1031, "y": 215})
-            self.driver.execute_script("mobile: clickGesture", {"x": 87, "y": 96})
-            print("Waiting for a second...")
-            time.sleep(1)
-
-        raise TimeoutError('"Test Ad" still visible after 90 seconds')
-
-
-
-    def complete_language_setup(self):
-        print("Checking for Language header")
-
+    def load_landing_page(self):
         try:
-            WebDriverWait(self.driver, 5).until(
-                EC.visibility_of_element_located(self.LANGUAGE_HEADER)
-            )
-            print("Language header visible — clicking confirm icon")
-
-            confirm_icon = WebDriverWait(self.driver, 45).until(
-                EC.element_to_be_clickable(self.LANGUAGE_CONFIRM_ICON)
-            )
-            confirm_icon.click()
-            print("Clicked on Confirm button")
-
-            next_button = WebDriverWait(self.driver, 45).until(
-                EC.element_to_be_clickable(self.NEXT_BUTTON)
-            )
-
-            for _ in range(3):
-                print("Clicking Next button...")
-                next_button.click()
-                print("Clicked Next button.")
-                time.sleep(1)
-
+            print("Checking for Test Ad")
+            self.verify_test_ad()
+            print("Test Ad found - Clicking close ad")
+            self.dismiss_test_ad()
+            print("Closed ad - Verifying Home header")
+            self.verify_home_header()
             return True
-
         except:
-            print("Language setup not shown — skipping")
-            return False
+            print("2nd attempt - Checking for Test Ad")
+            self.verify_test_ad()
+            print("2nd attempt - Test Ad found - Clicking close ad")
+            self.dismiss_test_ad()
+            print("2nd attempt - Closed ad - Verifying Home header")
+            self.verify_home_header()
+            return True
 
     def verify_home_header(self):
         print("Verifying Home header")
+        WebDriverWait(self.driver, 25).until(
+            EC.visibility_of_element_located(self.HOME_HEADER))
+        print("Home header found")
 
-        try:
-            WebDriverWait(self.driver, 45).until(
-                EC.visibility_of_element_located(self.HOME_HEADER))
-            print("Home header found")
-            return True
-        except:
-            print("Home header NOT found")
+    def verify_test_ad(self):
+        print("Checking for Test Ad header")
+        WebDriverWait(self.driver, 45).until(
+            EC.visibility_of_element_located(self.TEST_AD_HEADER))
+        print("Test Ad header found")
 
-            try:
-                print("Clicking on the x,y coordinates to attempt to close the Ad")
-                self.driver.execute_script("mobile: clickGesture", {"x": 973, "y": 1525})
-                print("Home header found")
-                return True
-            except:
-                print("Important Update popup NOT found")
+    def dismiss_test_ad(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": 1015, "y": 215})
 
-                return False
-
-    def verify_home_loaded(self):
-        # Step 1: dismiss ad if present
-        self.dismiss_test_ad()
-
-        # Step 2: complete language setup if present
-        self.complete_language_setup()
-
-        # Step 3: verify home screen
-        return self.verify_home_header()
