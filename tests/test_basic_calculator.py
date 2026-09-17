@@ -9,7 +9,7 @@ def test_access_basic_calculator(driver):
     calc = BasicCalculatorPage(driver)
 
     with appium_transaction("Access Basic Calculator"):
-        if not home.verify_home_loaded():
+        if not home.load_landing_page():
             print("Not at Home screen")
 
         try:

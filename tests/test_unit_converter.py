@@ -13,7 +13,7 @@ def test_access_unit_converter(driver):
 
     with appium_transaction("Access Unit Converter"):
         print("Checking to see if we're at Home screen")
-        if not home.verify_home_loaded():
+        if not home.load_landing_page():
             print("Not at Home screen")
         try:
             print("Will click on the side menu item for Unit Converter")

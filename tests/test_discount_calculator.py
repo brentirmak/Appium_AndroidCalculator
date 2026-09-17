@@ -12,7 +12,7 @@ def test_access_discount_calculator(driver):
 
     with appium_transaction("Access Discount Calculator"):
         print("Checking to see if we're at Home screen")
-        if not home.verify_home_loaded():
+        if not home.load_landing_page():
             print("Not at Home screen")
 
         try:
