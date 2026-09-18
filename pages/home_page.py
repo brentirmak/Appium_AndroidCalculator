@@ -18,35 +18,63 @@ class HomePage(BasePage):
 
 
     def load_landing_page(self):
-        try:
+        run_type = self.get_run_type()
+
+        if run_type.lower() == "jenkins":
+            print("We are running from Jenkins - adding 15 seconds sleep time")
+            time.sleep(15)
+        else:
+            print("This is a manual run - adding 5 seconds sleep time")
+            time.sleep(5)
+
+        home_loaded = False
+        counter = 0
+
+        while home_loaded == False & counter < 15:
+            print("\nCounter: ", counter)
             print("Checking for Test Ad")
             self.verify_test_ad()
             print("Test Ad found - Clicking close ad")
             self.dismiss_test_ad()
-            print("Closed ad - Verifying Home header")
-            self.verify_home_header()
-            return True
-        except:
-            print("2nd attempt - Checking for Test Ad")
-            self.verify_test_ad()
-            print("2nd attempt - Test Ad found - Clicking close ad")
-            self.dismiss_test_ad()
-            print("2nd attempt - Closed ad - Verifying Home header")
-            self.verify_home_header()
-            return True
+            print("Attempted to close ad - Verifying Home header")
+            home_check = self.verify_home_header()
+
+            if home_check:
+                home_loaded = True
+                print("Home header found")
+            else:
+                home_loaded = False
+                print("Home header not found yet")
+                counter = counter + 1
+
+        return True
 
     def verify_home_header(self):
         print("Verifying Home header")
-        WebDriverWait(self.driver, 25).until(
-            EC.visibility_of_element_located(self.HOME_HEADER))
-        print("Home header found")
+        try:
+            test = WebDriverWait(self.driver, 3).until(
+                EC.visibility_of_element_located(self.HOME_HEADER)
+            )
+            return True
+        except:
+            return False
 
     def verify_test_ad(self):
         print("Checking for Test Ad header")
-        WebDriverWait(self.driver, 45).until(
-            EC.visibility_of_element_located(self.TEST_AD_HEADER))
-        print("Test Ad header found")
+        try:
+            WebDriverWait(self.driver, 3).until(
+                EC.visibility_of_element_located(self.TEST_AD_HEADER)
+            )
+            print("Test Ad header found")
+            return True
+        except:
+            print("Test Ad header NOT found")
+            return False
 
     def dismiss_test_ad(self):
         self.driver.execute_script("mobile: clickGesture", {"x": 1015, "y": 215})
 
+    def get_run_type(self):
+        if "JENKINS_SERVER_COOKIE" in os.environ or "BUILD_NUMBER" in os.environ:
+            return "jenkins"
+        return "manual"
