@@ -1,9 +1,10 @@
-(7/29) Appium script that runs against the Calculator mobile app on Android<br>
+(9/18) Appium script that runs against the Calculator mobile app on Android<br>
 
 <b>Summary</b><br>
 1) Calculator mobile app running on Pixel 10 - Android 17.0 - API 37 via Android Studio on Windows<br>
 2) After each run, results are stored in a MySQL database.<br>
-3) There are a total of 4 tests - home, basic calculator, tip calculator and unit converter
+3) There are a total of 7 tests - home, basic calculator, currency converter, data calculator, discount calculator,
+   tip calculator and unit converter
 4) PyCharm Dev Environment is on Ubuntu 26.04 - Jenkins (1)<br>
 5) Jenkins Instance is running on Ubuntu 26.04 - Jenkins(1)<br>
 6) Credentials are hidden via secret text in Jenkins; locally they are hidden via .env<br>
