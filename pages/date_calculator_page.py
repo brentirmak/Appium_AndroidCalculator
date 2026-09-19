@@ -9,7 +9,15 @@ class DateCalculatorPage(BasePage):
     TO_DATE_FIELD = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_pick_end_date')
     FROM_TO_POPUP_HEADER = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title')
     SAVE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")')
-
+    FROM_TO_TAB = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("From/To")')
+    FROM_LABEL = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_from")')
+    DURATION_PLUS_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_duration_add")')
+    DURATION_MINUS_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_duration_subtract")')
+    CLEAR_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac")')
+    BUTTON6_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_6")')
+    BUTTON0_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0")')
+    OK_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ok")')
+    RESULT_FIELD = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/tv_result_date')
 
     def open_from_home(self):
         print("Will click on the Date Calculator option")
@@ -60,6 +68,27 @@ class DateCalculatorPage(BasePage):
         print("Duration: ", duration_value)
 
         return duration_value
+
+    def calculate_to_date(self):
+        print("Will calculate the To date field")
+        print("Will click on From/To tab")
+        self.click(self.FROM_TO_TAB)
+        print("Clicked on From/To tab - will verify the From label")
+        self.find(self.FROM_LABEL)
+        print("From label found - will click on the '+' icon")
+        self.click(self.DURATION_PLUS_ICON)
+        print("Clicked on the '+' icon - will click on the 'C' to clear")
+        self.click(self.CLEAR_ICON)
+        print("Clicked on the Clear icon - will now enter '60' in the Days field")
+        self.click(self.BUTTON6_ICON)
+        self.click(self.BUTTON0_ICON)
+        print("Entered 60 in the Duration field - will click on OK button to calculate")
+        self.click(self.OK_BUTTON)
+        print("Clicked on the OK button")
+        result = self.find(self.RESULT_FIELD).text
+        print("Result: ", result)
+
+        return result
 
     def select_a_month_out(self):
         self.driver.execute_script("mobile: clickGesture", {"x": 260, "y": 1885})
