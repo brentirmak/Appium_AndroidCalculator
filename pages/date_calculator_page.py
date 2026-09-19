@@ -61,15 +61,6 @@ class DateCalculatorPage(BasePage):
 
         return duration_value
 
-        '''
-        if "30" in duration_value or "31" in duration_value:
-            print("Duration value was 40 or 41 days")
-            return True
-        else:
-            print("Duration value was NOT 40 or 41 days")
-            return False
-        '''
-
     def select_a_month_out(self):
         self.driver.execute_script("mobile: clickGesture", {"x": 260, "y": 1885})
 
