@@ -2,15 +2,14 @@ from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
 
 class DateCalculatorPage(BasePage):
-    #new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")
-
     HOME_ICON_DATE_CALCULATOR = (AppiumBy.XPATH, '//android.widget.TextView[@text="Date Calculator"]')
-    #DATE_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Date Calculator")')
     DATE_CALCULATOR_HEADER = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title"]')
+    FROM_DATE_FIELD = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_pick_start_date')
+    DURATION_FIELD = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/et_duration')
+    TO_DATE_FIELD = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_pick_end_date')
+    FROM_TO_POPUP_HEADER = (AppiumBy.ID,'calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title')
+    SAVE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")')
 
-
-    #NUM1 = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
-    #RESULT1 = (AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value" and @text="4.3307"]')
 
     def open_from_home(self):
         print("Will click on the Date Calculator option")
@@ -28,17 +27,53 @@ class DateCalculatorPage(BasePage):
             print("Failed to load Date Calculator header")
             return False
 
-    '''
-    def convert_cm_inches(self):
-        print("Will convert cm to inches")
+    def verify_fields(self):
+        print("Will verify fields")
+        self.find(self.FROM_DATE_FIELD)
+        print("Verified FROM DATE field")
+        self.find(self.DURATION_FIELD)
+        print("Verified DURATION field")
+        self.find(self.TO_DATE_FIELD)
+        print("Verified TO DATE field")
 
-        print("Will click on the '1' button")
-        self.click(self.NUM1)
-        print("Clicked on the '1' button - will click on it again")
-        self.click(self.NUM1)
-        print("Clicked on the '1' button a 2nd time - will check the result")
-        print(self.find(self.RESULT1).text)
+        return True
 
-        return self.find(self.RESULT1).text
-    '''
+    def calculate_date_difference(self):
+        print("Will calculate the date difference")
+        print("Setting from field (a month out) from today")
+        self.click(self.FROM_DATE_FIELD)
+        print("Will verify that the From Popup was displayed")
+        self.find(self.FROM_TO_POPUP_HEADER)
+        print("Verified the From Popup was displayed - for From field, will select a month out from today")
+        self.select_a_month_out()
+        print("Selected a month out - will click on Save button")
+        self.click(self.SAVE_BUTTON)
+        print("Clicked on the Save button - will now select the To field")
+        self.click(self.TO_DATE_FIELD)
+        print("Will verify that the To Popup was displayed")
+        self.find(self.FROM_TO_POPUP_HEADER)
+        print("Verified the From Popup was displayed - for To field, will select 2 months out from today")
+        self.select_two_months_out()
+        print("Selected 2 months out - will click on Save button")
+        self.click(self.SAVE_BUTTON)
+        duration_value = self.find(self.DURATION_FIELD).text
+        print("Duration: ", duration_value)
+
+        return duration_value
+
+        '''
+        if "30" in duration_value or "31" in duration_value:
+            print("Duration value was 40 or 41 days")
+            return True
+        else:
+            print("Duration value was NOT 40 or 41 days")
+            return False
+        '''
+
+    def select_a_month_out(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": 260, "y": 1885})
+
+    def select_two_months_out(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": 275, "y": 2050})
+
 
