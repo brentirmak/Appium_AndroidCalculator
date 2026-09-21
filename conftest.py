@@ -1,7 +1,13 @@
 import pytest
 from datetime import datetime
+import subprocess
+
 from utils.driver_factory import create_android_driver
 from utils.StoreToMySQL import store_transaction_result
+
+
+APP_PACKAGE = "calculator.currencyconverter.tipcalculator.unitconverter"
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -9,9 +15,8 @@ def pytest_runtest_makereport(item, call):
     report = outcome.get_result()
 
     current_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    test_name = item.name  # Extracts function name, e.g., 'test_access_currency_converter'
+    test_name = item.name
 
-    # Case 1: Test failed during SETUP phase (e.g., Appium driver crashed before running test)
     if report.when == "setup" and report.failed:
         store_transaction_result(
             test_name=test_name,
@@ -21,11 +26,15 @@ def pytest_runtest_makereport(item, call):
             timestamp=current_timestamp
         )
 
-    # Case 2: Test executed during CALL phase (Normal test completion or runtime failure)
     elif report.when == "call":
         status = "PASS" if report.passed else "FAIL"
         duration = f"{report.duration:.2f}s"
-        transaction = getattr(item, "transaction_name", "Execution")  # Fallback transaction name
+
+        transaction = getattr(
+            item,
+            "transaction_name",
+            "Execution"
+        )
 
         store_transaction_result(
             test_name=test_name,
@@ -35,31 +44,150 @@ def pytest_runtest_makereport(item, call):
             timestamp=current_timestamp
         )
 
-TIMEOUT = 30
+
+# ============================================================================
+# DIRECT ADB APP CLEANUP
+# ============================================================================
+
+def force_stop_app():
+
+    print("\n============================================================")
+    print("ADB APP CLEANUP")
+    print("============================================================")
+
+    try:
+
+        # ------------------------------------------------------------
+        # Show connected devices
+        # ------------------------------------------------------------
+
+        result = subprocess.run(
+            ["adb", "devices"],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        print("ADB devices:")
+        print(result.stdout)
+
+        if result.returncode != 0:
+            print(f"ADB devices failed: {result.stderr}")
+            return
+
+        # ------------------------------------------------------------
+        # Force-stop Calculator
+        # ------------------------------------------------------------
+
+        print(f"Force-stopping: {APP_PACKAGE}")
+
+        result = subprocess.run(
+            [
+                "adb",
+                "shell",
+                "am",
+                "force-stop",
+                APP_PACKAGE
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        if result.returncode == 0:
+            print("ADB force-stop completed successfully.")
+
+        else:
+            print(
+                f"ADB force-stop FAILED "
+                f"(return code {result.returncode})"
+            )
+
+            if result.stderr:
+                print(f"ADB error: {result.stderr}")
+
+    except Exception as e:
+
+        print(f"ADB cleanup exception: {e}")
+
+
+# ============================================================================
+# APPIUM DRIVER
+# ============================================================================
+
 @pytest.fixture(scope="session")
 def driver():
-    driver = create_android_driver()
-    yield driver
-    # 1. Close the app if it's running
-    try:
-        driver.terminate_app("calculator.currencyconverter.tipcalculator.unitconverter")
-    except Exception:
-        pass
 
-    # 2. Force-stop the app (more reliable on Android 17)
-    try:
-        driver.execute_script(
-            "mobile: shell",
-            {
-                "command": "am",
-                "args": ["force-stop", "calculator.currencyconverter.tipcalculator.unitconverter"]
-            }
-        )
-    except Exception:
-        pass
+    driver = None
 
-    # 3. Quit the Appium session
     try:
-        driver.quit()
-    except Exception:
-        pass
+
+        print("\n============================================================")
+        print("STARTING APPIUM DRIVER")
+        print("============================================================")
+
+        driver = create_android_driver()
+
+        print("Appium driver started.")
+
+        yield driver
+
+    finally:
+
+        print("\n============================================================")
+        print("STARTING TEST CLEANUP")
+        print("============================================================")
+
+        # ------------------------------------------------------------
+        # 1. Try Appium terminate_app()
+        # ------------------------------------------------------------
+
+        if driver is not None:
+
+            try:
+
+                print("Attempting Appium terminate_app()...")
+
+                driver.terminate_app(APP_PACKAGE)
+
+                print(
+                    "Appium terminate_app() completed."
+                )
+
+            except Exception as e:
+
+                print(
+                    f"Appium terminate_app() failed: {e}"
+                )
+
+        # ------------------------------------------------------------
+        # 2. DIRECT ADB FORCE-STOP
+        # ------------------------------------------------------------
+
+        force_stop_app()
+
+        # ------------------------------------------------------------
+        # 3. Quit Appium
+        # ------------------------------------------------------------
+
+        if driver is not None:
+
+            try:
+
+                print("Closing Appium session...")
+
+                driver.quit()
+
+                print(
+                    "Appium session closed successfully."
+                )
+
+            except Exception as e:
+
+                print(
+                    f"Appium driver.quit() failed: {e}"
+                )
+
+        print("\n============================================================")
+        print("TEST CLEANUP COMPLETED")
+        print("============================================================")

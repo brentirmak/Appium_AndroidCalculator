@@ -29,6 +29,24 @@ def test_access_date_calculator(driver):
             capture_error_snapshot(driver, "AccessDateCalculator")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_ai_chat_calculation(driver):
+    ai_calculator = AICalculatorPage(driver)
+
+    with appium_transaction("Perform AI Chat Calculation"):
+        try:
+            if not ai_calculator.verify_loaded():
+                ai_calculator.open_from_home()
+
+            ai_calculator.access_ai_chat_screen()
+            ai_calculator.perform_simple_addition()
+
+            #assert ("41 days" in duration_value) or (
+            #            "40 days" in duration_value), f"Expected 40 or 41 but got {duration_value}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformAIChatCalculation")
+            raise
+
 '''
 @pytest.mark.timeout(175)
 def test_perform_basic_calculation(driver):
