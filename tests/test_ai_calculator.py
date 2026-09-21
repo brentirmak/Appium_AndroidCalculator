@@ -39,10 +39,9 @@ def test_perform_ai_chat_calculation(driver):
                 ai_calculator.open_from_home()
 
             ai_calculator.access_ai_chat_screen()
-            ai_calculator.perform_simple_addition()
+            simple_addition_result = ai_calculator.perform_simple_addition()
 
-            #assert ("41 days" in duration_value) or (
-            #            "40 days" in duration_value), f"Expected 40 or 41 but got {duration_value}"
+            assert ("4" in simple_addition_result), f"Expected 4 but got {simple_addition_result}"
         except Exception:
             capture_error_snapshot(driver, "PerformAIChatCalculation")
             raise

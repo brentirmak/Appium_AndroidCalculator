@@ -63,10 +63,12 @@ class AICalculatorPage(BasePage):
             value = self.find(self.ANSWER_VALUE).text
             print("Value: ", value)
             print("'4' is displayed")
+            return  value
         except:
             print("3 Free Messages button NOT displayed")
             print("Will verify that '4' displayed")
             value = self.find(self.ANSWER_VALUE).text
             print("Value: ", value)
             print("'4' is displayed")
+            return value
 
