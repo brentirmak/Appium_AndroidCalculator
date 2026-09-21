@@ -17,7 +17,8 @@ class AICalculatorPage(BasePage):
     CLOSE_TEST_AD_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().className("android.widget.Image").instance(0)')
     ANSWER_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Answer")')
     ANSWER_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().className("android.view.View").instance(3)')
-    ANSWER_VALUE = (AppiumBy.XPATH,'//android.view.View[contains(@text, "4")]')
+    ANSWER_VALUE = (AppiumBy.XPATH,'//android.view.View[contains(@text, "4")] | //android.widget.TextView[contains(@text, "4")]')
+    ANSWER_VALUE2 = (AppiumBy.XPATH,'//android.view.View[contains(@text, "10")] | //android.widget.TextView[contains(@text, "10")]')
 
     def open_from_home(self):
         print("Will click on the AI Calculator option")
@@ -63,12 +64,44 @@ class AICalculatorPage(BasePage):
             value = self.find(self.ANSWER_VALUE).text
             print("Value: ", value)
             print("'4' is displayed")
-            return  value
+            return value
         except:
             print("3 Free Messages button NOT displayed")
             print("Will verify that '4' displayed")
             value = self.find(self.ANSWER_VALUE).text
             print("Value: ", value)
             print("'4' is displayed")
+            return value
+
+    def perform_simple_subtraction(self):
+        print("Will perform simple subtraction")
+        self.type(self.CHAT_TEXTFIELD,"If I have a dozen eggs that are unbroken and a couple break, how many unbroken eggs do I have left")
+        print("Entered the egg question into the chat textfield - will click on the check/submit button")
+        self.click(self.ENTER_ICON)
+        print("Clicked on the check/submit button - will check for the Answer header")
+        self.visible(self.ANSWER_HEADER)
+        print("Answer header is visible - will see if the calculation is displayed")
+        try:
+            print("Will check to see if the 3 Free Messages button is displayed")
+            three_free_messages_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(self.THREE_FREE_MESSAGES_BUTTON)
+            )
+            three_free_messages_button.click()
+            print("3 Free Messages button has been clicked")
+            print("Will click on the Close 1/2 ad icon/button")
+            self.click(self.REWARD_GRANTED_MSG)
+            print("Clicked on the Close 1/2 ad icon/button")
+            print("Will click on the Reward Granted confirmation icon/button")
+            self.click(self.CLOSE_TEST_AD_ICON)
+            print("Reward granted confirmation icon/button has been clicked")
+            print("Will verify that the answer is '10' is displayed")
+            value = self.find(self.ANSWER_VALUE2).text
+            print("Value: ", value)
+            return value
+        except:
+            print("3 Free Messages button NOT displayed")
+            print("Will verify that '10' is displayed")
+            value = self.find(self.ANSWER_VALUE2).text
+            print("Value: ", value)
             return value
 

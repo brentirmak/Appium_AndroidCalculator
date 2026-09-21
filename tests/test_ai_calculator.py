@@ -46,35 +46,19 @@ def test_perform_ai_chat_calculation(driver):
             capture_error_snapshot(driver, "PerformAIChatCalculation")
             raise
 
-'''
 @pytest.mark.timeout(175)
-def test_perform_basic_calculation(driver):
-    date_calculator = DateCalculatorPage(driver)
+def test_perform_2nd_ai_chat_calculation(driver):
+    ai_calculator = AICalculatorPage(driver)
 
-    with appium_transaction("Perform Date Calculation"):
+    with appium_transaction("Perform 2nd AI Chat Calculation"):
         try:
-            if not date_calculator.verify_loaded():
-                date_calculator.open_from_home()
+            if not ai_calculator.verify_loaded():
+                ai_calculator.open_from_home()
 
-            duration_value = date_calculator.calculate_date_difference()
-            assert ("41 days" in duration_value) or ("40 days" in duration_value), f"Expected 40 or 41 but got {duration_value}"
+            ai_calculator.access_ai_chat_screen()
+            simple_subtraction_result = ai_calculator.perform_simple_subtraction()
+
+            assert ("10" in simple_subtraction_result), f"Expected 10 but got {simple_subtraction_result}"
         except Exception:
-            capture_error_snapshot(driver, "PerformDateCalculation")
+            capture_error_snapshot(driver, "Perform2ndAIChatCalculation")
             raise
-
-@pytest.mark.timeout(175)
-def test_perform_alternative_calculation(driver):
-    date_calculator = DateCalculatorPage(driver)
-
-    with appium_transaction("Perform Alternative Date Calculation"):
-        try:
-            if not date_calculator.verify_loaded():
-                date_calculator.open_from_home()
-
-            duration_value = date_calculator.calculate_to_date()
-
-            assert (formatted_future_date in duration_value), f"Expected {formatted_future_date} to be within {duration_value}"
-        except Exception:
-            capture_error_snapshot(driver, "PerformAlternativeDateCalculation")
-            raise
-'''
