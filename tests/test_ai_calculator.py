@@ -1,4 +1,5 @@
 import pytest
+import time
 from pages.home_page import HomePage
 from pages.ai_calculator_page import AICalculatorPage
 from utils.helpers import appium_transaction, capture_error_snapshot
@@ -29,6 +30,35 @@ def test_access_date_calculator(driver):
             capture_error_snapshot(driver, "AccessDateCalculator")
             raise
 
+def test_clear_chat_history(driver):
+    ai_calculator = AICalculatorPage(driver)
+
+    with appium_transaction("Clear Chat History"):
+        try:
+            if not ai_calculator.verify_loaded():
+                ai_calculator.open_from_home()
+
+            try:
+                ai_calculator.access_ai_chat_screen()
+                ai_calculator.click_history_button()
+                ai_calculator.check_history_checkbox()
+                ai_calculator.click_history_radiobutton()
+                ai_calculator.click_delete_icon()
+                ai_calculator.click_delete_chat_confirmation_button()
+                ai_calculator.verify_no_chat_history()
+                ai_calculator.click_history_back_icon()
+            except:
+                print("It's possible there's no chat history")
+                ai_calculator.verify_no_chat_history()
+                print("No chat history has been confirmed")
+                ai_calculator.click_history_back_icon()
+                print("Clicked on the back icon")
+
+        except Exception:
+            capture_error_snapshot(driver, "ClearChatHistory")
+            raise
+
+
 @pytest.mark.timeout(175)
 def test_perform_ai_chat_calculation(driver):
     ai_calculator = AICalculatorPage(driver)
@@ -52,10 +82,30 @@ def test_perform_2nd_ai_chat_calculation(driver):
 
     with appium_transaction("Perform 2nd AI Chat Calculation"):
         try:
-            if not ai_calculator.verify_loaded():
-                ai_calculator.open_from_home()
+            #if not ai_calculator.verify_loaded():
+            #    ai_calculator.open_from_home()
 
-            ai_calculator.access_ai_chat_screen()
+            ai_calculator.click_ai_chat_back_button()
+            ai_calculator.click_ai_chat_back_button()
+            ai_calculator.open_from_home()
+
+            try:
+                ai_calculator.access_ai_chat_screen()
+
+                ai_calculator.click_history_button()
+                ai_calculator.check_history_checkbox()
+                ai_calculator.click_history_radiobutton()
+                ai_calculator.click_delete_icon()
+                ai_calculator.click_delete_chat_confirmation_button()
+                ai_calculator.verify_no_chat_history()
+                ai_calculator.click_history_back_icon()
+            except:
+                print("It's possible there's no chat history")
+                ai_calculator.verify_no_chat_history()
+                print("No chat history has been confirmed")
+                ai_calculator.click_history_back_icon()
+                print("Clicked on the back icon")
+
             simple_subtraction_result = ai_calculator.perform_simple_subtraction()
 
             assert ("10" in simple_subtraction_result), f"Expected 10 but got {simple_subtraction_result}"
