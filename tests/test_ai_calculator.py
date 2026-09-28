@@ -1,114 +1,81 @@
+import logging
+import os
+from contextlib import contextmanager
+
 import pytest
-import time
+
 from pages.home_page import HomePage
 from pages.ai_calculator_page import AICalculatorPage
 from utils.helpers import appium_transaction, capture_error_snapshot
-from datetime import datetime, timedelta
 
-future_date = datetime.now() + timedelta(days=60)
-formatted_future_date = f"{future_date:%b} {future_date.day}, {future_date:%Y}"
-print(formatted_future_date)  # e.g. Nov 17, 2026
+log = logging.getLogger(__name__)
 
-@pytest.mark.timeout(300)
+# Per-test hard timeouts get more headroom under Jenkins (override with CI_TIMEOUT_FACTOR)
+CI_TIMEOUT_FACTOR = float(os.getenv("CI_TIMEOUT_FACTOR", "1.5" if os.getenv("JENKINS_URL") else "1"))
+
+
+def _t(seconds):
+    return int(seconds * CI_TIMEOUT_FACTOR)
+
+
+@contextmanager
+def snapshot_on_failure(driver, name):
+    """Replaces the repeated try/except + capture_error_snapshot blocks in every test."""
+    try:
+        yield
+    except Exception:
+        try:
+            capture_error_snapshot(driver, name)
+        except Exception:
+            log.exception("capture_error_snapshot failed - original error follows")
+        raise
+
+
+@pytest.mark.timeout(_t(180))
 def test_access_date_calculator(driver):
     home = HomePage(driver)
     ai_calculator = AICalculatorPage(driver)
 
-    with appium_transaction("Access Date Calculator"):
-        if not home.load_landing_page():
-            print("Not at Home screen")
+    with appium_transaction("Access Date Calculator"), snapshot_on_failure(driver, "AccessDateCalculator"):
+        assert home.load_landing_page(), "Not at Home screen"
 
-        try:
-            ai_calculator.open_from_home()
-            page_header = ai_calculator.verify_loaded()
-            assert "AI Scan" in page_header, f"AI Scan header not found. Got: '{page_header}'"
-            print("AI Scan header found")
-        except AssertionError:
-            capture_error_snapshot(driver, "AccessDateCalculator")
-            raise
-        except Exception:
-            capture_error_snapshot(driver, "AccessDateCalculator")
-            raise
+        ai_calculator.open_from_home()
+        page_header = ai_calculator.verify_loaded()
+        assert "AI Scan" in page_header, f"AI Scan header not found. Got: '{page_header}'"
 
+
+@pytest.mark.timeout(_t(180))
 def test_clear_chat_history(driver):
     ai_calculator = AICalculatorPage(driver)
 
-    with appium_transaction("Clear Chat History"):
-        try:
-            if not ai_calculator.verify_loaded():
-                ai_calculator.open_from_home()
-
-            try:
-                ai_calculator.access_ai_chat_screen()
-                ai_calculator.click_history_button()
-                ai_calculator.check_history_checkbox()
-                ai_calculator.click_history_radiobutton()
-                ai_calculator.click_delete_icon()
-                ai_calculator.click_delete_chat_confirmation_button()
-                ai_calculator.verify_no_chat_history()
-                ai_calculator.click_history_back_icon()
-            except:
-                print("It's possible there's no chat history")
-                ai_calculator.verify_no_chat_history()
-                print("No chat history has been confirmed")
-                ai_calculator.click_history_back_icon()
-                print("Clicked on the back icon")
-
-        except Exception:
-            capture_error_snapshot(driver, "ClearChatHistory")
-            raise
+    with appium_transaction("Clear Chat History"), snapshot_on_failure(driver, "ClearChatHistory"):
+        ai_calculator.ensure_on_ai_scan_screen()
+        ai_calculator.access_ai_chat_screen()
+        ai_calculator.clear_chat_history()
 
 
-@pytest.mark.timeout(175)
+@pytest.mark.timeout(_t(180))
 def test_perform_ai_chat_calculation(driver):
     ai_calculator = AICalculatorPage(driver)
 
-    with appium_transaction("Perform AI Chat Calculation"):
-        try:
-            if not ai_calculator.verify_loaded():
-                ai_calculator.open_from_home()
+    with appium_transaction("Perform AI Chat Calculation"), snapshot_on_failure(driver, "PerformAIChatCalculation"):
+        ai_calculator.ensure_on_ai_scan_screen()
+        ai_calculator.access_ai_chat_screen()
+        simple_addition_result = ai_calculator.perform_simple_addition()
 
-            ai_calculator.access_ai_chat_screen()
-            simple_addition_result = ai_calculator.perform_simple_addition()
+        assert "4" in simple_addition_result, f"Expected 4 but got {simple_addition_result}"
 
-            assert ("4" in simple_addition_result), f"Expected 4 but got {simple_addition_result}"
-        except Exception:
-            capture_error_snapshot(driver, "PerformAIChatCalculation")
-            raise
 
-@pytest.mark.timeout(175)
+@pytest.mark.timeout(_t(240))
 def test_perform_2nd_ai_chat_calculation(driver):
     ai_calculator = AICalculatorPage(driver)
 
-    with appium_transaction("Perform 2nd AI Chat Calculation"):
-        try:
-            #if not ai_calculator.verify_loaded():
-            #    ai_calculator.open_from_home()
+    with appium_transaction("Perform 2nd AI Chat Calculation"), snapshot_on_failure(driver, "Perform2ndAIChatCalculation"):
+        # State-aware: works whether the previous test left us in chat, history, or home
+        ai_calculator.ensure_on_ai_scan_screen()
+        ai_calculator.access_ai_chat_screen()
+        ai_calculator.clear_chat_history()
 
-            ai_calculator.click_ai_chat_back_button()
-            ai_calculator.click_ai_chat_back_button()
-            ai_calculator.open_from_home()
+        simple_subtraction_result = ai_calculator.perform_simple_subtraction()
 
-            try:
-                ai_calculator.access_ai_chat_screen()
-
-                ai_calculator.click_history_button()
-                ai_calculator.check_history_checkbox()
-                ai_calculator.click_history_radiobutton()
-                ai_calculator.click_delete_icon()
-                ai_calculator.click_delete_chat_confirmation_button()
-                ai_calculator.verify_no_chat_history()
-                ai_calculator.click_history_back_icon()
-            except:
-                print("It's possible there's no chat history")
-                ai_calculator.verify_no_chat_history()
-                print("No chat history has been confirmed")
-                ai_calculator.click_history_back_icon()
-                print("Clicked on the back icon")
-
-            simple_subtraction_result = ai_calculator.perform_simple_subtraction()
-
-            assert ("10" in simple_subtraction_result), f"Expected 10 but got {simple_subtraction_result}"
-        except Exception:
-            capture_error_snapshot(driver, "Perform2ndAIChatCalculation")
-            raise
+        assert "10" in simple_subtraction_result, f"Expected 10 but got {simple_subtraction_result}"
