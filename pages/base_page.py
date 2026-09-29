@@ -33,7 +33,7 @@ NOT_FOUND_ERRORS = (TimeoutException, NoSuchElementException)
 # Locators for system dialogs/ANRs
 ANR_BUTTON_LOCATOR = (
     By.XPATH,
-    "//*[@text='Wait' or @text='WAIT' or @text='Close app' or @text='CLOSE APP']",
+    "//*[@text='Wait' or @text='WAIT' or @text='Close app' or @text='CLOSE APP' or @text='Process system']",
 )
 
 
