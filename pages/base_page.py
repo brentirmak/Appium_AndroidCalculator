@@ -10,6 +10,7 @@ from selenium.common.exceptions import (
     TimeoutException,
     WebDriverException,
 )
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -29,6 +30,12 @@ TRANSIENT_ERRORS = (
 # "Not found / not in time" outcomes for the boolean helpers.
 NOT_FOUND_ERRORS = (TimeoutException, NoSuchElementException)
 
+# Locators for system dialogs/ANRs
+ANR_BUTTON_LOCATOR = (
+    By.XPATH,
+    "//*[@text='Wait' or @text='WAIT' or @text='Close app' or @text='CLOSE APP']",
+)
+
 
 class BasePage:
     def __init__(self, driver, timeout=DEFAULT_TIMEOUT):
@@ -36,6 +43,22 @@ class BasePage:
         self.timeout = timeout
         # Kept for backward compatibility with page objects that use self.wait directly
         self.wait = self._waiter(timeout)
+
+    # ------------------------------------------------------------------
+    # System Alert Handling
+    # ------------------------------------------------------------------
+    def handle_system_anr(self):
+        """Best-effort check to dismiss 'System UI isn't responding' / ANR pop-ups."""
+        try:
+            # Temporarily drop implicit wait to 0 so we don't stall if the dialog isn't present
+            self.driver.implicitly_wait(0)
+            elements = self.driver.find_elements(*ANR_BUTTON_LOCATOR)
+            if elements:
+                log.warning("System UI / ANR dialog detected. Dismissing pop-up...")
+                elements[0].click()
+                time.sleep(1)  # Brief pause to let system UI stabilize
+        except WebDriverException as exc:
+            log.debug("Failed to check/dismiss ANR dialog: %s", exc)
 
     # ------------------------------------------------------------------
     # Internals
@@ -52,10 +75,18 @@ class BasePage:
     # Finding
     # ------------------------------------------------------------------
     def find(self, locator, timeout=None):
-        return self._waiter(timeout).until(EC.presence_of_element_located(locator))
+        try:
+            return self._waiter(timeout).until(EC.presence_of_element_located(locator))
+        except TimeoutException:
+            self.handle_system_anr()
+            return self._waiter(timeout).until(EC.presence_of_element_located(locator))
 
     def find_visible(self, locator, timeout=None):
-        return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
+        try:
+            return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
+        except TimeoutException:
+            self.handle_system_anr()
+            return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
 
     # ------------------------------------------------------------------
     # Actions (re-find on every attempt, retry only on transient errors)
@@ -66,9 +97,15 @@ class BasePage:
             try:
                 self._waiter(timeout).until(EC.element_to_be_clickable(locator)).click()
                 return
-            except TRANSIENT_ERRORS as exc:
+            except (*TRANSIENT_ERRORS, TimeoutException) as exc:
                 last_exc = exc
-                log.warning("click(%s) attempt %d hit %s - retrying", locator, attempt + 1, type(exc).__name__)
+                log.warning(
+                    "click(%s) attempt %d hit %s - checking for ANR dialog...",
+                    locator,
+                    attempt + 1,
+                    type(exc).__name__,
+                )
+                self.handle_system_anr()
                 time.sleep(0.5 * (attempt + 1))
         raise last_exc
 
@@ -81,20 +118,27 @@ class BasePage:
                     element.clear()
                 element.send_keys(text)
                 return
-            except TRANSIENT_ERRORS as exc:
+            except (*TRANSIENT_ERRORS, TimeoutException) as exc:
                 last_exc = exc
-                log.warning("type(%s) attempt %d hit %s - retrying", locator, attempt + 1, type(exc).__name__)
+                log.warning(
+                    "type(%s) attempt %d hit %s - checking for ANR dialog...",
+                    locator,
+                    attempt + 1,
+                    type(exc).__name__,
+                )
+                self.handle_system_anr()
                 time.sleep(0.5 * (attempt + 1))
         raise last_exc
 
     def get_text(self, locator, timeout=None, retries=2):
         """Read text without tripping over an element that goes stale between find and read."""
         last_exc = None
-        for _ in range(retries + 1):
+        for attempt in range(retries + 1):
             try:
                 return self.find_visible(locator, timeout).text
-            except StaleElementReferenceException as exc:
+            except (StaleElementReferenceException, TimeoutException) as exc:
                 last_exc = exc
+                self.handle_system_anr()
                 time.sleep(0.3)
         raise last_exc
 
@@ -114,6 +158,7 @@ class BasePage:
             self._waiter(timeout * CI_FACTOR).until(EC.presence_of_element_located(locator))
             return True
         except NOT_FOUND_ERRORS:
+            self.handle_system_anr()
             return False
 
     def wait_for(self, locator, timeout=30):
@@ -121,6 +166,7 @@ class BasePage:
             self._waiter(timeout * CI_FACTOR).until(EC.presence_of_element_located(locator))
             return True
         except NOT_FOUND_ERRORS:
+            self.handle_system_anr()
             return False
 
     def visible(self, locator, timeout=10):
@@ -129,6 +175,7 @@ class BasePage:
             self._waiter(timeout * CI_FACTOR).until(EC.visibility_of_element_located(locator))
             return True
         except NOT_FOUND_ERRORS:
+            self.handle_system_anr()
             return False
 
     def safe_click(self, locator, timeout=20):
@@ -136,6 +183,7 @@ class BasePage:
             self.click(locator, timeout=timeout * CI_FACTOR)
             return True
         except (*NOT_FOUND_ERRORS, *TRANSIENT_ERRORS):
+            self.handle_system_anr()
             return False
 
     # ------------------------------------------------------------------
