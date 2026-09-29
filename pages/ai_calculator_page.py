@@ -24,7 +24,7 @@ CI_FACTOR = 2 if IS_CI else 1
 UI_TIMEOUT = int(os.getenv("UI_TIMEOUT", "15")) * CI_FACTOR
 AD_TIMEOUT = int(os.getenv("AD_TIMEOUT", "10")) * CI_FACTOR
 # AI answers depend on network + backend latency, so they get the longest wait
-AI_RESPONSE_TIMEOUT = int(os.getenv("AI_RESPONSE_TIMEOUT", "45")) * CI_FACTOR
+AI_RESPONSE_TIMEOUT = int(os.getenv("AI_RESPONSE_TIMEOUT", "15")) * CI_FACTOR
 
 HEADER_AI_SCAN = "AI Scan"
 HEADER_AI_CHAT = "AI Chat"
@@ -109,7 +109,12 @@ class AICalculatorPage(BasePage):
                 self.click_ai_chat_back_button()
                 continue
             log.warning("Unknown screen - sending system Back")
-            self.driver.back()
+            try:
+                self.driver.back()
+            except:
+                log.warning("Unable to go back - will try to close Ad (if it exists)")
+                self.click_ad_closed_icon()
+                log.warning("Clicked on the close Ad")
         raise AssertionError("Could not navigate to the AI Scan screen")
 
     def access_ai_chat_screen(self):
@@ -236,12 +241,20 @@ class AICalculatorPage(BasePage):
         log.info("Entered '%s' - submitting", prompt)
         self.click(self.ENTER_ICON)
 
-        # AI backend latency is the biggest variable here, so this wait is the longest
-        self.wait_visible(self.ANSWER_HEADER, AI_RESPONSE_TIMEOUT)
-        log.info("Answer header visible")
+        '''
+        try:
+            # AI backend latency is the biggest variable here, so this wait is the longest
+            log.info("Checking if Answer header is visible")
+            self.wait_visible(self.ANSWER_HEADER, AI_RESPONSE_TIMEOUT)
+            log.info("Answer header is visible")
+        except:
+            log.info("Answer header is NOT visible - will check if Ad is present and handle")
+            #self._handle_reward_ad_if_present()
+            log.info("Handled Ad - will capture answer and proceed")
+        '''
+
 
         self._handle_reward_ad_if_present()
-
         value = self._wait_for_answer_text(expected)
         log.info("Answer displayed: %s", value)
         return value

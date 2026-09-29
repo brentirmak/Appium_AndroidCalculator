@@ -62,7 +62,7 @@ def test_perform_ai_chat_calculation(driver):
         ai_calculator.ensure_on_ai_scan_screen()
         ai_calculator.access_ai_chat_screen()
         simple_addition_result = ai_calculator.perform_simple_addition()
-
+        print("Simple addition result is :", simple_addition_result)
         assert "4" in simple_addition_result, f"Expected 4 but got {simple_addition_result}"
 
 
@@ -77,5 +77,5 @@ def test_perform_2nd_ai_chat_calculation(driver):
         ai_calculator.clear_chat_history()
 
         simple_subtraction_result = ai_calculator.perform_simple_subtraction()
-
+        print("Simple subtraction result is :", simple_subtraction_result)
         assert "10" in simple_subtraction_result, f"Expected 10 but got {simple_subtraction_result}"

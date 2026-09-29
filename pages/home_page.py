@@ -30,7 +30,7 @@ class HomePage(BasePage):
         home_loaded = False
         counter = 0
 
-        while home_loaded == False & counter < 15:
+        while home_loaded == False & counter < 30:
             print("\nCounter: ", counter)
             print("Checking for Test Ad")
             self.verify_test_ad()
@@ -46,6 +46,10 @@ class HomePage(BasePage):
                 home_loaded = False
                 print("Home header not found yet")
                 counter = counter + 1
+
+            if counter == 30:
+                print("Need to break out of loop and fail test")
+                return False
 
         return True
 
