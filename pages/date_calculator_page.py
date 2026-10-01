@@ -1,5 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+import time
 
 class DateCalculatorPage(BasePage):
     HOME_ICON_DATE_CALCULATOR = (AppiumBy.XPATH, '//android.widget.TextView[@text="Date Calculator"]')
@@ -55,6 +56,7 @@ class DateCalculatorPage(BasePage):
         print("Verified the From Popup was displayed - for From field, will select a month out from today")
         self.select_a_month_out()
         print("Selected a month out - will click on Save button")
+        time.sleep(3)
         self.click(self.SAVE_BUTTON)
         print("Clicked on the Save button - will now select the To field")
         self.click(self.TO_DATE_FIELD)
@@ -63,6 +65,7 @@ class DateCalculatorPage(BasePage):
         print("Verified the From Popup was displayed - for To field, will select 2 months out from today")
         self.select_two_months_out()
         print("Selected 2 months out - will click on Save button")
+        time.sleep(3)
         self.click(self.SAVE_BUTTON)
         duration_value = self.find(self.DURATION_FIELD).text
         print("Duration: ", duration_value)

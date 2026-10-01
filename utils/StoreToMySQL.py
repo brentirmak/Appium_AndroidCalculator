@@ -42,7 +42,7 @@ def store_transaction_result(test_name, transaction, status, duration, timestamp
         conn.close()
 
         print(
-            f"MySQL: Stored result for {test_name} - {transaction} ({status})"
+            f"MySQL: Stored result for {test_name} - {transaction} ({status})\n"
         )
 
     except Exception as e:

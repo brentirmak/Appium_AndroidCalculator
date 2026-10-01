@@ -52,6 +52,8 @@ def test_perform_alternative_calculation(driver):
             duration_value = date_calculator.calculate_to_date()
 
             assert (formatted_future_date in duration_value), f"Expected {formatted_future_date} to be within {duration_value}"
+            print("\n")
         except Exception:
             capture_error_snapshot(driver, "PerformAlternativeDateCalculation")
+            print("\n")
             raise
