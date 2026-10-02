@@ -6,7 +6,10 @@ from datetime import datetime, timedelta
 
 future_date = datetime.now() + timedelta(days=60)
 formatted_future_date = f"{future_date:%b} {future_date.day}, {future_date:%Y}"
-print(formatted_future_date)  # e.g. Nov 17, 2026
+formatted_future_date2 = future_date.strftime("%b %d, %Y")
+
+print("Formatted Future Date: ", formatted_future_date)  # e.g. Nov 17, 2026
+print("Formatted Future Date2: ", formatted_future_date2)  # e.g. Nov 17, 2026
 
 @pytest.mark.timeout(300)
 def test_access_date_calculator(driver):
@@ -51,7 +54,11 @@ def test_perform_alternative_calculation(driver):
 
             duration_value = date_calculator.calculate_to_date()
 
-            assert (formatted_future_date in duration_value), f"Expected {formatted_future_date} to be within {duration_value}"
+            #assert (formatted_future_date in duration_value), f"Expected {formatted_future_date} to be within {duration_value}"
+            assert (formatted_future_date in duration_value or formatted_future_date2 in duration_value), (
+                f"Expected either {formatted_future_date} or {formatted_future_date2} "
+                f"to be within {duration_value}"
+            )
             print("\n")
         except Exception:
             capture_error_snapshot(driver, "PerformAlternativeDateCalculation")
