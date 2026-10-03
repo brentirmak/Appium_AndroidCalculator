@@ -1,22 +1,27 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 class CurrencyConverterPage(BasePage):
     CURRENCY_CONVERTER_MENU_OPTION = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title" and @text="Currency Converter"]')
     CURRENCY_CONVERTER_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Currency Converter")')
     FROM_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(0)')
     CHOOSE_CURRENCY_HEADER = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title" and @text="Choose currency"]')
-    USD_CURRENCY_OPTION = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_unit" and @text="USD"]')
-    GBP_CURRENCY_OPTION = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_unit" and @text="GBP"]')
 
-    SEARCH_CURRENCY_TEXTFIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/etInput")')
-    PICK_CURRENCY = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root")')
-    # new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")
-    SAVE_BUTTON = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save"]')
+    SEARCH_CURRENCY_HINT = (
+        AppiumBy.ANDROID_UIAUTOMATOR,
+        'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvInputHint")'
+    )
+    FOCUSED_EDITTEXT = (
+        AppiumBy.ANDROID_UIAUTOMATOR,
+        'new UiSelector().className("android.widget.EditText").focused(true)'
+    )
+
+    SAVE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")')
+    CONFIRM_CURRENCY_SELECTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().className("android.widget.LinearLayout").instance(1)')
     TO_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(1)')
-    JP_YEN_CURRENCY_OPTION = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_name" and @text="Japanese Yen"]')
-    TR_LIRA_CURRENCY_OPTION = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_name" and @text="TRY"]')
-
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     CONVERTED_TO_FIELD = (AppiumBy.XPATH, '//androidx.recyclerview.widget.RecyclerView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/rv_list"]/android.view.ViewGroup[2]')
@@ -39,21 +44,45 @@ class CurrencyConverterPage(BasePage):
 
         print("Will select the USD currency option for the 1st field")
         self.click(self.FROM_ARROW)
-        #self.click(self.USD_CURRENCY_OPTION)
-        self.type(self.SEARCH_CURRENCY_TEXTFIELD,"USD")
-        self.click(self.PICK_CURRENCY)
-        print("Selected USD currency option for the 1st field - will click on the Save button")
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("USD")
+
+        time.sleep(2)
+
+        print("Entered USD into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
         print("Clicked on the Save button")
 
+        time.sleep(2)
+
         print("Will select the Japanese Yen currency option for the 2nd field")
         self.click(self.TO_ARROW)
-        #self.click(self.JP_YEN_CURRENCY_OPTION)
-        self.type(self.SEARCH_CURRENCY_TEXTFIELD,"JPY")
-        self.click(self.PICK_CURRENCY)
-        print("Selected Japanese Yen currency option for the 2nd field - will click on the Save button")
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("YEN")
+
+        time.sleep(2)
+
+        print("Entered JPY into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
         print("Clicked on the Save button")
+
+        time.sleep(2)
 
         print("Will click on the C button to clear")
         self.click(self.CLEAR_BUTTON)
@@ -72,26 +101,51 @@ class CurrencyConverterPage(BasePage):
 
         return output
 
-    def convert_gbp_to_trl(self):
-        print("Will convert Pound Sterling to Turkish Lira")
 
-        print("Will select the Pound Sterling option for the 1st field")
+    def convert_gbp_to_trl(self):
+        print("Will convert GBP to Turkish Lira")
+
+        print("Will select the GBP currency option for the 1st field")
         self.click(self.FROM_ARROW)
-        #self.click(self.GBP_CURRENCY_OPTION)
-        self.type(self.SEARCH_CURRENCY_TEXTFIELD,"GBP")
-        self.click(self.PICK_CURRENCY)
-        print("Selected GBP currency option for the 1st field - will click on the Save button")
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("GBP")
+
+        time.sleep(2)
+
+        print("Entered GBP into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
         print("Clicked on the Save button")
+
+        time.sleep(2)
 
         print("Will select the Turkish Lira currency option for the 2nd field")
         self.click(self.TO_ARROW)
-        #self.click(self.TR_LIRA_CURRENCY_OPTION)
-        self.type(self.SEARCH_CURRENCY_TEXTFIELD,"TRY")
-        self.click(self.PICK_CURRENCY)
-        print("Selected Turkish Lira currency option for the 2nd field - will click on the Save button")
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("TRY")
+
+        time.sleep(2)
+
+        print("Entered TRY into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
         print("Clicked on the Save button")
+
+        time.sleep(2)
 
         print("Will click on the C button to clear")
         self.click(self.CLEAR_BUTTON)
@@ -99,6 +153,8 @@ class CurrencyConverterPage(BasePage):
         print("Will click on the '1' button")
         self.click(self.NUM1)
         print("Clicked on the '1' button - will now click on the '0' button")
+        self.click(self.NUM0)
+        print("Clicked on the '0' button - will now click on the '0' button")
         self.click(self.NUM0)
         print("Clicked on the '0' button a 2nd time - will click on the Converted to field")
         self.click(self.CONVERTED_TO_FIELD)
