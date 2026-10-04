@@ -69,6 +69,7 @@ class LoanCalculatorPage(BasePage):
                 print("Will click on '0'")
                 self.click(self.NUM0)
                 print("Clicked on '0'")
+        self.click(self.OK_BUTTON)
 
     def enter_interest(self, interest):
         print("Will enter the interest")
@@ -86,9 +87,20 @@ class LoanCalculatorPage(BasePage):
                 print("Clicked on '5'")
 
     def enter_term(self):
-        print("Will enter the term")
-        self.click(self.TERM_FIELD)
-        self.click(self.SAVE_BUTTON)
+        print("Will check the current value for the term")
+        term = self.driver.find_element(*self.TERM_FIELD).text
+        print("Current term: ", term)
+        if term == "240":
+            print("Term is 240 months, hence we will set it to 228 months (19 years)")
+            print("Will enter the term")
+            self.click(self.TERM_FIELD)
+            print("Will select 19 months")
+            time.sleep(1)
+            self.driver.execute_script("mobile: clickGesture", {"x": 151, "y": 1573})
+            print("Clicked on 'Select Term' - '19 months' - will click on the Save button")
+            self.click(self.SAVE_BUTTON)
+        elif term == "228":
+            print("Term is already at 228 months (19 years) - nothing to do")
 
     def calculate_equal_principal_payment_repayment_loan(self):
         print("Will calculate the repayment loan")
@@ -109,10 +121,10 @@ class LoanCalculatorPage(BasePage):
 
         print("Will enter the loan principle")
         self.enter_loan_principal(100)
-        print("Entered the loan principle - will now enter the interest")
-        self.enter_interest(5)
-        print("Entered the interest - will enter the term")
-        self.enter_term()
+        #print("Entered the loan principle - will now enter the interest")
+        #self.enter_interest(5)
+        #print("Entered the interest - will enter the term")
+        #self.enter_term()
 
         return self.find(self.TOTAL_INTEREST).text
 
@@ -136,14 +148,11 @@ class LoanCalculatorPage(BasePage):
                 self.select_repayment_method()
                 print("Performed a click - will check to see if we have the intended repayment method")
 
-        time.sleep(10)
         print("'Equal Total Payment' selected - Will enter the loan principle")
         self.enter_loan_principal(100)
-        time.sleep(10)
-        print("Entered the loan principle - will now enter the interest")
-        self.enter_interest(5)
-        time.sleep(10)
-        print("Entered the interest - will enter the term")
-        self.enter_term()
+        #print("Entered the loan principle - will now enter the interest")
+        #self.enter_interest(5)
+        #print("Entered the interest - will enter the term")
+        #self.enter_term()
 
         return self.find(self.TOTAL_INTEREST).text

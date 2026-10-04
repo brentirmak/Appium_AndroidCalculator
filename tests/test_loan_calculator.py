@@ -41,10 +41,10 @@ def test_perform_equal_principle_payment_loan_calculation(driver):
 def test_perform_equal_total_payment_loan_calculation(driver):
     loan_calculator_page = LoanCalculatorPage(driver)
     side_menu = SideMenuPage(driver)
-
-    #print("Will click on the side menu item for Loan Calculator")
-    #side_menu.click_loan_calculator()
-    #assert loan_calculator_page.verify_loaded(), "Loan Calculator header not found"
+    side_menu.go_home()
+    print("Will click on the side menu item for Loan Calculator")
+    side_menu.click_loan_calculator()
+    assert loan_calculator_page.verify_loaded(), "Loan Calculator header not found"
 
     with appium_transaction("PerformEqualTotalPaymentLoanCalculation"):
         try:
