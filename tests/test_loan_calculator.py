@@ -55,3 +55,22 @@ def test_perform_equal_total_payment_loan_calculation(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformEqualTotalPaymentLoanCalculation")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_bullet_payment_loan_calculation(driver):
+    loan_calculator_page = LoanCalculatorPage(driver)
+    side_menu = SideMenuPage(driver)
+    side_menu.go_home()
+    print("Will click on the side menu item for Loan Calculator")
+    side_menu.click_loan_calculator()
+    assert loan_calculator_page.verify_loaded(), "Loan Calculator header not found"
+
+    with appium_transaction("PerformBulletPaymentLoanCalculation"):
+        try:
+            print("Will calculate the loan")
+            output = loan_calculator_page.calculate_bullet_payment_repayment_loan()
+            print("Calculated the loan - will confirm it's 100.00")
+            assert output == "100.00", f"Expected 100.00 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformBulletPaymentLoanCalculation")
+            raise

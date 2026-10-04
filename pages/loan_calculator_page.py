@@ -156,3 +156,30 @@ class LoanCalculatorPage(BasePage):
         #self.enter_term()
 
         return self.find(self.TOTAL_INTEREST).text
+
+
+    def calculate_bullet_payment_repayment_loan(self):
+        print("Will calculate the repayment loan")
+
+        bullet_payment_repayment_loan = False
+
+        while bullet_payment_repayment_loan == False:
+            repayment_method = self.driver.find_element(*self.REPAYMENT_METHOD_FIELD).text
+            print(f"Repayment Method: {repayment_method}")
+
+            if repayment_method == "Bullet Payment":
+                print("We have the repayment method we want - proceeding...")
+                bullet_payment_repayment_loan = True
+            else:
+                print("We don't have the intended repayment method - need to perform a click")
+                self.select_repayment_method()
+                print("Performed a click - will check to see if we have the intended repayment method")
+
+        print("Will enter the loan principle")
+        self.enter_loan_principal(100)
+        #print("Entered the loan principle - will now enter the interest")
+        #self.enter_interest(5)
+        #print("Entered the interest - will enter the term")
+        #self.enter_term()
+
+        return self.find(self.TOTAL_INTEREST).text
