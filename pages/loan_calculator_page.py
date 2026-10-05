@@ -1,6 +1,5 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
-from playwright.sync_api import expect
 import time
 
 class LoanCalculatorPage(BasePage):
