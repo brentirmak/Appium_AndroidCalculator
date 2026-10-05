@@ -23,6 +23,24 @@ def test_access_gpa_calculator(driver):
             capture_error_snapshot(driver, "AccessGPACalculator")
             raise
 
+@pytest.mark.timeout(175)
+def test_list_cleanup(driver):
+    gpa_calculator_page = GPACalculatorPage(driver)
+
+    with appium_transaction("List Cleanup"):
+        try:
+            print("Will verify that there's a subject entry in the list")
+            record_exists = gpa_calculator_page.verify_top_course_entry()
+            print("Record exists: ", record_exists)
+            if record_exists:
+                print("A record exits - will proceed with deleting the subject")
+                gpa_calculator_page.delete_top_subject()
+            else:
+                gpa_calculator_page.verify_no_data()
+                print("There were no records to be deleted")
+        except Exception:
+            capture_error_snapshot(driver, "ListCleanup")
+            raise
 
 @pytest.mark.timeout(175)
 def test_add_subject_to_list(driver):
