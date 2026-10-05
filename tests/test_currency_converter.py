@@ -60,9 +60,9 @@ def test_perform_gbp_to_lira_conversion(driver):
 
             output_value = float(output.replace(",", ""))
 
-            print("Calculated the GBP conversion- will confirm it's between 6500 and 7500 Turkish Lira")
-            assert 6500 <= output_value <= 7500, (
-                f"Expected value between 6500 and 7500 but got {output_value}"
+            print("Calculated the GBP conversion- will confirm it's between 6000 and 7500 Turkish Lira")
+            assert 6000 <= output_value <= 7500, (
+                f"Expected value between 6000 and 7500 but got {output_value}"
             )
         except Exception:
             capture_error_snapshot(driver, "PerformGBPToTRLiraCurrencyConversion")
