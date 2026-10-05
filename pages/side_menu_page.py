@@ -11,6 +11,7 @@ class SideMenuPage(BasePage):
     CURRENCY_CONVERTER_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Currency Converter").instance(1)')
     DISCOUNT_CALCULATOR_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Discount Calculator").instance(1)')
     LOAN_CALCULATOR_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Loan Calculator").instance(1)')
+    GPA_CALCULATOR_MENU_OPTION =  (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("GPA Calculator").instance(1)')
 
     def open_menu(self):
         print("Will click on the side menu")
@@ -52,3 +53,9 @@ class SideMenuPage(BasePage):
         print("Will click on the Loan Calculator option")
         self.click(self.LOAN_CALCULATOR_MENU_OPTION)
         print("Clicked on the Loan Calculator option")
+
+    def click_gpa_calculator(self):
+        self.open_menu()
+        print("Will click on the GPA Calculator option")
+        self.click(self.GPA_CALCULATOR_MENU_OPTION)
+        print("Clicked on the GPA Calculator option")
