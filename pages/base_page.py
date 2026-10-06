@@ -81,26 +81,62 @@ class BasePage:
     # ------------------------------------------------------------------
     def handle_system_anr(self) -> bool:
         """
-        Best-effort check to dismiss 'System UI isn't responding' / ANR pop-ups.
-        Returns True if a dialog was detected and dismissed, False otherwise.
+        Dismisses 'System UI isn't responding' popups by ensuring native context,
+        clicking the 'Close app' / 'Wait' buttons, or falling back to KEYCODE_BACK.
         """
         dismissed = False
-        try:
-            # Drop implicit wait to 0 to avoid blocking when no dialog exists
-            self.driver.implicitly_wait(0)
-            elements = self.driver.find_elements(*ANR_BUTTON_LOCATOR)
+        original_context = None
 
-            for element in elements:
-                if element.is_displayed():
-                    log.warning("System UI / ANR dialog detected. Dismissing pop-up...")
-                    element.click()
+        try:
+            # 1. Switch to NATIVE_APP if currently inside a Webview/Ad context
+            if hasattr(self.driver, "contexts") and hasattr(self.driver, "current_context"):
+                current = self.driver.current_context
+                if current != "NATIVE_APP":
+                    original_context = current
+                    self.driver.switch_to.context("NATIVE_APP")
+
+            self.driver.implicitly_wait(0)
+
+            # 2. Precise UIAutomator query targeting the popup options shown in your screenshot
+            anr_selector = (
+                AppiumBy.ANDROID_UIAUTOMATOR,
+                'new UiSelector().textMatches("(?i)Close app|Wait")'
+            )
+
+            elements = self.driver.find_elements(*anr_selector)
+
+            if elements:
+                for el in elements:
+                    if el.is_displayed():
+                        log.warning("System UI popup detected. Clicking '%s'...", el.text)
+                        el.click()
+                        dismissed = True
+                        time.sleep(1)
+                        break
+
+            # 3. Fallback: If UIAutomator finds nothing or click fails, press Android BACK key
+            if not dismissed:
+                # Quick check if dialog container exists by title text
+                dialog_title = self.driver.find_elements(
+                    AppiumBy.ANDROID_UIAUTOMATOR,
+                    'new UiSelector().textContains("System UI isn\'t responding")'
+                )
+                if dialog_title:
+                    log.warning("System UI dialog title found, sending BACK key event...")
+                    self.driver.press_keycode(4)  # 4 = KEYCODE_BACK
                     dismissed = True
-                    time.sleep(0.8)
-                    break
-        except WebDriverException as exc:
-            log.debug("Failed during ANR dialog check: %s", exc)
+                    time.sleep(0.5)
+
+        except Exception as exc:
+            log.debug("Exception during ANR dismissal: %s", exc)
         finally:
-            self.driver.implicitly_wait(0)  # Maintain explicit-wait paradigm
+            # Restore original context if changed
+            if original_context:
+                try:
+                    self.driver.switch_to.context(original_context)
+                except Exception:
+                    pass
+            self.driver.implicitly_wait(0)
 
         return dismissed
 
