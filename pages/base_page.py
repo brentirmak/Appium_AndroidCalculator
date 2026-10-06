@@ -1,7 +1,9 @@
 import logging
 import os
 import time
+from functools import wraps
 
+from appium.webdriver.common.appiumby import AppiumBy
 from selenium.common.exceptions import (
     ElementClickInterceptedException,
     ElementNotInteractableException,
@@ -10,55 +12,97 @@ from selenium.common.exceptions import (
     TimeoutException,
     WebDriverException,
 )
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 log = logging.getLogger(__name__)
 
-# Short "is it there?" waits double automatically under Jenkins.
-# The main wait (DEFAULT_TIMEOUT) is already generous, so it is not scaled.
+# Scaling short waits under CI environments
 CI_FACTOR = 2 if os.getenv("JENKINS_URL") else 1
 DEFAULT_TIMEOUT = int(os.getenv("DEFAULT_TIMEOUT", "45"))
 
-# Errors that usually mean "the UI moved under us" - safe to re-find and retry.
+# Transient errors safe for retry after UI recovery
 TRANSIENT_ERRORS = (
     StaleElementReferenceException,
     ElementClickInterceptedException,
     ElementNotInteractableException,
 )
-# "Not found / not in time" outcomes for the boolean helpers.
 NOT_FOUND_ERRORS = (TimeoutException, NoSuchElementException)
 
-# Locators for system dialogs/ANRs
+# Highly efficient UIAutomator selector matching standard Android System UI / ANR dialog buttons
 ANR_BUTTON_LOCATOR = (
-    By.XPATH,
-    "//*[@text='Wait' or @text='WAIT' or @text='Close app' or @text='CLOSE APP' or @text='Process system']",
+    AppiumBy.ANDROID_UIAUTOMATOR,
+    'new UiSelector().textMatches("(?i)Close app|Wait|OK|Process system|Close")'
 )
+
+
+def handle_anr_recovery(func):
+    """
+    Decorator that intercepts transient errors / timeouts on BasePage methods,
+    attempts to dismiss any System UI / ANR dialogs, and retries the operation.
+    """
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        retries = kwargs.get("retries", 1)
+        last_exc = None
+        for attempt in range(retries + 1):
+            try:
+                return func(self, *args, **kwargs)
+            except (*TRANSIENT_ERRORS, TimeoutException) as exc:
+                last_exc = exc
+                log.warning(
+                    "%s() hit %s on attempt %d/%d - checking for System UI / ANR popups...",
+                    func.__name__,
+                    type(exc).__name__,
+                    attempt + 1,
+                    retries + 1,
+                )
+
+                # Check and clear System UI dialog
+                if self.handle_system_anr():
+                    time.sleep(0.5)  # Pause to let Appium UI hierarchy stabilize
+
+                if attempt == retries:
+                    raise last_exc
+                time.sleep(0.5 * (attempt + 1))
+
+    return wrapper
 
 
 class BasePage:
     def __init__(self, driver, timeout=DEFAULT_TIMEOUT):
         self.driver = driver
         self.timeout = timeout
-        # Kept for backward compatibility with page objects that use self.wait directly
         self.wait = self._waiter(timeout)
 
     # ------------------------------------------------------------------
     # System Alert Handling
     # ------------------------------------------------------------------
-    def handle_system_anr(self):
-        """Best-effort check to dismiss 'System UI isn't responding' / ANR pop-ups."""
+    def handle_system_anr(self) -> bool:
+        """
+        Best-effort check to dismiss 'System UI isn't responding' / ANR pop-ups.
+        Returns True if a dialog was detected and dismissed, False otherwise.
+        """
+        dismissed = False
         try:
-            # Temporarily drop implicit wait to 0 so we don't stall if the dialog isn't present
+            # Drop implicit wait to 0 to avoid blocking when no dialog exists
             self.driver.implicitly_wait(0)
             elements = self.driver.find_elements(*ANR_BUTTON_LOCATOR)
-            if elements:
-                log.warning("System UI / ANR dialog detected. Dismissing pop-up...")
-                elements[0].click()
-                time.sleep(1)  # Brief pause to let system UI stabilize
+
+            for element in elements:
+                if element.is_displayed():
+                    log.warning("System UI / ANR dialog detected. Dismissing pop-up...")
+                    element.click()
+                    dismissed = True
+                    time.sleep(0.8)
+                    break
         except WebDriverException as exc:
-            log.debug("Failed to check/dismiss ANR dialog: %s", exc)
+            log.debug("Failed during ANR dialog check: %s", exc)
+        finally:
+            self.driver.implicitly_wait(0)  # Maintain explicit-wait paradigm
+
+        return dismissed
 
     # ------------------------------------------------------------------
     # Internals
@@ -74,84 +118,47 @@ class BasePage:
     # ------------------------------------------------------------------
     # Finding
     # ------------------------------------------------------------------
-    def find(self, locator, timeout=None):
-        try:
-            return self._waiter(timeout).until(EC.presence_of_element_located(locator))
-        except TimeoutException:
-            self.handle_system_anr()
-            return self._waiter(timeout).until(EC.presence_of_element_located(locator))
+    @handle_anr_recovery
+    def find(self, locator, timeout=None, retries=1):
+        return self._waiter(timeout).until(EC.presence_of_element_located(locator))
 
-    def find_visible(self, locator, timeout=None):
-        try:
-            return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
-        except TimeoutException:
-            self.handle_system_anr()
-            return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
+    @handle_anr_recovery
+    def find_visible(self, locator, timeout=None, retries=1):
+        return self._waiter(timeout).until(EC.visibility_of_element_located(locator))
 
     # ------------------------------------------------------------------
-    # Actions (re-find on every attempt, retry only on transient errors)
+    # Actions
     # ------------------------------------------------------------------
+    @handle_anr_recovery
     def click(self, locator, timeout=None, retries=2):
-        last_exc = None
-        for attempt in range(retries + 1):
-            try:
-                self._waiter(timeout).until(EC.element_to_be_clickable(locator)).click()
-                return
-            except (*TRANSIENT_ERRORS, TimeoutException) as exc:
-                last_exc = exc
-                log.warning(
-                    "click(%s) attempt %d hit %s - checking for ANR dialog...",
-                    locator,
-                    attempt + 1,
-                    type(exc).__name__,
-                )
-                self.handle_system_anr()
-                time.sleep(0.5 * (attempt + 1))
-        raise last_exc
+        try:
+            self._waiter(timeout).until(EC.element_to_be_clickable(locator)).click()
+        except ElementClickInterceptedException:
+            # Fallback coordinate tap if System UI or transparent overlay blocks standard click
+            element = self.find_visible(locator, timeout=3)
+            self.driver.tap([(element.location['x'] + element.size['width'] // 2,
+                              element.location['y'] + element.size['height'] // 2)])
 
+    @handle_anr_recovery
     def type(self, locator, text, clear=True, timeout=None, retries=2):
-        last_exc = None
-        for attempt in range(retries + 1):
-            try:
-                element = self.find_visible(locator, timeout)
-                if clear:
-                    element.clear()
-                element.send_keys(text)
-                return
-            except (*TRANSIENT_ERRORS, TimeoutException) as exc:
-                last_exc = exc
-                log.warning(
-                    "type(%s) attempt %d hit %s - checking for ANR dialog...",
-                    locator,
-                    attempt + 1,
-                    type(exc).__name__,
-                )
-                self.handle_system_anr()
-                time.sleep(0.5 * (attempt + 1))
-        raise last_exc
+        element = self.find_visible(locator, timeout)
+        if clear:
+            element.clear()
+        element.send_keys(text)
 
+    @handle_anr_recovery
     def get_text(self, locator, timeout=None, retries=2):
-        """Read text without tripping over an element that goes stale between find and read."""
-        last_exc = None
-        for attempt in range(retries + 1):
-            try:
-                return self.find_visible(locator, timeout).text
-            except (StaleElementReferenceException, TimeoutException) as exc:
-                last_exc = exc
-                self.handle_system_anr()
-                time.sleep(0.3)
-        raise last_exc
+        return self.find_visible(locator, timeout).text
 
     def hide_keyboard_if_shown(self):
         try:
             if self.driver.is_keyboard_shown():
                 self.driver.hide_keyboard()
         except WebDriverException:
-            pass  # best-effort only
+            pass
 
     # ------------------------------------------------------------------
-    # Boolean checks (never raise for "not found"; DO raise for real problems
-    # such as a dead session, so failures are not silently turned into False)
+    # Boolean Checks
     # ------------------------------------------------------------------
     def exists(self, locator, timeout=3):
         try:
@@ -170,7 +177,6 @@ class BasePage:
             return False
 
     def visible(self, locator, timeout=10):
-        """Returns True/False. NOTE: this does not fail a test by itself - use assert or wait_visible."""
         try:
             self._waiter(timeout * CI_FACTOR).until(EC.visibility_of_element_located(locator))
             return True
@@ -187,7 +193,7 @@ class BasePage:
             return False
 
     # ------------------------------------------------------------------
-    # Asserting waits (raise TimeoutException with the locator in the message)
+    # Asserting Waits
     # ------------------------------------------------------------------
     def wait_visible(self, locator, timeout=None):
         return self.find_visible(locator, timeout)
@@ -195,13 +201,15 @@ class BasePage:
     def wait_invisible(self, locator, timeout=None):
         return self._waiter(timeout).until(EC.invisibility_of_element_located(locator))
 
-    def wait_for_text_contains(self, locator, expected, timeout=None):
+    @handle_anr_recovery
+    def wait_for_text_contains(self, locator, expected, timeout=None, retries=1):
         def _check(driver):
             return expected in driver.find_element(*locator).text
+
         return self._waiter(timeout).until(_check)
 
-    def wait_for_any(self, locators, timeout=None):
-        """Wait until any one locator is displayed; returns the locator that matched."""
+    @handle_anr_recovery
+    def wait_for_any(self, locators, timeout=None, retries=1):
         def _check(driver):
             for loc in locators:
                 try:
@@ -210,4 +218,5 @@ class BasePage:
                 except (NoSuchElementException, StaleElementReferenceException):
                     pass
             return False
+
         return self._waiter(timeout).until(_check)
