@@ -27,8 +27,9 @@ class GPACalculatorPage(BasePage):
 
     TOP_COURSE_ENTRY = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_course_name")')
     TOP_RECORD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_check_box").instance(0)')
-
     NO_DATA_LABEL = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_empty_tip")')
+    TOTAL_CREDIT_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvTotalCredit")')
+    TOTAL_GPA_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvTotalGpa")')
 
     def click_add_a_subject_button(self):
         print("Will click on the Add a Subject button")
@@ -47,23 +48,104 @@ class GPACalculatorPage(BasePage):
         print("Will verify that there's no data under GPA Calculator")
         return self.exists(self.NO_DATA_LABEL)
 
-    def enter_subject_details(self):
+    def enter_subject_details(self, subject, credit, grade):
         print("Will enter subject details - clicking on Subject Name field")
         self.click(self.SUBJECT_NAME_FIELD)
-        print("Clicked on the Subject Name field - will enter Math into the field")
-        self.type(self.SUBJECT_NAME_FIELD,'MATH')
+        print(f"Clicked on the Subject Name field - will enter {subject} into the field")
+        self.type(self.SUBJECT_NAME_FIELD, subject)
         print("Entered the subject name - will enter the Credits")
         self.click(self.CREDITS_FIELD)
-        self.click(self.NUM1)
-        self.click(self.NUM0)
-        print("Entered 10 - will now click on the OK button")
+
+        for i in str(credit):
+            if i == "0":
+                print("Will click on '0'")
+                self.click(self.NUM0)
+                print("Clicked on '0'")
+            elif i == "1":
+                print("Will click on '1'")
+                self.click(self.NUM1)
+                print("Clicked on '1'")
+            elif i == "2":
+                print("Will click on '2'")
+                self.click(self.NUM2)
+                print("Clicked on '2'")
+            elif i == "3":
+                print("Will click on '3'")
+                self.click(self.NUM3)
+                print("Clicked on '3'")
+            elif i == "4":
+                print("Will click on '4'")
+                self.click(self.NUM4)
+                print("Clicked on '4'")
+            elif i == "5":
+                print("Will click on '5'")
+                self.click(self.NUM5)
+                print("Clicked on '5'")
+            elif i == "6":
+                print("Will click on '6'")
+                self.click(self.NUM6)
+                print("Clicked on '6'")
+            elif i == "7":
+                print("Will click on '7'")
+                self.click(self.NUM7)
+                print("Clicked on '7'")
+            elif i == "8":
+                print("Will click on '8'")
+                self.click(self.NUM8)
+                print("Clicked on '8'")
+            elif i == "9":
+                print("Will click on '9'")
+                self.click(self.NUM9)
+                print("Clicked on '9'")
+
+        print(f"Entered {credit} - will now click on the OK button")
         self.click(self.OK_BUTTON)
         print("Will now enter the Grade")
         self.click(self.GRADES_FIELD)
-        self.click(self.NUM1)
-        self.click(self.NUM0)
-        self.click(self.NUM0)
-        print("Entered 100 - will now click on the OK button")
+
+        for i in str(grade):
+            if i == "0":
+                print("Will click on '0'")
+                self.click(self.NUM0)
+                print("Clicked on '0'")
+            elif i == "1":
+                print("Will click on '1'")
+                self.click(self.NUM1)
+                print("Clicked on '1'")
+            elif i == "2":
+                print("Will click on '2'")
+                self.click(self.NUM2)
+                print("Clicked on '2'")
+            elif i == "3":
+                print("Will click on '3'")
+                self.click(self.NUM3)
+                print("Clicked on '3'")
+            elif i == "4":
+                print("Will click on '4'")
+                self.click(self.NUM4)
+                print("Clicked on '4'")
+            elif i == "5":
+                print("Will click on '5'")
+                self.click(self.NUM5)
+                print("Clicked on '5'")
+            elif i == "6":
+                print("Will click on '6'")
+                self.click(self.NUM6)
+                print("Clicked on '6'")
+            elif i == "7":
+                print("Will click on '7'")
+                self.click(self.NUM7)
+                print("Clicked on '7'")
+            elif i == "8":
+                print("Will click on '8'")
+                self.click(self.NUM8)
+                print("Clicked on '8'")
+            elif i == "9":
+                print("Will click on '9'")
+                self.click(self.NUM9)
+                print("Clicked on '9'")
+
+        print(f"Entered {grade} - will now click on the OK button")
         self.click(self.OK_BUTTON)
         self.click(self.ADD_OK_BUTTON)
         print("Clicked on the OK button to add the Subject")
@@ -82,7 +164,13 @@ class GPACalculatorPage(BasePage):
         self.verify_no_data()
         print("Verified that there's no data under GPA Calculator")
 
+    def capture_total_credit(self):
+        print("Will capture the total credit value")
+        total_credits = self.find(self.TOTAL_CREDIT_FIELD).text
+        print("Captured the total credit value - will now capture the total GPA value")
+        total_gpa = self.find(self.TOTAL_GPA_FIELD).text
 
+        return total_credits, total_gpa
 
 
 
