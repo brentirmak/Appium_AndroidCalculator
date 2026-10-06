@@ -15,6 +15,7 @@ class HomePage(BasePage):
     NEXT_BUTTON = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_next"]')
     HOME_HEADER = (AppiumBy.XPATH, '//android.widget.TextView[@text="Home"]')
     CLOSE_POPUP_ICON = (AppiumBy.XPATH, '//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btnClose"]')
+    CLOSE_AD_ICON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().description("Ad closed")')
 
 
     def load_landing_page(self):
@@ -46,6 +47,20 @@ class HomePage(BasePage):
                 home_loaded = False
                 print("Home header not found yet")
                 counter = counter + 1
+
+                print("Will check to see if the Close icon is displayed")
+
+                try:
+                    close_icon = WebDriverWait(self.driver, 5).until(
+                        EC.visibility_of_element_located(self.CLOSE_AD_ICON)
+                    )
+
+                    if close_icon.is_displayed():
+                        print("Close icon is displayed - we should click on it to close it")
+                        close_icon.click()
+                        home_loaded = True
+                except:
+                    print("Close icon not found yet")
 
             if counter == 30:
                 print("Need to break out of loop and fail test")
