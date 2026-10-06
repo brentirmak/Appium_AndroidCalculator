@@ -9,6 +9,16 @@ from utils.StoreToMySQL import store_transaction_result
 APP_PACKAGE = "calculator.currencyconverter.tipcalculator.unitconverter"
 
 
+@pytest.fixture(scope="session", autouse=True)
+def suppress_system_dialogs(driver):
+    try:
+        driver.execute_script("mobile: shell", {
+            "command": "settings",
+            "args": ["put", "global", "hide_error_dialogs", "1"]
+        })
+    except Exception as e:
+        print(f"Could not suppress system dialogs: {e}")
+
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
