@@ -38,7 +38,9 @@ class BMICalculatorPage(BasePage):
 
     def verify_loaded(self):
         print("Will verify BMI Calculator header is displayed")
-        return self.exists(self.HEADER)
+        page_title = self.find(self.HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.HEADER), page_title
 
     def enter_weight_in_kg(self):
         print("Ensuring that kg is selected prior to entering weight")

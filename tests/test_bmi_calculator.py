@@ -18,7 +18,10 @@ def test_access_bmi_calculator(driver):
         try:
             print("Will click on the side menu item for BMI Calculator")
             side_menu.click_bmi_calculator()
-            assert bmi_calculator_page.verify_loaded(), "BMI Calculator header not found"
+            is_displayed, page_title = bmi_calculator_page.verify_loaded()
+
+            assert is_displayed, "BMI Calculator header is not displayed"
+            assert page_title == "BMI Calculator", f"Expected page title 'BMI Calculator' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "Access BMI Calculator")
             raise

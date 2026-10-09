@@ -62,13 +62,8 @@ class SideMenuPage(BasePage):
         print("Clicked on the GPA Calculator option")
 
     def click_bmi_calculator(self):
-        #self.open_menu()
-
         print("Will scroll to BMI Calculator")
-
         self.scroll_to_text("BMI Calculator")
-
         print("Will click on the BMI Calculator option")
         self.click(self.BMI_CALCULATOR_MENU_OPTION)
-
         print("Clicked on the BMI Calculator option")
