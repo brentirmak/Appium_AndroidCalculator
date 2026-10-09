@@ -36,8 +36,10 @@ class CurrencyConverterPage(BasePage):
         print("Currency Converter option has been clicked")
 
     def verify_loaded(self):
-        print("Will verify that the Currency Converter header has loaded")
-        return self.visible(self.CURRENCY_CONVERTER_HEADER)
+        print("Will verify BMI Calculator header is displayed")
+        page_title = self.find(self.CURRENCY_CONVERTER_HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.CURRENCY_CONVERTER_HEADER), page_title
 
     def convert_usd_to_yen(self):
         print("Will convert USD to Japanese YEN")

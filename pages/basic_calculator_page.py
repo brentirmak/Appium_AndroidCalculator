@@ -30,8 +30,10 @@ class BasicCalculatorPage(BasePage):
         print("Basic Calculator option has been clicked")
 
     def verify_loaded(self):
-        print("Will verify that the Basic Calculator header has loaded")
-        return self.visible(self.HEADER)
+        print("Will verify BMI Calculator header is displayed")
+        page_title = self.find(self.HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.HEADER), page_title
 
     def calculate_9_plus_9(self):
         print("Preparing calculator")

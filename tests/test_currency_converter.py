@@ -18,7 +18,11 @@ def test_access_currency_converter(driver):
         try:
             print("Will click on the side menu item for Currency Converter")
             side_menu.click_currency_converter()
-            assert currency_converter_page.verify_loaded(), "Currency Converter header not found"
+            #assert currency_converter_page.verify_loaded(), "Currency Converter header not found"
+            is_displayed, page_title = currency_converter_page.verify_loaded()
+
+            assert is_displayed, "Currency Converter header is not displayed"
+            assert page_title == "Currency Converter", f"Expected page title 'Currency Converter' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessCurrencyConverter")
             raise

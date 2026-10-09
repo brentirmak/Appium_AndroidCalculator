@@ -14,11 +14,14 @@ def test_access_basic_calculator(driver):
 
         try:
             calc.open_from_home()
-            assert calc.verify_loaded(), "Basic Calculator header not found"
+            is_displayed, page_title = calc.verify_loaded()
+
+            assert is_displayed, "Basic Calculator header is not displayed"
+            assert page_title == "Basic Calculator", f"Expected page title 'Basic Calculator' but found '{page_title}'"
+
         except Exception:
             capture_error_snapshot(driver, "AccessBasicCalculator")
             raise
-
 
 @pytest.mark.timeout(175)
 def test_perform_basic_calculation(driver):
