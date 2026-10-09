@@ -12,6 +12,7 @@ class SideMenuPage(BasePage):
     DISCOUNT_CALCULATOR_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Discount Calculator").instance(1)')
     LOAN_CALCULATOR_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Loan Calculator").instance(1)')
     GPA_CALCULATOR_MENU_OPTION =  (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("GPA Calculator").instance(1)')
+    BMI_CALCULATOR_MENU_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("BMI Calculator")')
 
     def open_menu(self):
         print("Will click on the side menu")
@@ -59,3 +60,15 @@ class SideMenuPage(BasePage):
         print("Will click on the GPA Calculator option")
         self.click(self.GPA_CALCULATOR_MENU_OPTION)
         print("Clicked on the GPA Calculator option")
+
+    def click_bmi_calculator(self):
+        #self.open_menu()
+
+        print("Will scroll to BMI Calculator")
+
+        self.scroll_to_text("BMI Calculator")
+
+        print("Will click on the BMI Calculator option")
+        self.click(self.BMI_CALCULATOR_MENU_OPTION)
+
+        print("Clicked on the BMI Calculator option")

@@ -104,6 +104,15 @@ class BasePage:
         self._anr_wait_clicks = 0
 
     # ------------------------------------------------------------------
+    # Scroll to Text
+    # ------------------------------------------------------------------
+    def scroll_to_text(self, text):
+        self.driver.find_element(
+            AppiumBy.ANDROID_UIAUTOMATOR,
+            f'new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(new UiSelector().text("{text}"))'
+        )
+
+    # ------------------------------------------------------------------
     # System Alert Handling
     # ------------------------------------------------------------------
     def _first_displayed(self, locator):
