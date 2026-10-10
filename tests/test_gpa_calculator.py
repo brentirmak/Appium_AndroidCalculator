@@ -18,7 +18,10 @@ def test_access_gpa_calculator(driver):
         try:
             print("Will click on the side menu item for GPA Calculator")
             side_menu.click_gpa_calculator()
-            assert gpa_calculator_page.verify_loaded(), "GPA Calculator header not found"
+            is_displayed, page_title = gpa_calculator_page.verify_loaded()
+
+            assert is_displayed, "GPA Calculator header is not displayed"
+            assert page_title == "GPA Calculator", f"Expected page title 'GPA Calculator' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessGPACalculator")
             raise

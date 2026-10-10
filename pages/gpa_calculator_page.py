@@ -37,8 +37,10 @@ class GPACalculatorPage(BasePage):
         print("Clicked on the Add a Subject button")
 
     def verify_loaded(self):
-        print("Will verify GPA Calculator header is displayed")
-        return self.exists(self.HEADER)
+        print("Will verify Loan Calculator header is displayed")
+        page_title = self.find(self.HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.HEADER), page_title
 
     def verify_top_course_entry(self):
         print("Will verify that there's a course entry")
