@@ -17,6 +17,7 @@ def test_access_loan_calculator(driver):
             print("Not at Home screen")
         try:
             print("Will click on the side menu item for Loan Calculator")
+            side_menu.click_loan_calculator()
             is_displayed, page_title = loan_calculator_page.verify_loaded()
 
             assert is_displayed, "Loan header is not displayed"
