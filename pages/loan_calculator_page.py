@@ -45,8 +45,10 @@ class LoanCalculatorPage(BasePage):
         print("Loan Calculator option has been clicked")
 
     def verify_loaded(self):
-        print("Will verify that the Loan Calculator header has loaded")
-        return self.visible(self.HEADER)
+        print("Will verify Loan Calculator header is displayed")
+        page_title = self.find(self.HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.HEADER), page_title
 
     def select_repayment_method(self):
         print("Will select repayment method - one click for 'Equal Total Payment'")

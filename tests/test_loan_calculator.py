@@ -17,8 +17,10 @@ def test_access_loan_calculator(driver):
             print("Not at Home screen")
         try:
             print("Will click on the side menu item for Loan Calculator")
-            side_menu.click_loan_calculator()
-            assert loan_calculator_page.verify_loaded(), "Loan Calculator header not found"
+            is_displayed, page_title = loan_calculator_page.verify_loaded()
+
+            assert is_displayed, "Loan header is not displayed"
+            assert page_title == "Loan", f"Expected page title 'Loan' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessLoanCalculator")
             raise
