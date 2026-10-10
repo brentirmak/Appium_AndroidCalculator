@@ -15,8 +15,10 @@ class UnitConverterPage(BasePage):
         print("Unit Converter option has been clicked")
 
     def verify_loaded(self):
-        print("Will verify that the Unit Converter header has loaded")
-        return self.visible(self.UNIT_CONVERTER_HEADER)
+        print("Will verify Loan Calculator header is displayed")
+        page_title = self.find(self.UNIT_CONVERTER_HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.UNIT_CONVERTER_HEADER), page_title
 
     def convert_cm_inches(self):
         print("Will convert cm to inches")

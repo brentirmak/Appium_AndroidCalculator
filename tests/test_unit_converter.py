@@ -17,8 +17,10 @@ def test_access_unit_converter(driver):
             print("Not at Home screen")
         try:
             print("Will click on the side menu item for Unit Converter")
-            side_menu.go_unit_converter()
-            assert unit_converter_page.verify_loaded(), "Unit Converter header not found"
+            is_displayed, page_title = unit_converter_page.verify_loaded()
+
+            assert is_displayed, "Unit Converter header is not displayed"
+            assert page_title == "Unit Converter", f"Expected page title 'Unit Converter' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessUnitConverter")
             raise
