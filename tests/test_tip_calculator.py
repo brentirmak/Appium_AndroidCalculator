@@ -17,10 +17,11 @@ def test_access_tip_calculator(driver):
             print("Not at Home screen")
 
         try:
-            print("Will click on the Tip Calculator option")
-            side_menu.go_tip_calculator()
-            print("Clicked on the Tip Calculator option")
-            assert tip_page.verify_loaded(), "Tip header not found"
+            print("Will click on the side menu item for Loan Calculator")
+            is_displayed, page_title = tip_page.verify_loaded()
+
+            assert is_displayed, "Tip header is not displayed"
+            assert page_title == "Tip", f"Expected page title 'Tip' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessTipCalculator")
             raise

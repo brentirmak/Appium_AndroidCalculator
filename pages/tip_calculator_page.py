@@ -48,8 +48,10 @@ class TipCalculatorPage(BasePage):
             self.safe_click(self.CLEAR_SAVE)
 
     def verify_loaded(self):
-        print("Will verify Tip Calculator header is displayed")
-        return self.exists(self.HEADER)
+        print("Will verify Loan Calculator header is displayed")
+        page_title = self.find(self.HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.HEADER), page_title
 
     def calculate_tip(self, bill: str, tip: str):
         print("Will verify Tip Calculator header")
