@@ -17,6 +17,7 @@ def test_access_unit_converter(driver):
             print("Not at Home screen")
         try:
             print("Will click on the side menu item for Unit Converter")
+            side_menu.go_unit_converter()
             is_displayed, page_title = unit_converter_page.verify_loaded()
 
             assert is_displayed, "Unit Converter header is not displayed"
