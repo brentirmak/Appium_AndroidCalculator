@@ -41,8 +41,10 @@ class DiscountCalculatorPage(BasePage):
         print("Discount Calculator option has been clicked")
 
     def verify_loaded(self):
-        print("Will verify that the Discount Calculator header has loaded")
-        return self.visible(self.DISCOUNT_CALCULATOR_HEADER)
+        print("Will verify BMI Calculator header is displayed")
+        page_title = self.find(self.DISCOUNT_CALCULATOR_HEADER).text
+        print("Page title: ", page_title)
+        return self.exists(self.DISCOUNT_CALCULATOR_HEADER), page_title
 
     def calculate_discount(self, tax, original_price, discount):
         print("Will enter the tax percentage")

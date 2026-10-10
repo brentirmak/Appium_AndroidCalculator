@@ -19,7 +19,11 @@ def test_access_discount_calculator(driver):
             print("Will click on the Discount Calculator option")
             side_menu.click_discount_calculator()
             print("Clicked on the Discount Calculator option")
-            assert discount_calculator_page.verify_loaded(), "Discount header not found"
+
+            is_displayed, page_title = discount_calculator_page.verify_loaded()
+
+            assert is_displayed, "Discount header is not displayed"
+            assert page_title == "Discount", f"Expected page title 'Discount' but found '{page_title}'"
         except Exception:
             capture_error_snapshot(driver, "AccessDiscountCalculator")
             raise
