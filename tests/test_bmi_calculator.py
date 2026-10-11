@@ -33,9 +33,9 @@ def test_perform_bmi_calculation1(driver):
 
     with appium_transaction("Perform BMI Calculation1"):
         try:
-            bmi_calculator.enter_weight_in_kg()
-            bmi_calculator.enter_height_in_cm()
-            bmi_calculator.enter_age()
+            bmi_calculator.enter_weight_in_kg(125)
+            bmi_calculator.enter_height_in_cm(190)
+            bmi_calculator.enter_age(38)
             bmi_calculator.select_gender("Male")
             bmi_value = bmi_calculator.click_calculate_button()
             assert ("34.63" in bmi_value) or ("34.63" in bmi_value), f"Expected 40 or 41 but got {bmi_value}"

@@ -47,7 +47,7 @@ class BMICalculatorPage(BasePage):
         print("Page title: ", page_title)
         return self.exists(self.HEADER), page_title
 
-    def enter_weight_in_kg(self):
+    def enter_weight_in_kg(self, weight):
         print("Ensuring that kg is selected prior to entering weight")
         self.click(self.WEIGHT_KG_BUTTON)
         print("The kg option is selected - will click on the weight field")
@@ -55,15 +55,55 @@ class BMICalculatorPage(BasePage):
         print("Will enter the weight in kg - first clearing the field")
         self.click(self.CLEAR_BUTTON)
         print("Cleared the weight field - will enter value now")
-        self.click(self.NUM1)
-        self.click(self.NUM2)
-        self.click(self.NUM5)
+
+        for i in str(weight):
+            if i == "0":
+                print("Will click on '0'")
+                self.click(self.NUM0)
+                print("Clicked on '0'")
+            elif i == "1":
+                print("Will click on '1'")
+                self.click(self.NUM1)
+                print("Clicked on '1'")
+            if i == "2":
+                print("Will click on '2'")
+                self.click(self.NUM2)
+                print("Clicked on '2'")
+            elif i == "3":
+                print("Will click on '3'")
+                self.click(self.NUM3)
+                print("Clicked on '3'")
+            if i == "4":
+                print("Will click on '4'")
+                self.click(self.NUM4)
+                print("Clicked on '4'")
+            elif i == "5":
+                print("Will click on '5'")
+                self.click(self.NUM5)
+                print("Clicked on '5'")
+            if i == "6":
+                print("Will click on '6'")
+                self.click(self.NUM6)
+                print("Clicked on '6'")
+            elif i == "7":
+                print("Will click on '7'")
+                self.click(self.NUM7)
+                print("Clicked on '7'")
+            if i == "8":
+                print("Will click on '8'")
+                self.click(self.NUM8)
+                print("Clicked on '8'")
+            elif i == "9":
+                print("Will click on '9'")
+                self.click(self.NUM9)
+                print("Clicked on '9'")
+
         self.click(self.OK_BUTTON)
-        print("Entered weight in kg - will verify field contains '125'")
+        print(f"Entered weight in kg - will verify field contains ", weight)
         weight_value = self.find(self.WEIGHT_FIELD).text
         print("Weight value: ", weight_value)
 
-    def enter_height_in_cm(self):
+    def enter_height_in_cm(self,height):
         print("Ensuring that height is selected prior to entering height")
         self.click(self.HEIGHT_CM_BUTTON)
         print("The cm option is selected - will click on the height field")
@@ -71,24 +111,101 @@ class BMICalculatorPage(BasePage):
         print("Will enter the height in cm - first clearing the field")
         self.click(self.CLEAR_BUTTON)
         print("Cleared the height field - will enter the value now")
-        self.click(self.NUM1)
-        self.click(self.NUM9)
-        self.click(self.NUM0)
+        for i in str(height):
+            if i == "0":
+                print("Will click on '0'")
+                self.click(self.NUM0)
+                print("Clicked on '0'")
+            elif i == "1":
+                print("Will click on '1'")
+                self.click(self.NUM1)
+                print("Clicked on '1'")
+            if i == "2":
+                print("Will click on '2'")
+                self.click(self.NUM2)
+                print("Clicked on '2'")
+            elif i == "3":
+                print("Will click on '3'")
+                self.click(self.NUM3)
+                print("Clicked on '3'")
+            if i == "4":
+                print("Will click on '4'")
+                self.click(self.NUM4)
+                print("Clicked on '4'")
+            elif i == "5":
+                print("Will click on '5'")
+                self.click(self.NUM5)
+                print("Clicked on '5'")
+            if i == "6":
+                print("Will click on '6'")
+                self.click(self.NUM6)
+                print("Clicked on '6'")
+            elif i == "7":
+                print("Will click on '7'")
+                self.click(self.NUM7)
+                print("Clicked on '7'")
+            if i == "8":
+                print("Will click on '8'")
+                self.click(self.NUM8)
+                print("Clicked on '8'")
+            elif i == "9":
+                print("Will click on '9'")
+                self.click(self.NUM9)
+                print("Clicked on '9'")
         self.click(self.OK_BUTTON)
-        print("Entered height in cm - will verify field contains '190'")
+        print(f"Entered height in cm - will verify field contains ", height)
         height_value = self.find(self.HEIGHT_CM_FIELD).text
         print("Height value: ", height_value)
 
-    def enter_age(self):
+    def enter_age(self, age):
         print("Entering the age - will click on the Age field")
         self.click(self.AGE_FIELD)
         print("Clicked on the age field - will clear the field now")
         self.click(self.CLEAR_BUTTON)
         print("Cleared the age field - will enter the value now")
-        self.click(self.NUM3)
-        self.click(self.NUM8)
+        for i in str(age):
+            if i == "0":
+                print("Will click on '0'")
+                self.click(self.NUM0)
+                print("Clicked on '0'")
+            elif i == "1":
+                print("Will click on '1'")
+                self.click(self.NUM1)
+                print("Clicked on '1'")
+            if i == "2":
+                print("Will click on '2'")
+                self.click(self.NUM2)
+                print("Clicked on '2'")
+            elif i == "3":
+                print("Will click on '3'")
+                self.click(self.NUM3)
+                print("Clicked on '3'")
+            if i == "4":
+                print("Will click on '4'")
+                self.click(self.NUM4)
+                print("Clicked on '4'")
+            elif i == "5":
+                print("Will click on '5'")
+                self.click(self.NUM5)
+                print("Clicked on '5'")
+            if i == "6":
+                print("Will click on '6'")
+                self.click(self.NUM6)
+                print("Clicked on '6'")
+            elif i == "7":
+                print("Will click on '7'")
+                self.click(self.NUM7)
+                print("Clicked on '7'")
+            if i == "8":
+                print("Will click on '8'")
+                self.click(self.NUM8)
+                print("Clicked on '8'")
+            elif i == "9":
+                print("Will click on '9'")
+                self.click(self.NUM9)
+                print("Clicked on '9'")
         self.click(self.OK_BUTTON)
-        print("Entered the age - will verify field contains '38'")
+        print(f"Entered the age - will verify field contains ", age)
         age_value = self.find(self.AGE_FIELD).text
         print("Age value: ", age_value)
 
