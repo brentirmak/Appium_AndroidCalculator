@@ -1,5 +1,8 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 class BMICalculatorPage(BasePage):
     # BMI Calculator (need to add check for the text value)
@@ -34,7 +37,9 @@ class BMICalculatorPage(BasePage):
     OK_BUTTON = (AppiumBy.XPATH,'//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ok"]')
     CLEAR_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac")')
 
+    TOTAL_BMI_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_tip_tv")')
     TOTAL_BMI_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_value_tv")')
+
 
     def verify_loaded(self):
         print("Will verify BMI Calculator header is displayed")
@@ -55,7 +60,7 @@ class BMICalculatorPage(BasePage):
         self.click(self.NUM5)
         self.click(self.OK_BUTTON)
         print("Entered weight in kg - will verify field contains '125'")
-        weight_value = self.visible(self.WEIGHT_FIELD).text
+        weight_value = self.find(self.WEIGHT_FIELD).text
         print("Weight value: ", weight_value)
 
     def enter_height_in_cm(self):
@@ -71,7 +76,7 @@ class BMICalculatorPage(BasePage):
         self.click(self.NUM0)
         self.click(self.OK_BUTTON)
         print("Entered height in cm - will verify field contains '190'")
-        height_value = self.visible(self.HEIGHT_CM_FIELD).text
+        height_value = self.find(self.HEIGHT_CM_FIELD).text
         print("Height value: ", height_value)
 
     def enter_age(self):
@@ -84,7 +89,8 @@ class BMICalculatorPage(BasePage):
         self.click(self.NUM8)
         self.click(self.OK_BUTTON)
         print("Entered the age - will verify field contains '38'")
-        age_value = self.visible(self.AGE_FIELD).text
+        age_value = self.find(self.AGE_FIELD).text
+        print("Age value: ", age_value)
 
     def select_gender(self, gender):
         print("Will select the gender")
@@ -99,7 +105,13 @@ class BMICalculatorPage(BasePage):
         print("Will click on the Calculate button")
         self.click(self.CALCULATE_BUTTON)
         print("Clicked on the Calculate button - will capture the BMI value")
-        bmi_value = self.visible(self.TOTAL_BMI_FIELD).text
+        element = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(self.TOTAL_BMI_HEADER)
+        )
+        assert element.is_displayed(), "TOTAL_BMI_HEADER is not displayed"
+        bmi_value = self.find(self.TOTAL_BMI_FIELD).text
+
+        return bmi_value
 
 
 
