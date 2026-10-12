@@ -99,3 +99,22 @@ def test_perform_bmi_calculation4(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformBMICalculation4")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_bmi_calculation5(driver):
+    bmi_calculator = BMICalculatorPage(driver)
+
+    with appium_transaction("Perform BMI Calculation5"):
+        try:
+            bmi_calculator.click_back_button()
+            bmi_calculator.enter_weight_in_lb(250)
+            bmi_calculator.enter_height_in_ft_in(5,6)
+            bmi_calculator.enter_age(40)
+            bmi_calculator.select_gender("Male")
+            bmi_value, bmi_category_value = bmi_calculator.click_calculate_button()
+            assert ("40.35" in bmi_value) or ("40.35" in bmi_value), f"Expected 40.35 but got {bmi_value}"
+            assert ("Obese Class III" in bmi_category_value) or ("Obese Class III" in bmi_category_value), f"Expected Obese Class III but got {bmi_category_value}"
+
+        except Exception:
+            capture_error_snapshot(driver, "PerformBMICalculation5")
+            raise
