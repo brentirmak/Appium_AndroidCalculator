@@ -26,7 +26,6 @@ def test_access_bmi_calculator(driver):
             capture_error_snapshot(driver, "Access BMI Calculator")
             raise
 
-
 @pytest.mark.timeout(175)
 def test_perform_bmi_calculation1(driver):
     bmi_calculator = BMICalculatorPage(driver)
@@ -38,9 +37,24 @@ def test_perform_bmi_calculation1(driver):
             bmi_calculator.enter_age(38)
             bmi_calculator.select_gender("Male")
             bmi_value = bmi_calculator.click_calculate_button()
-            assert ("34.63" in bmi_value) or ("34.63" in bmi_value), f"Expected 40 or 41 but got {bmi_value}"
+            assert ("34.63" in bmi_value) or ("34.63" in bmi_value), f"Expected 34.63 but got {bmi_value}"
         except Exception:
             capture_error_snapshot(driver, "PerformBMICalculation1")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_bmi_calculation2(driver):
+    bmi_calculator = BMICalculatorPage(driver)
 
+    with appium_transaction("Perform BMI Calculation2"):
+        try:
+            bmi_calculator.click_back_button()
+            bmi_calculator.enter_weight_in_kg(54)
+            bmi_calculator.enter_height_in_cm(167)
+            bmi_calculator.enter_age(21)
+            bmi_calculator.select_gender("Female")
+            bmi_value = bmi_calculator.click_calculate_button()
+            assert ("19.36" in bmi_value) or ("19.36" in bmi_value), f"Expected 19.36 but got {bmi_value}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformBMICalculation2")
+            raise

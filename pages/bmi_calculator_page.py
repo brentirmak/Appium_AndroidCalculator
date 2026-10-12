@@ -40,6 +40,7 @@ class BMICalculatorPage(BasePage):
     TOTAL_BMI_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_tip_tv")')
     TOTAL_BMI_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_value_tv")')
 
+    BACK_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_back")')
 
     def verify_loaded(self):
         print("Will verify BMI Calculator header is displayed")
@@ -230,6 +231,10 @@ class BMICalculatorPage(BasePage):
 
         return bmi_value
 
+    def click_back_button(self):
+        print("Will click on the Back button")
+        self.click(self.BACK_BUTTON)
+        print("Clicked on the Back button")
 
 
 
