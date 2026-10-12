@@ -38,3 +38,17 @@ def test_perform_basic_calculation(driver):
             capture_error_snapshot(driver, "PerformBasicCalculation")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_addition1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Addition1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_addition(30,50)
+            assert output == "= 80", f"Expected 80 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformAddition1")
+            raise
