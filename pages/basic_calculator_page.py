@@ -15,6 +15,7 @@ class BasicCalculatorPage(BasePage):
     NUM7 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num7"]')
     NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num8"]')
     NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num9"]')
+    PERIOD = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_point"]')
     PLUS = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_plus"]')
     MINUS = (AppiumBy.XPATH, '//android.view.ViewGroup[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_reduce"]')
     DIV = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_div"]')
@@ -29,7 +30,7 @@ class BasicCalculatorPage(BasePage):
             "0": self.NUM0, "1": self.NUM1, "2": self.NUM2,
             "3": self.NUM3, "4": self.NUM4, "5": self.NUM5,
             "6": self.NUM6, "7": self.NUM7, "8": self.NUM8,
-            "9": self.NUM9,
+            "9": self.NUM9, ".": self.PERIOD,
         }
         for digit in str(number):
             print(f"Will click on '{digit}'")

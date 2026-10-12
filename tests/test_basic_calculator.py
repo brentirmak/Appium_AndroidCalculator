@@ -157,3 +157,33 @@ def test_perform_multiplication1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMultiplication1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_multiplication2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Multiplication2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_multiplication(12,2)
+            assert output == "= 24", f"Expected 24 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMultiplication2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_multiplication3(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Multiplication3"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_multiplication(2.5,2)
+            assert output == "= 5", f"Expected 24 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMultiplication3")
+            raise
