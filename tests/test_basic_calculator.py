@@ -82,3 +82,78 @@ def test_perform_subtraction1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformSubtraction1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_subtraction2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Subtraction2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_subtraction(583,71)
+            assert output == "= 512", f"Expected 512 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSubtraction2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_subtraction3(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Subtraction3"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_subtraction(100,150)
+            assert output == "= -50", f"Expected -50 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSubtraction3")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_division1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Division1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_division(75,25)
+            assert output == "= 3", f"Expected 3 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformDivision1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_division2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Division2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_division(289,13)
+            assert output == "= 22.23077", f"Expected 22.23077 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformDivision2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_multiplication1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Multiplication1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_multiplication(12500,20)
+            assert output == "= 250,000", f"Expected 250,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMultiplication1")
+            raise
