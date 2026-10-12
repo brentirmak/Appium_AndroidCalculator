@@ -81,21 +81,21 @@ def test_perform_bmi_calculation3(driver):
             capture_error_snapshot(driver, "PerformBMICalculation3")
             raise
 
-    @pytest.mark.timeout(175)
-    def test_perform_bmi_calculation4(driver):
-        bmi_calculator = BMICalculatorPage(driver)
+@pytest.mark.timeout(175)
+def test_perform_bmi_calculation4(driver):
+    bmi_calculator = BMICalculatorPage(driver)
 
-        with appium_transaction("Perform BMI Calculation4"):
-            try:
-                bmi_calculator.click_back_button()
-                bmi_calculator.enter_weight_in_kg(65)
-                bmi_calculator.enter_height_in_cm(195)
-                bmi_calculator.enter_age(25)
-                bmi_calculator.select_gender("Male")
-                bmi_value, bmi_category_value = bmi_calculator.click_calculate_button()
-                assert ("17.09" in bmi_value) or ("17.09" in bmi_value), f"Expected 17.09 but got {bmi_value}"
-                assert ("Underweight" in bmi_category_value) or ("Underweight" in bmi_category_value), f"Expected Underweight but got {bmi_category_value}"
+    with appium_transaction("Perform BMI Calculation4"):
+        try:
+            bmi_calculator.click_back_button()
+            bmi_calculator.enter_weight_in_kg(65)
+            bmi_calculator.enter_height_in_cm(195)
+            bmi_calculator.enter_age(25)
+            bmi_calculator.select_gender("Male")
+            bmi_value, bmi_category_value = bmi_calculator.click_calculate_button()
+            assert ("17.09" in bmi_value) or ("17.09" in bmi_value), f"Expected 17.09 but got {bmi_value}"
+            assert ("Underweight" in bmi_category_value) or ("Underweight" in bmi_category_value), f"Expected Underweight but got {bmi_category_value}"
 
-            except Exception:
-                capture_error_snapshot(driver, "PerformBMICalculation4")
-                raise
+        except Exception:
+            capture_error_snapshot(driver, "PerformBMICalculation4")
+            raise
