@@ -36,7 +36,7 @@ def test_perform_bmi_calculation1(driver):
             bmi_calculator.enter_height_in_cm(190)
             bmi_calculator.enter_age(38)
             bmi_calculator.select_gender("Male")
-            bmi_value = bmi_calculator.click_calculate_button()
+            bmi_value, bmi_category_value = bmi_calculator.click_calculate_button()
             assert ("34.63" in bmi_value) or ("34.63" in bmi_value), f"Expected 34.63 but got {bmi_value}"
         except Exception:
             capture_error_snapshot(driver, "PerformBMICalculation1")
@@ -53,7 +53,7 @@ def test_perform_bmi_calculation2(driver):
             bmi_calculator.enter_height_in_cm(167)
             bmi_calculator.enter_age(21)
             bmi_calculator.select_gender("Female")
-            bmi_value = bmi_calculator.click_calculate_button()
+            bmi_value, bmi_category_value = bmi_calculator.click_calculate_button()
             assert ("19.36" in bmi_value) or ("19.36" in bmi_value), f"Expected 19.36 but got {bmi_value}"
         except Exception:
             capture_error_snapshot(driver, "PerformBMICalculation2")

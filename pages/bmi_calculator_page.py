@@ -39,6 +39,7 @@ class BMICalculatorPage(BasePage):
 
     TOTAL_BMI_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_tip_tv")')
     TOTAL_BMI_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_value_tv")')
+    BMI_CATEGORY_VALUE = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/bmi_category_tv")')
 
     BACK_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_back")')
 
@@ -229,7 +230,17 @@ class BMICalculatorPage(BasePage):
         assert element.is_displayed(), "TOTAL_BMI_HEADER is not displayed"
         bmi_value = self.find(self.TOTAL_BMI_FIELD).text
 
-        return bmi_value
+        print("Clicked on the Calculate button - will capture the BMI Category value")
+        element2 = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(self.BMI_CATEGORY_VALUE)
+        )
+        assert element.is_displayed(), "TOTAL_BMI_HEADER is not displayed"
+        assert element2.is_displayed(), "BMI_CATEGORY_VALUE is not displayed"
+        bmi_value = self.find(self.TOTAL_BMI_FIELD).text
+        bmi_category_value = self.find(self.BMI_CATEGORY_VALUE).text
+
+
+        return bmi_value, bmi_category_value
 
     def click_back_button(self):
         print("Will click on the Back button")
