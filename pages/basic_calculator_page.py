@@ -16,6 +16,7 @@ class BasicCalculatorPage(BasePage):
     NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num8"]')
     NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num9"]')
     PLUS = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_plus')
+    MINUS = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/btn_reduce')
     DELETE_IMG = (AppiumBy.XPATH,'//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_delete"]')
     CLEAR_BTN = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_clear"]')
     RESULT_BTN = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_result"]')
@@ -55,6 +56,23 @@ class BasicCalculatorPage(BasePage):
         print(f"Entered {number1} - will click on the '+' button")
         self.click(self.PLUS)
         print(f"Clicked on the '+' button - will enter {number2}")
+        self.enter_number(number2)
+        print(f"Entered {number2} - will click on the '=' button")
+        self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
+
+        return self.find(self.OUTPUT).text
+
+    def calculate_subtraction(self, number1, number2):
+        print(f"Will calculate the subtraction of two numbers ", number1, " and ", number2)
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+        print(f"Clicked on the Clear button - will enter {number1}")
+        self.enter_number(number1)
+        print(f"Entered {number1} - will click on the '-' button")
+        self.click(self.MINUS)
+        print(f"Clicked on the '-' button - will enter {number2}")
         self.enter_number(number2)
         print(f"Entered {number2} - will click on the '=' button")
         self.click(self.RESULT_BTN)

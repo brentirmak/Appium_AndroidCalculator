@@ -52,3 +52,33 @@ def test_perform_addition1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformAddition1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_addition2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Addition2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_addition(12345,6789)
+            assert output == "= 19,134", f"Expected 19,134 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformAddition2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_subtraction1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Subtraction1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            output = calc.calculate_subtraction(10,3)
+            assert output == "= 7", f"Expected 7 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSubtraction1")
+            raise
