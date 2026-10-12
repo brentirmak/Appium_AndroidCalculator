@@ -315,7 +315,7 @@ class BMICalculatorPage(BasePage):
                 self.click(self.NUM9)
                 print("Clicked on '9'")
         self.click(self.OK_BUTTON)
-        print(f"Entered height in ft-in - will verify field contains ", ft_height, "' ", in_height, "/""")
+        print(f"Entered height in ft-in - will verify field contains ", ft_height, "' ", in_height, "\"")
 
         height_ft_value = self.find(self.HEIGHT_FT_FIELD).text
         print("Height ft value: ", height_ft_value)
