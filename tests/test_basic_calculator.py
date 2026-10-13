@@ -24,21 +24,6 @@ def test_access_basic_calculator(driver):
             raise
 
 @pytest.mark.timeout(175)
-def test_perform_basic_calculation(driver):
-    calc = BasicCalculatorPage(driver)
-
-    with appium_transaction("Perform Basic Calculation"):
-        try:
-            if not calc.verify_loaded():
-                calc.open_from_home()
-
-            output = calc.calculate_9_plus_9()
-            assert output == "= 18", f"Expected 18 but got {output}"
-        except Exception:
-            capture_error_snapshot(driver, "PerformBasicCalculation")
-            raise
-
-@pytest.mark.timeout(175)
 def test_perform_addition1(driver):
     calc = BasicCalculatorPage(driver)
 
@@ -186,4 +171,20 @@ def test_perform_multiplication3(driver):
             assert output == "= 5", f"Expected 24 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformMultiplication3")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sin_radians_calculation(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Sin Radians Calculation"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_sin(5, 'radians')
+            assert output == "= -0.95892", f"Expected -0.95892 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSinRadiansCalculation")
             raise

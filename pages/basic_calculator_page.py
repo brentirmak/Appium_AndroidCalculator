@@ -1,5 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+import time
 
 class BasicCalculatorPage(BasePage):
 
@@ -25,6 +26,10 @@ class BasicCalculatorPage(BasePage):
     RESULT_BTN = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_result"]')
     OUTPUT = (AppiumBy.ID, 'calculator.currencyconverter.tipcalculator.unitconverter:id/tvResult')
 
+    TYPE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvKeyboardType")')
+    RAD_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_rad")')
+    SIN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci21")')
+
     def enter_number(self, number):
         digits = {
             "0": self.NUM0, "1": self.NUM1, "2": self.NUM2,
@@ -48,6 +53,47 @@ class BasicCalculatorPage(BasePage):
         page_title = self.find(self.HEADER).text
         print("Page title: ", page_title)
         return self.exists(self.HEADER), page_title
+
+    def select_calculator_type(self, calculator_type):
+        print("Will select the Calculator type/mode")
+        calculator_type = self.find(self.TYPE_BUTTON).text
+        print("The current type is set to ", calculator_type)
+
+        if calculator_type == "Scientific":
+            print("The calculator is already set to Scientific")
+        else:
+            self.click(self.TYPE_BUTTON)
+            print("Clicked on the Type button to set to Scientific")
+
+        print("Will now clear the screen - to accept fresh input")
+        self.click(self.CLEAR_BTN)
+        print("Clicked on the Clear button")
+
+    def select_calculator_radians(self, radians_flag):
+        print("Will select the Calculator degrees vs radians mode")
+        calculator_radians_mode = self.find(self.RAD_BUTTON).text
+        print("The current type is set to ", calculator_radians_mode)
+
+        if calculator_radians_mode == "Deg" and radians_flag == False:
+            print("The calculator is already set to Degrees and radians flag is set to False")
+            print("No action to be taken")
+        elif calculator_radians_mode == "Deg" and radians_flag == True:
+            print("Calculator is set to Degrees and radians flag is set to True")
+            print("Will click on the Radians button - will click button to toggle to Radians")
+            self.click(self.RAD_BUTTON)
+            print("Clicked on the Radians button")
+        elif calculator_radians_mode == "Rad" and radians_flag == False:
+            print("Calculator is set to Radians and radians flag is set to False")
+            print("Will click on the Radians button - will click button to toggle to Degrees")
+            self.click(self.RAD_BUTTON)
+            print("Clicked on the Radians button")
+        elif calculator_radians_mode == "Rad" and radians_flag == True:
+            print("The calculator is already set to Radians and radians flag is set to True")
+            print("No action to be taken")
+
+        #print("Will now clear the screen - to accept fresh input")
+        #self.click(self.CLEAR_BTN)
+        #print("Clicked on the Clear button")
 
     def calculate_addition(self, number1, number2):
         print(f"Will calculate the addition of two numbers ", number1, " and ", number2)
@@ -117,22 +163,20 @@ class BasicCalculatorPage(BasePage):
 
         return self.find(self.OUTPUT).text
 
-    def calculate_9_plus_9(self):
-        print("Preparing calculator")
-
+    def calculate_sin(self, number1, mode):
+        print(f"Will calculate the sin of ", number1)
         if self.exists(self.DELETE_IMG):
             print("Clearing previous input")
             self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will click on the '9' button")
-        self.click(self.NUM9)
-        print("Clicked on the '9' button - will click on the '+' button")
-        self.click(self.PLUS)
-        print("Clicked on the '+' button - will click on the '9' button")
-        self.click(self.NUM9)
-        print("Clicked on '9' button - will click on the '=' button")
+        print("Ensuring that the Radians button is selected")
+        self.select_calculator_radians('True')
+        print("Radians button is selected")
+        print("Will click on the 'sin' button")
+        self.click(self.SIN_BUTTON)
+        print(f"Clicked on the Sin button - will enter {number1}")
+        self.enter_number(number1)
+        print(f"Clicked on {number1} - will capture the result")
         self.click(self.RESULT_BTN)
         print("Clicked on the '=' button - will return the result")
 
         return self.find(self.OUTPUT).text
-
