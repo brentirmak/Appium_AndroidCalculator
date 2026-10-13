@@ -55,6 +55,11 @@ class BasicCalculatorPage(BasePage):
         print("Page title: ", page_title)
         return self.exists(self.HEADER), page_title
 
+    def clear_input(self):
+        print("Will clear the screen - to accept fresh input")
+        self.click(self.CLEAR_BTN)
+        print("Clicked on the Clear button")
+
     def select_calculator_type(self, calculator_type):
         print("Will select the Calculator type/mode")
         calculator_type = self.find(self.TYPE_BUTTON).text
@@ -165,9 +170,14 @@ class BasicCalculatorPage(BasePage):
         if self.exists(self.DELETE_IMG):
             print("Clearing previous input")
             self.click(self.CLEAR_BTN)
-        print("Ensuring that the Radians button is selected")
-        self.select_calculator_radians('True')
-        print("Radians button is selected")
+        if mode == 'radians':
+            print("Ensuring that the Radians button is selected")
+            self.select_calculator_radians(True)
+            print("Radians button is selected")
+        else:
+            print("Ensuring that the Degrees button is selected")
+            self.select_calculator_radians(False)
+            print("Degrees button is selected")
         print("Will click on the 'sin' button")
         self.click(self.SIN_BUTTON)
         print(f"Clicked on the Sin button - will enter {number1}")
