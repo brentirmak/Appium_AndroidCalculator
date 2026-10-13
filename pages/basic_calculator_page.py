@@ -17,6 +17,7 @@ class BasicCalculatorPage(BasePage):
     NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num8"]')
     NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num9"]')
     PERIOD = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_point"]')
+    PARENTHESES = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_parentheses"]')
     PLUS = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_plus"]')
     MINUS = (AppiumBy.XPATH, '//android.view.ViewGroup[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_reduce"]')
     DIV = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_div"]')
@@ -90,10 +91,6 @@ class BasicCalculatorPage(BasePage):
         elif calculator_radians_mode == "Rad" and radians_flag == True:
             print("The calculator is already set to Radians and radians flag is set to True")
             print("No action to be taken")
-
-        #print("Will now clear the screen - to accept fresh input")
-        #self.click(self.CLEAR_BTN)
-        #print("Clicked on the Clear button")
 
     def calculate_addition(self, number1, number2):
         print(f"Will calculate the addition of two numbers ", number1, " and ", number2)
@@ -175,7 +172,9 @@ class BasicCalculatorPage(BasePage):
         self.click(self.SIN_BUTTON)
         print(f"Clicked on the Sin button - will enter {number1}")
         self.enter_number(number1)
-        print(f"Clicked on {number1} - will capture the result")
+        print(f"Entered {number1} - will close parenthesis")
+        self.click(self.PARENTHESES)
+        print("Closed parenthesis - will click on result button")
         self.click(self.RESULT_BTN)
         print("Clicked on the '=' button - will return the result")
 
