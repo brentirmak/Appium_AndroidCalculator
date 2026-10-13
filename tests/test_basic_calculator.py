@@ -284,3 +284,19 @@ def test_perform_cos_degrees_calculation1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformCosDegreesCalculation1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_cos_degrees_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Cos Degrees Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_cos(987, 'degrees')
+            assert output == "= -0.05234", f"Expected -0.05234 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCosDegreesCalculation2")
+            raise
