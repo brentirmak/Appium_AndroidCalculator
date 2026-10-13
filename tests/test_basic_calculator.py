@@ -409,3 +409,18 @@ def test_perform_power_calculation1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformPowerCalculation1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_root_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform SquareRoot Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            output = calc.calculate_square_root(360)
+            assert output == "= 18.97367", f"Expected 18.97367 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSquareRootCalculation1")
+            raise
