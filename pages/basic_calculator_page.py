@@ -32,6 +32,7 @@ class BasicCalculatorPage(BasePage):
     SIN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci21")')
     COS_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci22")')
     TAN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci23")')
+    LOG_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci14")')
 
     def enter_number(self, number):
         digits = {
@@ -233,6 +234,23 @@ class BasicCalculatorPage(BasePage):
         print("Will click on the 'cos' button")
         self.click(self.TAN_BUTTON)
         print(f"Clicked on the Cos button - will enter {number1}")
+        self.enter_number(number1)
+        print(f"Entered {number1} - will close parenthesis")
+        self.click(self.PARENTHESES)
+        print("Closed parenthesis - will click on result button")
+        self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
+
+        return self.find(self.OUTPUT).text
+
+    def calculate_log(self, number1):
+        print(f"Will calculate the log of ", number1)
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+        print("Will click on the 'log' button")
+        self.click(self.LOG_BUTTON)
+        print(f"Clicked on the log button - will enter {number1}")
         self.enter_number(number1)
         print(f"Entered {number1} - will close parenthesis")
         self.click(self.PARENTHESES)

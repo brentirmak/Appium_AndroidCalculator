@@ -348,3 +348,34 @@ def test_perform_tan_degrees_calculation1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformTanDegreesCalculation1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_tan_degrees_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Tan Degrees Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_tan(11, 'degrees')
+            assert output == "= 0.19438", f"Expected 0.19438 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTanDegreesCalculation2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_log_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Log Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            output = calc.calculate_log(10)
+            assert output == "= 1", f"Expected 1 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLogCalculation1")
+            raise
