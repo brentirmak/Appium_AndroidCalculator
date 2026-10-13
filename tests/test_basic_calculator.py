@@ -379,3 +379,33 @@ def test_perform_log_calculation1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformLogCalculation1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_log_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Log Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            output = calc.calculate_log(100)
+            assert output == "= 2", f"Expected 2 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLogCalculation2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_power_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Power Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            output = calc.calculate_power(2,3)
+            assert output == "= 8", f"Expected 8 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformPowerCalculation1")
+            raise

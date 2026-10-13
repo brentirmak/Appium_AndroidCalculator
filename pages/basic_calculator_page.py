@@ -33,6 +33,7 @@ class BasicCalculatorPage(BasePage):
     COS_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci22")')
     TAN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci23")')
     LOG_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci14")')
+    POWER_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci34")')
 
     def enter_number(self, number):
         digits = {
@@ -253,6 +254,25 @@ class BasicCalculatorPage(BasePage):
         print(f"Clicked on the log button - will enter {number1}")
         self.enter_number(number1)
         print(f"Entered {number1} - will close parenthesis")
+        self.click(self.PARENTHESES)
+        print("Closed parenthesis - will click on result button")
+        self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
+
+        return self.find(self.OUTPUT).text
+
+    def calculate_power(self, number1, number2):
+        print(f"Will calculate ", number1, " to the power of ", number2)
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+        print(f"Clicked on the Clear button - will enter {number1}")
+        self.enter_number(number1)
+        print(f"Entered {number1} - will click on the '^' button")
+        self.click(self.POWER_BUTTON)
+        print(f"Clicked on the '^' button - will enter {number2}")
+        self.enter_number(number2)
+        print(f"Entered {number2} - will close the parenthesis")
         self.click(self.PARENTHESES)
         print("Closed parenthesis - will click on result button")
         self.click(self.RESULT_BTN)
