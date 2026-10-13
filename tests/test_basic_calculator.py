@@ -300,3 +300,51 @@ def test_perform_cos_degrees_calculation2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformCosDegreesCalculation2")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_tan_radians_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Tan Radians Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_tan(5555, 'radians')
+            assert output == "= 0.78284", f"Expected 0.78284 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTanRadiansCalculation1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_tan_radians_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Tan Radians Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_tan(0.33, 'radians')
+            assert output == "= 0.34252", f"Expected 0.34252 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTanRadiansCalculation2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_tan_degrees_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Tan Degrees Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_tan(250, 'degrees')
+            assert output == "= 2.74748", f"Expected 2.74748 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTanDegreesCalculation1")
+            raise

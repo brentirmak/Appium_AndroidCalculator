@@ -31,6 +31,7 @@ class BasicCalculatorPage(BasePage):
     RAD_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_rad")')
     SIN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci21")')
     COS_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci22")')
+    TAN_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci23")')
 
     def enter_number(self, number):
         digits = {
@@ -206,6 +207,31 @@ class BasicCalculatorPage(BasePage):
             print("Degrees button is selected")
         print("Will click on the 'cos' button")
         self.click(self.COS_BUTTON)
+        print(f"Clicked on the Cos button - will enter {number1}")
+        self.enter_number(number1)
+        print(f"Entered {number1} - will close parenthesis")
+        self.click(self.PARENTHESES)
+        print("Closed parenthesis - will click on result button")
+        self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
+
+        return self.find(self.OUTPUT).text
+
+    def calculate_tan(self, number1, mode):
+        print(f"Will calculate the sin of ", number1)
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+        if mode == 'radians':
+            print("Ensuring that the Radians button is selected")
+            self.select_calculator_radians(True)
+            print("Radians button is selected")
+        else:
+            print("Ensuring that the Degrees button is selected")
+            self.select_calculator_radians(False)
+            print("Degrees button is selected")
+        print("Will click on the 'cos' button")
+        self.click(self.TAN_BUTTON)
         print(f"Clicked on the Cos button - will enter {number1}")
         self.enter_number(number1)
         print(f"Entered {number1} - will close parenthesis")
