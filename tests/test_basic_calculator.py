@@ -31,7 +31,7 @@ def test_perform_addition1(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_addition(30,50)
             assert output == "= 80", f"Expected 80 but got {output}"
         except Exception:
@@ -46,7 +46,7 @@ def test_perform_addition2(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_addition(12345,6789)
             assert output == "= 19,134", f"Expected 19,134 but got {output}"
         except Exception:
@@ -61,7 +61,7 @@ def test_perform_subtraction1(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_subtraction(10,3)
             assert output == "= 7", f"Expected 7 but got {output}"
         except Exception:
@@ -76,7 +76,7 @@ def test_perform_subtraction2(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_subtraction(583,71)
             assert output == "= 512", f"Expected 512 but got {output}"
         except Exception:
@@ -91,7 +91,7 @@ def test_perform_subtraction3(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_subtraction(100,150)
             assert output == "= -50", f"Expected -50 but got {output}"
         except Exception:
@@ -106,7 +106,7 @@ def test_perform_division1(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_division(75,25)
             assert output == "= 3", f"Expected 3 but got {output}"
         except Exception:
@@ -121,7 +121,7 @@ def test_perform_division2(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_division(289,13)
             assert output == "= 22.23077", f"Expected 22.23077 but got {output}"
         except Exception:
@@ -136,7 +136,7 @@ def test_perform_multiplication1(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_multiplication(12500,20)
             assert output == "= 250,000", f"Expected 250,000 but got {output}"
         except Exception:
@@ -151,7 +151,7 @@ def test_perform_multiplication2(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_multiplication(12,2)
             assert output == "= 24", f"Expected 24 but got {output}"
         except Exception:
@@ -166,7 +166,7 @@ def test_perform_multiplication3(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             output = calc.calculate_multiplication(2.5,2)
             assert output == "= 5", f"Expected 24 but got {output}"
         except Exception:
@@ -181,7 +181,7 @@ def test_perform_sin_radians_calculation1(driver):
         try:
             if not calc.verify_loaded():
                 calc.open_from_home()
-
+            calc.clear_input()
             calc.select_calculator_type('Scientific')
             output = calc.calculate_sin(5, 'radians')
             assert output == "= -0.95892", f"Expected -0.95892 but got {output}"
@@ -219,4 +219,36 @@ def test_perform_sin_degrees_calculation1(driver):
             assert output == "= 0.60182", f"Expected 0.60182 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformSinDegreesCalculation1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sin_degrees_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Sin Degrees Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_sin(0.75, 'degrees')
+            assert output == "= 0.01309", f"Expected 0.01309 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSinDegreesCalculation2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cos_radians_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Cos Radians Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_cos(10, 'radians')
+            assert output == "= -0.83907", f"Expected -0.83907 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSinRadiansCalculation1")
             raise
