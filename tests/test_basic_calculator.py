@@ -250,5 +250,37 @@ def test_perform_cos_radians_calculation1(driver):
             output = calc.calculate_cos(10, 'radians')
             assert output == "= -0.83907", f"Expected -0.83907 but got {output}"
         except Exception:
-            capture_error_snapshot(driver, "PerformSinRadiansCalculation1")
+            capture_error_snapshot(driver, "PerformCosRadiansCalculation1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cos_radians_calculation2(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Cos Radians Calculation2"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_cos(0.0405, 'radians')
+            assert output == "= 0.99918", f"Expected 0.99918 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCosRadiansCalculation2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cos_degrees_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Cos Degrees Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            calc.select_calculator_type('Scientific')
+            output = calc.calculate_cos(22, 'degrees')
+            assert output == "= 0.92718", f"Expected 0.92718 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCosDegreesCalculation1")
             raise
