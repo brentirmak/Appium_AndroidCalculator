@@ -439,3 +439,18 @@ def test_perform_square_cube_root_calculation1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformCubeRootCalculation1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_factorial_calculation1(driver):
+    calc = BasicCalculatorPage(driver)
+
+    with appium_transaction("Perform Factorial Calculation1"):
+        try:
+            if not calc.verify_loaded():
+                calc.open_from_home()
+            calc.clear_input()
+            output = calc.calculate_factorial(5)
+            assert output == "= 120", f"Expected 120 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformFactorialCalculation1")
+            raise

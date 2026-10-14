@@ -36,6 +36,7 @@ class BasicCalculatorPage(BasePage):
     POWER_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci34")')
     SQUARE_ROOT_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci33")')
     CUBE_ROOT_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci32")')
+    FACTORIAL_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btnSci31")')
 
     def enter_number(self, number):
         digits = {
@@ -283,13 +284,13 @@ class BasicCalculatorPage(BasePage):
         return self.find(self.OUTPUT).text
 
     def calculate_square_root(self, number1):
-        print(f"Will calculate the log of ", number1)
+        print(f"Will calculate the square root of ", number1)
         if self.exists(self.DELETE_IMG):
             print("Clearing previous input")
             self.click(self.CLEAR_BTN)
         print("Will click on the 'square root' button")
         self.click(self.SQUARE_ROOT_BUTTON)
-        print(f"Clicked on the log button - will enter {number1}")
+        print(f"Clicked on the square root button - will enter {number1}")
         self.enter_number(number1)
         print(f"Entered {number1} - will close parenthesis")
         self.click(self.PARENTHESES)
@@ -300,17 +301,32 @@ class BasicCalculatorPage(BasePage):
         return self.find(self.OUTPUT).text
 
     def calculate_cube_root(self, number1):
-        print(f"Will calculate the log of ", number1)
+        print(f"Will calculate the cube root of ", number1)
         if self.exists(self.DELETE_IMG):
             print("Clearing previous input")
             self.click(self.CLEAR_BTN)
         print("Will click on the 'cube root' button")
         self.click(self.CUBE_ROOT_BUTTON)
-        print(f"Clicked on the log button - will enter {number1}")
+        print(f"Clicked on the cube root button - will enter {number1}")
         self.enter_number(number1)
         print(f"Entered {number1} - will close parenthesis")
         self.click(self.PARENTHESES)
         print("Closed parenthesis - will click on result button")
+        self.click(self.RESULT_BTN)
+        print("Clicked on the '=' button - will return the result")
+
+        return self.find(self.OUTPUT).text
+
+    def calculate_factorial(self, number1):
+        print(f"Will calculate the factorial of ", number1)
+        if self.exists(self.DELETE_IMG):
+            print("Clearing previous input")
+            self.click(self.CLEAR_BTN)
+        print(f"Will enter {number1}")
+        self.enter_number(number1)
+        print(f"Entered {number1} - will now click on the 'factorial' button")
+        self.click(self.FACTORIAL_BUTTON)
+        print("Clicked on the factorial button - will now click on result button")
         self.click(self.RESULT_BTN)
         print("Clicked on the '=' button - will return the result")
 
