@@ -124,3 +124,17 @@ def test_perform_in_to_m_conversion1(driver):
             capture_error_snapshot(driver, "PerformInchToMConversion1")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_in_to_km_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform InchToKm Conversion1"):
+        try:
+            print("Will calculate the length in km")
+            output = unit_converter_page.convert_inch_to_kilometer("68942")
+            print("Calculated the length - will confirm it's 1.75113 km(s)")
+            assert output == "1.75113", f"Expected 1.75113 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformInchToKmConversion1")
+            raise
+

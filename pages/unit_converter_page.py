@@ -194,10 +194,27 @@ class UnitConverterPage(BasePage):
         self.select_from_unit('inches')
         print("Selected 'inch' for the from field - will select 'm' for the to field")
         self.select_to_unit('meter')
-        print(f"Selected cm for the to field - will enter {number1} into the inches field")
+        print(f"Selected meter for the to field - will enter {number1} into the inches field")
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the inch field - will check the m value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_inch_to_kilometer(self, number1):
+        print("Will convert inch to km")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
+        self.select_from_unit('inches')
+        print("Selected 'inch' for the from field - will select 'm' for the to field")
+        self.select_to_unit('kilometer')
+        print(f"Selected kilometer for the to field - will enter {number1} into the inches field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the inch field - will check the km value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
