@@ -17,6 +17,10 @@ class UnitConverterPage(BasePage):
 
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
     IN_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(1)')
+    M_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(2)')
+    KM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(3)')
+    MI_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(4)')
+    YD_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(5)')
 
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
@@ -86,10 +90,14 @@ class UnitConverterPage(BasePage):
                 print("Will click on the inches option")
                 self.click(self.IN_UNIT)
                 print("Clicked on the inches option")
+            if unit == "meter":
+                print("Will click on the meter option")
+                self.click(self.M_UNIT)
+                print("Clicked on the meter option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
-    def convert_cm_inches(self, number1):
+    def convert_cm_to_inches(self, number1):
         print("Will convert cm to inches")
         print("Clearing previous input")
         self.click(self.CLEAR_BTN)
@@ -106,4 +114,20 @@ class UnitConverterPage(BasePage):
         result_element = self.find(self.RESULT1)
         return result_element.text
 
+    def convert_cm_to_meter(self, number1):
+        print("Will convert cm to meters")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
+        self.select_from_unit('cm')
+        print("Selected 'cm' for the from field - will select 'meters' for the to field")
+        self.select_to_unit('meter')
+        print(f"Selected inches for the to field - will enter {number1} into the cm field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the cm field - will check the meters value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
 
