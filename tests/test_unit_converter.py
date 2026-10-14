@@ -91,8 +91,22 @@ def test_perform_cm_to_km_conversion1(driver):
         try:
             print("Will calculate the length in kilometers")
             output = unit_converter_page.convert_cm_to_km("125750")
-            print("Calculated the length - will confirm it's 1.2575 meter(s)")
-            assert output == "1.2575", f"Expected 850 but got {output}"
+            print("Calculated the length - will confirm it's 1.2575 kilometer(s)")
+            assert output == "1.2575", f"Expected 1.2575 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformCmToKMConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_in_to_cm_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform InchToCm Conversion1"):
+        try:
+            print("Will calculate the length in cm")
+            output = unit_converter_page.convert_inch_to_cm("1")
+            print("Calculated the length - will confirm it's 2.54001 cm(s)")
+            assert output == "2.54001", f"Expected 2.54001 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformInchToCmConversion1")
             raise
