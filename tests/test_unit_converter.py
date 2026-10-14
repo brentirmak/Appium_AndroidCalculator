@@ -61,10 +61,38 @@ def test_perform_cm_to_m_conversion1(driver):
 
     with appium_transaction("Perform CmToM Conversion1"):
         try:
-            print("Will calculate the length in inches")
+            print("Will calculate the length in meters")
             output = unit_converter_page.convert_cm_to_meter("100")
             print("Calculated the length - will confirm it's 1 meter(s)")
             assert output == "1", f"Expected 1 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformCmToMConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cm_to_m_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform CmToM Conversion2"):
+        try:
+            print("Will calculate the length in meters")
+            output = unit_converter_page.convert_cm_to_meter("85000")
+            print("Calculated the length - will confirm it's 850 meter(s)")
+            assert output == "850", f"Expected 850 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCmToMConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cm_to_km_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform CmToKM Conversion1"):
+        try:
+            print("Will calculate the length in kilometers")
+            output = unit_converter_page.convert_cm_to_km("125750")
+            print("Calculated the length - will confirm it's 1.2575 meter(s)")
+            assert output == "1.2575", f"Expected 850 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCmToKMConversion1")
             raise

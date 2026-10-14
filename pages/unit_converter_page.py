@@ -94,6 +94,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the meter option")
                 self.click(self.M_UNIT)
                 print("Clicked on the meter option")
+            if unit == "kilometer":
+                print("Will click on the kilometer option")
+                self.click(self.KM_UNIT)
+                print("Clicked on the kilometer option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -123,7 +127,24 @@ class UnitConverterPage(BasePage):
         self.select_from_unit('cm')
         print("Selected 'cm' for the from field - will select 'meters' for the to field")
         self.select_to_unit('meter')
-        print(f"Selected inches for the to field - will enter {number1} into the cm field")
+        print(f"Selected meters for the to field - will enter {number1} into the cm field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the cm field - will check the meters value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_cm_to_km(self, number1):
+        print("Will convert cm to km")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
+        self.select_from_unit('cm')
+        print("Selected 'cm' for the from field - will select kms' for the to field")
+        self.select_to_unit('kilometer')
+        print(f"Selected kilometers for the to field - will enter {number1} into the cm field")
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the cm field - will check the meters value")
