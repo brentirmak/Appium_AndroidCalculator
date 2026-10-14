@@ -26,7 +26,6 @@ def test_access_unit_converter(driver):
             capture_error_snapshot(driver, "AccessUnitConverter")
             raise
 
-
 @pytest.mark.timeout(175)
 def test_perform_cm_to_in_conversion1(driver):
     unit_converter_page = UnitConverterPage(driver)
@@ -110,3 +109,18 @@ def test_perform_in_to_cm_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformInchToCmConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_in_to_m_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform InchToM Conversion1"):
+        try:
+            print("Will calculate the length in m")
+            output = unit_converter_page.convert_inch_to_meter("985.12")
+            print("Calculated the length - will confirm it's 25.022098 m(s)")
+            assert output == "25.022098", f"Expected 25.022098 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformInchToMConversion1")
+            raise
+

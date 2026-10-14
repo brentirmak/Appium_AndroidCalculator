@@ -32,7 +32,7 @@ class UnitConverterPage(BasePage):
     NUM7 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_7"]')
     NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_8"]')
     NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_9"]')
-    PERIOD = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_point"]')
+    PERIOD = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_dot"]')
     CLR_BUTTON = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac"]')
     CAL_BUTTON = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_cal"]')
     XCHANGE_BUTTON = (AppiumBy.XPATH,'//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_exchange"]')
@@ -181,6 +181,23 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the inch field - will check the cm value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_inch_to_meter(self, number1):
+        print("Will convert inch to m")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
+        self.select_from_unit('inches')
+        print("Selected 'inch' for the from field - will select 'm' for the to field")
+        self.select_to_unit('meter')
+        print(f"Selected cm for the to field - will enter {number1} into the inches field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the inch field - will check the m value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
