@@ -28,15 +28,15 @@ def test_access_unit_converter(driver):
 
 
 @pytest.mark.timeout(175)
-def test_perform_unit_conversion(driver):
+def test_perform_cm_to_in_conversion1(driver):
     unit_converter_page = UnitConverterPage(driver)
 
-    with appium_transaction("Perform Unit Conversion"):
+    with appium_transaction("Perform CmToIn Conversion1"):
         try:
             print("Will calculate the length in inches")
-            output = unit_converter_page.convert_cm_inches()
-            print("Calculated the length - will confirm it's 4.3307 inches")
-            assert output == "4.3307", f"Expected 4.3307 but got {output}"
+            output = unit_converter_page.convert_cm_inches("400")
+            print("Calculated the length - will confirm it's 157.48 inches")
+            assert output == "157.48", f"Expected 157.48 but got {output}"
         except Exception:
-            capture_error_snapshot(driver, "PerformUnitConversion")
+            capture_error_snapshot(driver, "PerformCmToInConversion1")
             raise
