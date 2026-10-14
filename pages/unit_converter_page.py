@@ -7,6 +7,17 @@ class UnitConverterPage(BasePage):
     UNIT_CONVERTER_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Unit Converter")')
     HOME_ICON_UNIT_CONVERTER = (AppiumBy.XPATH, '//android.widget.TextView[@text="Unit Converter"]')
 
+    CONVERT_FROM_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(0)')
+    CONVERT_TO_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(1)')
+
+    FROM_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/et_value").instance(0)')
+    TO_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/et_value").instance(1)')
+
+    TITLE = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")')
+
+    CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
+    IN_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(1)')
+
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
     NUM2 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_2"]')
@@ -50,14 +61,47 @@ class UnitConverterPage(BasePage):
         print("Page title: ", page_title)
         return self.exists(self.UNIT_CONVERTER_HEADER), page_title
 
+    def select_from_unit(self, unit):
+        print("Will select the from unit")
+        self.click(self.CONVERT_FROM_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "cm":
+                print("Will click on the cm option")
+                self.click(self.CM_UNIT)
+                print("Clicked on the cm option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_to_unit(self, unit):
+        print("Will select the to unit")
+        self.click(self.CONVERT_TO_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "inches":
+                print("Will click on the inches option")
+                self.click(self.IN_UNIT)
+                print("Clicked on the inches option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
     def convert_cm_inches(self, number1):
         print("Will convert cm to inches")
         print("Clearing previous input")
         self.click(self.CLEAR_BTN)
 
-        print(f"Clicked on the Clear button - will enter {number1}")
+        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
+        self.select_from_unit('cm')
+        print("Selected 'cm' for the from field - will select 'inches' for the to field")
+        self.select_to_unit('inches')
+        print(f"Selected inches for the to field - will enter {number1} into the cm field")
+        self.click(self.FROM_FIELD)
         self.enter_number(number1)
-        print(f"Entered {number1} - will check the inches value")
+        print(f"Entered {number1} into the cm field - will check the inches value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
