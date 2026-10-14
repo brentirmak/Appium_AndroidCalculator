@@ -218,3 +218,20 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_meter_to_cm(self, number1):
+        print("Will convert meter to cm")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
+        self.select_from_unit('meter')
+        print("Selected 'meter' for the from field - will select 'cm' for the to field")
+        self.select_to_unit('cm')
+        print(f"Selected cm for the to field - will enter {number1} into the meter field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the meter field - will check the cm value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
