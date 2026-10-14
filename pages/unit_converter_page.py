@@ -1,5 +1,6 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+import time
 
 class UnitConverterPage(BasePage):
 
@@ -21,13 +22,9 @@ class UnitConverterPage(BasePage):
     CAL_BUTTON = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_cal"]')
     XCHANGE_BUTTON = (AppiumBy.XPATH,'//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_exchange"]')
     DELETE_IMG = (AppiumBy.XPATH,'//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_delete"]')
-    CLEAR_BTN = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_clear"]')
+    CLEAR_BTN = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac"]')
 
-
-    #RESULT1 = (AppiumBy.XPATH, '//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value" and @text="4.3307"]')
-    #RESULT1 = (AppiumBy.XPATH,'//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value"][2]')
     RESULT1 = (AppiumBy.XPATH,'(//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value"])[2]',)
-    #RESULT1 = (AppiumBy.XPATH,'//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value" and @text="157.48"]')
 
     def enter_number(self, number):
         digits = {
@@ -55,9 +52,8 @@ class UnitConverterPage(BasePage):
 
     def convert_cm_inches(self, number1):
         print("Will convert cm to inches")
-        if self.exists(self.DELETE_IMG):
-            print("Clearing previous input")
-            self.click(self.CLEAR_BTN)
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
 
         print(f"Clicked on the Clear button - will enter {number1}")
         self.enter_number(number1)
