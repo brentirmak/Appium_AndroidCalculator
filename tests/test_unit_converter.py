@@ -165,3 +165,17 @@ def test_perform_meter_to_inch_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMeterToInchConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_meter_to_km_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MeterToKm Conversion1"):
+        try:
+            print("Will calculate the length in km")
+            output = unit_converter_page.convert_meter_to_km("8900")
+            print("Calculated the length - will confirm it's 8.9 km")
+            assert output == "8.9", f"Expected 8.9 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMeterToKmConversion1")
+            raise
