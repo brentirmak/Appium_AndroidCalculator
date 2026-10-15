@@ -193,3 +193,17 @@ def test_perform_meter_to_mile_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMeterToMileConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_meter_to_yard_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MeterToYard Conversion1"):
+        try:
+            print("Will calculate the length in yard(s)")
+            output = unit_converter_page.convert_meter_to_mile("95")
+            print("Calculated the length - will confirm it's 103.89326 mile(s)")
+            assert output == "103.89326", f"Expected 103.89326 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMeterToYardConversion1")
+            raise

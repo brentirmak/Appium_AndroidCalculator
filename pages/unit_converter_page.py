@@ -311,3 +311,20 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_meter_to_yard(self, number1):
+        print("Will convert meter to yard")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
+        self.select_from_unit('meter')
+        print("Selected 'meter' for the from field - will select 'yard' for the to field")
+        self.select_to_unit('yd')
+        print(f"Selected km for the to field - will enter {number1} into the meter field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the meter field - will check the yard value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
