@@ -179,3 +179,17 @@ def test_perform_meter_to_km_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMeterToKmConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_meter_to_mile_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MeterToMile Conversion1"):
+        try:
+            print("Will calculate the length in mile")
+            output = unit_converter_page.convert_meter_to_mile("317064")
+            print("Calculated the length - will confirm it's 197.014375 mile(s)")
+            assert output == "197.014375", f"Expected 197.014375 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMeterToMileConversion1")
+            raise

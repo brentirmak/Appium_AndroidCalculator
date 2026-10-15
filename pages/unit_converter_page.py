@@ -21,6 +21,7 @@ class UnitConverterPage(BasePage):
     KM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(3)')
     MI_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(4)')
     YD_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(5)')
+    FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(5)')
 
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
@@ -88,6 +89,18 @@ class UnitConverterPage(BasePage):
                 print("Will click on the kilometer option")
                 self.click(self.KM_UNIT)
                 print("Clicked on the kilometer option")
+            if unit == "mile":
+                print("Will click on the mile option")
+                self.click(self.MI_UNIT)
+                print("Clicked on the mile option")
+            if unit == "yd":
+                print("Will click on the yard option")
+                self.click(self.YD_UNIT)
+                print("Clicked on the yard option")
+            if unit == "ft":
+                print("Will click on the foot option")
+                self.click(self.FT_UNIT)
+                print("Clicked on the foot option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -114,6 +127,18 @@ class UnitConverterPage(BasePage):
                 print("Will click on the kilometer option")
                 self.click(self.KM_UNIT)
                 print("Clicked on the kilometer option")
+            if unit == "mile":
+                print("Will click on the mile option")
+                self.click(self.MI_UNIT)
+                print("Clicked on the mile option")
+            if unit == "yd":
+                print("Will click on the yard option")
+                self.click(self.YD_UNIT)
+                print("Clicked on the yard option")
+            if unit == "ft":
+                print("Will click on the foot option")
+                self.click(self.FT_UNIT)
+                print("Clicked on the foot option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -261,11 +286,28 @@ class UnitConverterPage(BasePage):
         print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
         self.select_from_unit('meter')
         print("Selected 'meter' for the from field - will select 'km' for the to field")
-        self.select_to_unit('km')
+        self.select_to_unit('kilometer')
         print(f"Selected km for the to field - will enter {number1} into the meter field")
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the meter field - will check the km value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_meter_to_mile(self, number1):
+        print("Will convert meter to mile")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
+        self.select_from_unit('meter')
+        print("Selected 'meter' for the from field - will select 'mile' for the to field")
+        self.select_to_unit('mile')
+        print(f"Selected km for the to field - will enter {number1} into the meter field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the meter field - will check the mile value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
