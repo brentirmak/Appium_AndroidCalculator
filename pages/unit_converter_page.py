@@ -566,3 +566,37 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_yards_to_cm(self, number1):
+        print("Will convert yards to cm")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'cm' for the to field")
+        self.select_to_unit('cm')
+        print(f"Selected cm for the to field - will enter {number1} into the yards field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the cm value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_yards_to_inches(self, number1):
+        print("Will convert yards to inches")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'inches' for the to field")
+        self.select_to_unit('inches')
+        print(f"Selected inches for the to field - will enter {number1} into the yards field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the inches value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
