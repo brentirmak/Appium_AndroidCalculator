@@ -379,3 +379,45 @@ def test_perform_miles_to_inches_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMilesToInchesConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_miles_to_meters_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MilesToMeters Conversion1"):
+        try:
+            print("Will calculate the length in meters")
+            output = unit_converter_page.convert_miles_to_meters("3.55")
+            print("Calculated the length - will confirm it's 5,713.17297 meter(s)")
+            assert output == "5,713.17297", f"Expected 5,713.17297 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMilesToMetersConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_miles_to_km_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MilesToKm Conversion1"):
+        try:
+            print("Will calculate the length in kilometers")
+            output = unit_converter_page.convert_miles_to_kilometers("1")
+            print("Calculated the length - will confirm it's 1.60934 meter(s)")
+            assert output == "1.60934", f"Expected 1.60934 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMilesToKmConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_miles_to_yd_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MilesToYd Conversion1"):
+        try:
+            print("Will calculate the length in yard(s)")
+            output = unit_converter_page.convert_miles_to_yards("60")
+            print("Calculated the length - will confirm it's 105,600.03267 yard(s)")
+            assert output == "105,600.03267", f"Expected 105,600.03267 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMilesToYdConversion1")
+            raise
