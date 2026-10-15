@@ -113,6 +113,20 @@ def test_perform_cm_to_mile_conversion1(driver):
             capture_error_snapshot(driver, "PerformCmToMileConversion1")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_cm_to_yard_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform CmToYard Conversion1"):
+        try:
+            print("Will calculate the length in yard(s)")
+            output = unit_converter_page.convert_cm_to_yards("395")
+            print("Calculated the length - will confirm it's 4.31977 yard(s)")
+            assert output == "4.31977", f"Expected 4.31977 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCmToYardConversion1")
+            raise
+
 ############################################################################################
 # INCHES
 ############################################################################################
@@ -156,6 +170,20 @@ def test_perform_in_to_km_conversion1(driver):
             assert output == "1.75113", f"Expected 1.75113 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformInchToKmConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_in_to_mile_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform InchToMile Conversion1"):
+        try:
+            print("Will calculate the length in mile(s)")
+            output = unit_converter_page.convert_inch_to_mile("214683")
+            print("Calculated the length - will confirm it's 3.38831 km(s)")
+            assert output == "3.38831", f"Expected 3.38831 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformInchToMileConversion1")
             raise
 
 @pytest.mark.timeout(175)
