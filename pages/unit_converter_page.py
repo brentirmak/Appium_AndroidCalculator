@@ -21,7 +21,10 @@ class UnitConverterPage(BasePage):
     KM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(3)')
     MI_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(4)')
     YD_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(5)')
-    FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(5)')
+    FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(6)')
+    MM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(7)')
+    DM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(8)')
+
 
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
@@ -631,6 +634,40 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the yards field - will check the kilometer(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_yards_to_miles(self, number1):
+        print("Will convert yards to miles")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'miles' for the to field")
+        self.select_to_unit('mile')
+        print(f"Selected miles for the to field - will enter {number1} into the yards field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the mile(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_yards_to_ft(self, number1):
+        print("Will convert yards to ft")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'ft' for the to field")
+        self.select_to_unit('ft')
+        print(f"Selected yards for the to field - will enter {number1} into the ft field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the ft value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text

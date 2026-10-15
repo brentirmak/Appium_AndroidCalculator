@@ -481,3 +481,31 @@ def test_perform_yards_to_kilometers_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformYardsToKmConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_yards_to_miles_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform YardsToMiles Conversion1"):
+        try:
+            print("Will calculate the length in miles")
+            output = unit_converter_page.convert_yards_to_miles("967")
+            print("Calculated the length - will confirm it's 0.54943 mile(s)")
+            assert output == "0.54943", f"Expected 0.54943 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformYardsToMiles")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_yards_to_ft_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform YardsToFt Conversion1"):
+        try:
+            print("Will calculate the length in ft")
+            output = unit_converter_page.convert_yards_to_ft("2380")
+            print("Calculated the length - will confirm it's 7,140 mile(s)")
+            assert output == "7,140", f"Expected 7,140 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformYardsToFt")
+            raise
