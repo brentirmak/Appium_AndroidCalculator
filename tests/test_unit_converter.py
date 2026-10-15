@@ -201,7 +201,7 @@ def test_perform_meter_to_yard_conversion1(driver):
     with appium_transaction("Perform MeterToYard Conversion1"):
         try:
             print("Will calculate the length in yard(s)")
-            output = unit_converter_page.convert_meter_to_mile("95")
+            output = unit_converter_page.convert_meter_to_yard("95")
             print("Calculated the length - will confirm it's 103.89326 mile(s)")
             assert output == "103.89326", f"Expected 103.89326 but got {output}"
         except Exception:
