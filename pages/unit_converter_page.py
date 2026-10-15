@@ -295,6 +295,23 @@ class UnitConverterPage(BasePage):
         result_element = self.find(self.RESULT1)
         return result_element.text
 
+    def convert_inch_to_yard(self, number1):
+        print("Will convert inch to yard")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
+        self.select_from_unit('inches')
+        print("Selected 'inch' for the from field - will select 'yard' for the to field")
+        self.select_to_unit('yd')
+        print(f"Selected mile for the to field - will enter {number1} into the inches field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the inch field - will check the yard(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
     def convert_meter_to_cm(self, number1):
         print("Will convert meter to cm")
         print("Clearing previous input")
@@ -376,6 +393,40 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the meter field - will check the yard value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_km_to_cm(self, number1):
+        print("Will convert km to cm")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
+        self.select_from_unit('kilometer')
+        print("Selected 'km' for the from field - will select 'cm' for the to field")
+        self.select_to_unit('cm')
+        print(f"Selected cm for the to field - will enter {number1} into the km field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the km field - will check the cm value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_km_to_inches(self, number1):
+        print("Will convert km to inches")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
+        self.select_from_unit('kilometer')
+        print("Selected 'km' for the from field - will select 'inches' for the to field")
+        self.select_to_unit('inches')
+        print(f"Selected inches for the to field - will enter {number1} into the km field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the km field - will check the inches value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
