@@ -600,3 +600,37 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_yards_to_meters(self, number1):
+        print("Will convert yards to meters")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'meter' for the to field")
+        self.select_to_unit('meter')
+        print(f"Selected meter for the to field - will enter {number1} into the yards field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the meters value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_yards_to_kilometers(self, number1):
+        print("Will convert yards to kilometers")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
+        self.select_from_unit('yd')
+        print("Selected 'yards' for the from field - will select 'kilometer' for the to field")
+        self.select_to_unit('kilometer')
+        print(f"Selected kilometer for the to field - will enter {number1} into the yards field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the yards field - will check the kilometer(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
