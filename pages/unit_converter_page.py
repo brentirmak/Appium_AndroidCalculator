@@ -430,3 +430,88 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_km_to_meters(self, number1):
+        print("Will convert km to meters")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
+        self.select_from_unit('kilometer')
+        print("Selected 'km' for the from field - will select 'meters' for the to field")
+        self.select_to_unit('meter')
+        print(f"Selected meters for the to field - will enter {number1} into the km field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the km field - will check the meters value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_km_to_miles(self, number1):
+        print("Will convert km to miles")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
+        self.select_from_unit('kilometer')
+        print("Selected 'km' for the from field - will select 'meters' for the to field")
+        self.select_to_unit('mile')
+        print(f"Selected miles for the to field - will enter {number1} into the km field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the km field - will check the mile(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_km_to_yd(self, number1):
+        print("Will convert km to yards")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
+        self.select_from_unit('kilometer')
+        print("Selected 'km' for the from field - will select 'yd' for the to field")
+        self.select_to_unit('yd')
+        print(f"Selected yards for the to field - will enter {number1} into the km field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the km field - will check the yard(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_miles_to_cm(self, number1):
+        print("Will convert miles to cm")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
+        self.select_from_unit('mile')
+        print("Selected 'miles' for the from field - will select 'cm' for the to field")
+        self.select_to_unit('cm')
+        print(f"Selected cm for the to field - will enter {number1} into the miles field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the miles field - will check the cm value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_miles_to_inches(self, number1):
+        print("Will convert miles to inches")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
+        self.select_from_unit('mile')
+        print("Selected 'miles' for the from field - will select 'cm' for the to field")
+        self.select_to_unit('inches')
+        print(f"Selected inches for the to field - will enter {number1} into the miles field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the miles field - will check the inches value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
