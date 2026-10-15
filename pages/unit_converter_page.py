@@ -193,6 +193,23 @@ class UnitConverterPage(BasePage):
         result_element = self.find(self.RESULT1)
         return result_element.text
 
+    def convert_cm_to_mile(self, number1):
+        print("Will convert cm to mile")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
+        self.select_from_unit('cm')
+        print("Selected 'cm' for the from field - will select 'mile' for the to field")
+        self.select_to_unit('mile')
+        print(f"Selected kilometers for the to field - will enter {number1} into the cm field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the cm field - will check the mile(s) value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
     def convert_inch_to_cm(self, number1):
         print("Will convert inch to cm")
         print("Clearing previous input")

@@ -26,6 +26,9 @@ def test_access_unit_converter(driver):
             capture_error_snapshot(driver, "AccessUnitConverter")
             raise
 
+############################################################################################
+# CM
+############################################################################################
 @pytest.mark.timeout(175)
 def test_perform_cm_to_in_conversion1(driver):
     unit_converter_page = UnitConverterPage(driver)
@@ -96,6 +99,23 @@ def test_perform_cm_to_km_conversion1(driver):
             capture_error_snapshot(driver, "PerformCmToKMConversion1")
             raise
 
+@pytest.mark.timeout(175)
+def test_perform_cm_to_mile_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform CmToMile Conversion1"):
+        try:
+            print("Will calculate the length in mile(s)")
+            output = unit_converter_page.convert_cm_to_mile("247508")
+            print("Calculated the length - will confirm it's 1.53794 mile(s)")
+            assert output == "1.53794", f"Expected 1.53794 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCmToMileConversion1")
+            raise
+
+############################################################################################
+# INCHES
+############################################################################################
 @pytest.mark.timeout(175)
 def test_perform_in_to_cm_conversion1(driver):
     unit_converter_page = UnitConverterPage(driver)
