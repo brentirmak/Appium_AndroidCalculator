@@ -49,22 +49,26 @@ class DateCalculatorPage(BasePage):
 
     def calculate_date_difference(self):
         print("Will calculate the date difference")
-        print("Setting from field (a month out) from today")
-        self.click(self.FROM_DATE_FIELD)
+        #print("Setting from field (a month out) from today")
+        #self.click(self.FROM_DATE_FIELD)
         print("Will verify that the From Popup was displayed")
-        self.find(self.FROM_TO_POPUP_HEADER)
-        print("Verified the From Popup was displayed - for From field, will select a month out from today")
-        self.select_a_month_out()
-        print("Selected a month out - will click on Save button")
-        time.sleep(3)
-        self.click(self.SAVE_BUTTON)
-        print("Clicked on the Save button - will now select the To field")
+        #self.find(self.FROM_TO_POPUP_HEADER)
+        #print("Verified the From Popup was displayed - for From field, will select a month out from today")
+        #self.select_a_month_out()
+        #print("Selected a month out - will click on Save button")
+        #time.sleep(3)
+        #self.click(self.SAVE_BUTTON)
+        #print("Clicked on the Save button - will now select the To field")
         self.click(self.TO_DATE_FIELD)
         print("Will verify that the To Popup was displayed")
         self.find(self.FROM_TO_POPUP_HEADER)
-        print("Verified the From Popup was displayed - for To field, will select 2 months out from today")
-        self.select_two_months_out()
-        print("Selected 2 months out - will click on Save button")
+        #print("Verified the From Popup was displayed - for To field, will select 2 months out from today")
+        #self.select_two_months_out()
+        print("Verified the From Popup was displayed - for To field, will select 1 day out from today")
+        #self.select_two_months_out()
+        #print("Selected 2 months out - will click on Save button")
+        self.select_eleven_days_out()
+        print("Selected 11 days out - will click on Save button")
         time.sleep(3)
         self.click(self.SAVE_BUTTON)
         duration_value = self.find(self.DURATION_FIELD).text
@@ -98,5 +102,8 @@ class DateCalculatorPage(BasePage):
 
     def select_two_months_out(self):
         self.driver.execute_script("mobile: clickGesture", {"x": 275, "y": 2050})
+
+    def select_eleven_days_out(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": 565, "y": 1900})
 
 

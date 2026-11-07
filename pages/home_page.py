@@ -58,6 +58,7 @@ class HomePage(BasePage):
                     if close_icon.is_displayed():
                         print("Close icon is displayed - we should click on it to close it")
                         close_icon.click()
+                        print("Clicked on the close icon and closed it - setting home_loaded to True")
                         home_loaded = True
                 except:
                     print("Close icon not found yet")

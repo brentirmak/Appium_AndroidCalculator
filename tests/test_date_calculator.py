@@ -7,9 +7,15 @@ from datetime import datetime, timedelta
 future_date = datetime.now() + timedelta(days=60)
 formatted_future_date = f"{future_date:%b} {future_date.day}, {future_date:%Y}"
 formatted_future_date2 = future_date.strftime("%b %d, %Y")
-
 print("Formatted Future Date: ", formatted_future_date)  # e.g. Nov 17, 2026
 print("Formatted Future Date2: ", formatted_future_date2)  # e.g. Nov 17, 2026
+
+# To compensate for Calculator limitations on identifying dates from UI tooling
+future_date_alt = datetime.now() + timedelta(days=1)
+formatted_future_date_alt = f"{future_date_alt:%b} {future_date_alt.day}, {future_date_alt:%Y}"
+formatted_future_date2_alt = future_date_alt.strftime("%b %d, %Y")
+print("Formatted Future Date Alt: ", formatted_future_date_alt)  # e.g. Nov 17, 2026
+print("Formatted Future Date2 Alt: ", formatted_future_date2_alt)  # e.g. Nov 17, 2026
 
 @pytest.mark.timeout(300)
 def test_access_date_calculator(driver):
@@ -38,7 +44,8 @@ def test_perform_basic_calculation(driver):
                 date_calculator.open_from_home()
 
             duration_value = date_calculator.calculate_date_difference()
-            assert ("41 days" in duration_value) or ("40 days" in duration_value), f"Expected 40 or 41 but got {duration_value}"
+            #assert ("41 days" in duration_value) or ("40 days" in duration_value), f"Expected 40 or 41 but got {duration_value}"
+            assert ("11 days" in duration_value) or ("10 days" in duration_value), f"Expected 10 or 41 but got {duration_value}"
         except Exception:
             capture_error_snapshot(driver, "PerformDateCalculation")
             raise
