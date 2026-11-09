@@ -47,9 +47,7 @@ def store_transaction_result(test_name, transaction, status, duration, timestamp
         cursor.close()
         conn.close()
 
-        print(
-            f"MySQL: Stored result for {test_name} - {transaction} ({status})\n"
-        )
+        print(f"MySQL: Stored result for {test_name} - {transaction} ({status})")
 
     except Exception as e:
         print(f"MySQL logging failed: {e}")
