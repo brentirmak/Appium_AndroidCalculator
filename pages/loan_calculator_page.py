@@ -6,7 +6,8 @@ class LoanCalculatorPage(BasePage):
 
     HOME_ICON_LOAN_CALC = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Loan Calculator")')
     # Loan
-    HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")')
+    #HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")')
+    HEADER = (AppiumBy.XPATH, '//android.widget.TextView[@text="Loan"]')
     # expect(self.HEADER).to_have_text("Loan")
     # Repayment Method
     REPAYMENT_METHOD_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR,
@@ -22,6 +23,7 @@ class LoanCalculatorPage(BasePage):
     NUM7 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_7"]')
     NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_8"]')
     NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_9"]')
+    EQUAL_BUTTON = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_equal"]')
     CLEAR_BUTTON = (AppiumBy.XPATH, '//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac"]')
     OK_BUTTON = (AppiumBy.XPATH, '//android.widget.ImageView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ok"]')
     SAVE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")')
@@ -70,7 +72,9 @@ class LoanCalculatorPage(BasePage):
                 print("Will click on '0'")
                 self.click(self.NUM0)
                 print("Clicked on '0'")
+        print("Entered the loan principal - will now click on the OK button")
         self.click(self.OK_BUTTON)
+        print("Clicked on the OK button")
 
     def enter_interest(self, interest):
         print("Will enter the interest")
@@ -122,11 +126,16 @@ class LoanCalculatorPage(BasePage):
 
         print("Will enter the loan principle")
         self.enter_loan_principal(100)
+        #self.click(self.OK_BUTTON)
         #print("Entered the loan principle - will now enter the interest")
         #self.enter_interest(5)
+        #self.click(self.OK_BUTTON)
+        #print("Entered the interest - will click on the EQUAL button")
+        #self.click(self.EQUAL_BUTTON)
+        #print("Clicked on the EQUAL button")
         #print("Entered the interest - will enter the term")
         #self.enter_term()
-
+        print("Will capture the total interest")
         return self.find(self.TOTAL_INTEREST).text
 
     def calculate_equal_total_payment_repayment_loan(self):
