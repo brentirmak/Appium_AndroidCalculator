@@ -12,6 +12,12 @@ mysql_host = os.getenv("MYSQL_URL")
 mysql_username = os.getenv("MYSQL_USERNAME")
 mysql_password = os.getenv("MYSQL_PASSWORD")
 
+if not all([mysql_host, mysql_username, mysql_password]):
+    raise RuntimeError(
+        "Missing MySQL environment variables. "
+        "Check MYSQL_URL, MYSQL_USERNAME, and MYSQL_PASSWORD."
+    )
+
 def get_run_type():
     if "JENKINS_SERVER_COOKIE" in os.environ or "BUILD_NUMBER" in os.environ:
         return "jenkins"
