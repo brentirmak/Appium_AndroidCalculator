@@ -1,6 +1,11 @@
+import base64
+import json
 import os
+import socket
 import subprocess
 import time
+import urllib.error
+import urllib.request
 from datetime import datetime
 
 import pytest
@@ -24,6 +29,26 @@ SETTLE_STEP_TIMEOUT_SEC = int(os.getenv("SETTLE_STEP_TIMEOUT_SEC", "90"))
 SETTLE_PAUSE_SEC = int(os.getenv("SETTLE_PAUSE_SEC", "15"))
 # 1-minute load average must drop below this; default is 75% of the device cores
 SETTLE_LOAD_THRESHOLD = os.getenv("SETTLE_LOAD_THRESHOLD")
+
+# ---- Email alerting via Resend (all via environment variables; keep secrets out of the repo)
+# Alerts are skipped (with a console note) if RESEND_API_KEY, ALERT_FROM or
+# ALERT_TO is missing, so local runs without credentials are unaffected.
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+RESEND_API_URL = os.getenv("RESEND_API_URL", "https://api.resend.com/emails")
+# Must be on a domain verified in Resend, e.g. "QA Alerts <alerts@yourdomain.com>".
+# (onboarding@resend.dev works for testing, but only delivers to your own Resend account email.)
+ALERT_FROM = os.getenv("ALERT_FROM")
+ALERT_TO = [a.strip() for a in os.getenv("ALERT_TO", "").split(",") if a.strip()]
+ALERT_LABEL = os.getenv("ALERT_LABEL", "APPIUM ANDROID")  # shown in the subject as [LABEL]
+ALERT_MAX_ATTACHMENTS = int(os.getenv("ALERT_MAX_ATTACHMENTS", "10"))
+ALERT_MAX_ATTACHMENT_MB = float(os.getenv("ALERT_MAX_ATTACHMENT_MB", "5"))
+# Resend caps a message at 40 MB after base64 encoding; stay well under that
+ALERT_MAX_TOTAL_MB = float(os.getenv("ALERT_MAX_TOTAL_MB", "20"))
+
+# Collected during the run, summarised in one email from pytest_sessionfinish
+_failures = []
+_abort_reason = None
+_alert_sent = False  # only the FIRST failure of a run triggers an email
 
 
 # ============================================================================
@@ -210,7 +235,13 @@ def force_stop_app():
 # ============================================================================
 
 def _collect_failure_evidence(item, when):
-    """On failure: save ANR entries from the events log, a screenshot and the page source."""
+    """
+    On failure: save ANR entries from the events log, a screenshot and the page source.
+    Returns (list of saved file paths, number of am_anr events) so the email alert
+    can attach the files and mention ANRs.
+    """
+    saved = []
+    anr_count = 0
     try:
         os.makedirs(ARTIFACTS_DIR, exist_ok=True)
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -221,8 +252,10 @@ def _collect_failure_evidence(item, when):
             events = _adb("logcat", "-b", "events", "-d", "-t", "1000").stdout
             anr_lines = [line for line in events.splitlines() if "am_anr" in line]
             if anr_lines:
+                anr_count = len(anr_lines)
                 with open(f"{base}_anr.log", "w") as f:
                     f.write("\n".join(anr_lines))
+                saved.append(f"{base}_anr.log")
                 print(f"\n[ANR] {len(anr_lines)} am_anr event(s) found, saved to {base}_anr.log")
                 print("\n".join(anr_lines[-3:]))
         except Exception as e:
@@ -232,16 +265,170 @@ def _collect_failure_evidence(item, when):
         if driver is not None:
             try:
                 driver.save_screenshot(f"{base}.png")
+                saved.append(f"{base}.png")
             except Exception as e:
                 print(f"Could not save screenshot: {e}")
             try:
                 with open(f"{base}_source.xml", "w", encoding="utf-8") as f:
                     f.write(driver.page_source)
+                saved.append(f"{base}_source.xml")
             except Exception as e:
                 print(f"Could not save page source: {e}")
 
     except Exception as e:
         print(f"Failure evidence collection error: {e}")
+
+    return saved, anr_count
+
+
+# ============================================================================
+# EMAIL ALERTS
+# ============================================================================
+
+def _record_failure(item, report, evidence=None, anr_count=0):
+    """Remember a failure; the first one of the run triggers the email alert immediately."""
+    failure = {
+        "file": os.path.basename(item.nodeid.split("::")[0]),
+        "test": item.name,
+        "name": item.nodeid,
+        "phase": report.when,
+        "error": (report.longreprtext or "")[-1500:],  # trim very long tracebacks
+        "files": list(evidence or []),
+        "anr_count": anr_count,
+    }
+    _failures.append(failure)
+
+    if not _alert_sent:
+        prefix = f"❌ [{ALERT_LABEL}]"
+        headline = f"{prefix} {failure['file']} - First Test Failure: {failure['test']}"
+        _send_alert(headline, failure=failure)
+
+
+def _build_attachments(paths):
+    """
+    Base64-encode evidence files for the Resend API, skipping missing/oversized
+    ones and respecting the per-file, count and total-size limits.
+    """
+    max_file = int(ALERT_MAX_ATTACHMENT_MB * 1024 * 1024)
+    max_total = int(ALERT_MAX_TOTAL_MB * 1024 * 1024)
+    total = 0
+    attachments = []
+    for path in paths:
+        if len(attachments) >= ALERT_MAX_ATTACHMENTS:
+            break
+        try:
+            if not os.path.isfile(path):
+                continue
+            size = os.path.getsize(path)
+            if size > max_file or total + size > max_total:
+                continue
+            with open(path, "rb") as f:
+                content = base64.b64encode(f.read()).decode("ascii")
+            attachments.append({"filename": os.path.basename(path), "content": content})
+            total += size
+        except Exception as e:
+            print(f"Could not attach {path}: {e}")
+    return attachments
+
+
+def _send_email(subject, body, attachments=()):
+    """Send via Resend's HTTP API (https://resend.com/docs/api-reference/emails/send-email)."""
+    payload = {
+        "from": ALERT_FROM,
+        "to": ALERT_TO,
+        "subject": subject,
+        "text": body,
+    }
+    files = _build_attachments(attachments)
+    if files:
+        payload["attachments"] = files
+
+    req = urllib.request.Request(
+        RESEND_API_URL,
+        data=json.dumps(payload).encode("utf-8"),
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {RESEND_API_KEY}",
+            "Content-Type": "application/json",
+            # Resend sits behind Cloudflare, which can reject urllib's default User-Agent
+            "User-Agent": "pytest-appium-alerts/1.0",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8") or "{}")
+    except urllib.error.HTTPError as e:
+        # Surface Resend's error message (bad API key, unverified domain, etc.)
+        detail = e.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Resend API returned HTTP {e.code}: {detail}") from e
+
+
+def _send_alert(headline, failure=None, abort_reason=None, exitstatus=None):
+    """Send the one alert email for this run. Never raises, never changes the test result."""
+    global _alert_sent
+
+    if not (RESEND_API_KEY and ALERT_FROM and ALERT_TO):
+        print("Email alert skipped: RESEND_API_KEY / ALERT_FROM / ALERT_TO not set")
+        return
+
+    _alert_sent = True  # set before sending: a failed send is not retried for later failures
+
+    job = os.getenv("JOB_NAME", "local run")
+    build_number = os.getenv("BUILD_NUMBER")
+    build_url = os.getenv("BUILD_URL", "n/a")  # set by Jenkins
+
+    lines = [
+        headline,
+        "",
+        f"Job:      {job}",
+        f"Build:    {f'#{build_number} ' if build_number else ''}{build_url}",
+        f"Host:     {socket.gethostname()}",
+        f"Device:   {DEVICE_SERIAL or 'default'}",
+        f"App:      {APP_PACKAGE}",
+        f"Time:     {datetime.now():%Y-%m-%d %H:%M:%S}",
+    ]
+    if exitstatus is not None:
+        lines.append(f"Exit:     {int(exitstatus)}")
+    if failure and failure["anr_count"]:
+        lines.append(f"ANRs:     {failure['anr_count']} am_anr event(s) seen at failure time (see attached logs)")
+    if abort_reason:
+        lines += ["", f"Run aborted: {abort_reason}"]
+    lines.append("")
+
+    attachments = []
+    if failure:
+        lines += [f"FAILED ({failure['phase']}): {failure['name']}", failure["error"], "-" * 60]
+        lines += ["", "Note: only the first failure of a run triggers an alert; later failures are not emailed."]
+        attachments = failure["files"]
+
+    try:
+        _send_email(subject=headline, body="\n".join(lines), attachments=attachments)
+        print(f"Alert email sent to: {', '.join(ALERT_TO)}")
+    except Exception as e:
+        print(f"Failed to send alert email: {e}")
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Safety net: if the run ended abnormally (session died, collection error, etc.)
+    without any test failure having already triggered an alert, send one now.
+    """
+    # With pytest-xdist, only the controller should send, not every worker
+    if hasattr(session.config, "workerinput"):
+        return
+    if _alert_sent:
+        return
+
+    abnormal_exit = int(exitstatus) not in (0, 1)  # 1 = tests failed (alert already sent)
+    if not (_abort_reason or abnormal_exit):
+        return
+
+    prefix = f"❌ [{ALERT_LABEL}]"
+    if _abort_reason:
+        headline = f"{prefix} Run Aborted - {_abort_reason}"
+    else:
+        headline = f"{prefix} Run Ended Abnormally (exit code {int(exitstatus)})"
+    _send_alert(headline, abort_reason=_abort_reason, exitstatus=exitstatus)
 
 
 # ============================================================================
@@ -271,12 +458,14 @@ def pytest_runtest_makereport(item, call):
     test_name = item.name
 
     if report.when == "setup" and report.failed:
-        _collect_failure_evidence(item, "setup")
+        evidence, anrs = _collect_failure_evidence(item, "setup")
+        _record_failure(item, report, evidence, anrs)
         _store(test_name, "N/A", "FAIL", "N/A", current_timestamp)
 
     elif report.when == "call":
         if report.failed:
-            _collect_failure_evidence(item, "call")
+            evidence, anrs = _collect_failure_evidence(item, "call")
+            _record_failure(item, report, evidence, anrs)
 
         if report.passed:
             status = "PASS"
@@ -289,6 +478,10 @@ def pytest_runtest_makereport(item, call):
         transaction = getattr(item, "transaction_name", "Execution")
 
         _store(test_name, transaction, status, duration, current_timestamp)
+
+    elif report.when == "teardown" and report.failed:
+        # e.g. the session-scoped driver fixture failing during final cleanup
+        _record_failure(item, report)
 
 
 # ============================================================================
@@ -351,9 +544,12 @@ def session_health(driver):
     Fail fast if the shared session died (e.g. UiAutomator2 crashed after an ANR)
     instead of burning through the remaining tests with confusing errors.
     """
+    global _abort_reason
     try:
         driver.current_activity  # cheap call; raises if the session is dead
     except Exception:
+        # Recorded so the end-of-session email explains why the run stopped early
+        _abort_reason = "Appium session died (likely ANR / UiAutomator2 crash)"
         pytest.exit(
             "Appium session is dead (likely ANR / UiAutomator2 crash). "
             "Check the saved am_anr log in the artifacts directory.",
