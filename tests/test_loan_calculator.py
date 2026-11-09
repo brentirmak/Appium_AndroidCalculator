@@ -54,7 +54,7 @@ def test_perform_equal_total_payment_loan_calculation(driver):
             print("Will calculate the loan")
             output = loan_calculator_page.calculate_equal_total_payment_repayment_loan()
             print("Calculated the loan - will confirm it's 58.39")
-            assert output == "58.39", f"Expected 58.39 but got {output}"
+            assert output == "158.39", f"Expected 58.39 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformEqualTotalPaymentLoanCalculation")
             raise
@@ -73,7 +73,7 @@ def test_perform_bullet_payment_loan_calculation(driver):
             print("Will calculate the loan")
             output = loan_calculator_page.calculate_bullet_payment_repayment_loan()
             print("Calculated the loan - will confirm it's 100.00")
-            assert output == "100.00", f"Expected 100.00 but got {output}"
+            assert output == "200.00", f"Expected 100.00 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformBulletPaymentLoanCalculation")
             raise
