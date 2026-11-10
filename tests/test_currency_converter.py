@@ -59,7 +59,7 @@ def test_perform_gbp_to_lira_conversion(driver):
     with appium_transaction("Perform GBP to TR Lira Currency Conversion"):
         try:
             print("Will calculate the GBP to Turkish Lira")
-            output = currency_converter_page.convert_gbp_to_trl()
+            output = currency_converter_page.convert_gbp_to_trl(100)
 
             output_value = float(output.replace(",", ""))
 

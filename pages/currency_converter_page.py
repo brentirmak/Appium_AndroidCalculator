@@ -112,7 +112,7 @@ class CurrencyConverterPage(BasePage):
         return output
 
 
-    def convert_gbp_to_trl(self):
+    def convert_gbp_to_trl(self, gbp_value):
         print("Will convert GBP to Turkish Lira")
 
         print("Will select the GBP currency option for the 1st field")
@@ -160,13 +160,10 @@ class CurrencyConverterPage(BasePage):
         print("Will click on the C button to clear")
         self.click(self.CLEAR_BUTTON)
         print("Clicked on the C button")
-        print("Will click on the '1' button")
-        self.click(self.NUM1)
-        print("Clicked on the '1' button - will now click on the '0' button")
-        self.click(self.NUM0)
-        print("Clicked on the '0' button - will now click on the '0' button")
-        self.click(self.NUM0)
-        print("Clicked on the '0' button a 2nd time - will click on the Converted to field")
+
+        self.enter_number(gbp_value)
+
+        print("Entered the value for the Converted From field - will click on the Converted to field")
         self.click(self.CONVERTED_TO_FIELD)
 
         output = self.find(self.CONVERSION_RESULT).text
