@@ -34,7 +34,7 @@ def test_perform_usd_to_yen_conversion(driver):
     with appium_transaction("Perform USD to Yen Currency Conversion"):
         try:
             print("Will calculate the USD to Japanese Yen")
-            output = currency_converter_page.convert_usd_to_yen()
+            output = currency_converter_page.convert_usd_to_yen(100)
 
             output_value = float(output.replace(",", ""))
 

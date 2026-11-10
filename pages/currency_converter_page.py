@@ -9,24 +9,23 @@ class CurrencyConverterPage(BasePage):
     CURRENCY_CONVERTER_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Currency Converter")')
     FROM_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(0)')
     CHOOSE_CURRENCY_HEADER = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title" and @text="Choose currency"]')
-
-    SEARCH_CURRENCY_HINT = (
-        AppiumBy.ANDROID_UIAUTOMATOR,
-        'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvInputHint")'
-    )
-    FOCUSED_EDITTEXT = (
-        AppiumBy.ANDROID_UIAUTOMATOR,
-        'new UiSelector().className("android.widget.EditText").focused(true)'
-    )
-
+    SEARCH_CURRENCY_HINT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tvInputHint")')
+    FOCUSED_EDITTEXT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().className("android.widget.EditText").focused(true)')
     SAVE_BUTTON = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/btn_save")')
     CONFIRM_CURRENCY_SELECTION = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().className("android.widget.LinearLayout").instance(1)')
     TO_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(1)')
+    NUM9 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_9"]')
+    NUM8 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_8"]')
+    NUM7 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_7"]')
+    NUM6 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_6"]')
+    NUM5 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_5"]')
+    NUM4 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_4"]')
+    NUM3 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_3"]')
+    NUM2 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_2"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     CONVERTED_TO_FIELD = (AppiumBy.XPATH, '//androidx.recyclerview.widget.RecyclerView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/rv_list"]/android.view.ViewGroup[2]')
     CONVERSION_RESULT = (AppiumBy.XPATH,'(//android.widget.EditText[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/et_value"])[2]')
-
     CLEAR_BUTTON = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_ac"]')
 
     def open_from_home(self):
@@ -41,7 +40,19 @@ class CurrencyConverterPage(BasePage):
         print("Page title: ", page_title)
         return self.exists(self.CURRENCY_CONVERTER_HEADER), page_title
 
-    def convert_usd_to_yen(self):
+    def enter_number(self, number):
+        digits = {
+            "0": self.NUM0, "1": self.NUM1, "2": self.NUM2,
+            "3": self.NUM3, "4": self.NUM4, "5": self.NUM5,
+            "6": self.NUM6, "7": self.NUM7, "8": self.NUM8,
+            "9": self.NUM9,
+        }
+        for digit in str(number):
+            print(f"Will click on '{digit}'")
+            self.click(digits[digit])
+            print(f"Clicked on '{digit}'")
+
+    def convert_usd_to_yen(self, usd_value):
         print("Will convert USD to Japanese YEN")
 
         print("Will select the USD currency option for the 1st field")
@@ -89,13 +100,10 @@ class CurrencyConverterPage(BasePage):
         print("Will click on the C button to clear")
         self.click(self.CLEAR_BUTTON)
         print("Clicked on the C button")
-        print("Will click on the '1' button")
-        self.click(self.NUM1)
-        print("Clicked on the '1' button - will now click on the '0' button")
-        self.click(self.NUM0)
-        print("Clicked on the '0' button - will click on the '0' button again")
-        self.click(self.NUM0)
-        print("Clicked on the '0' button a 2nd time - will click on the Converted to field")
+
+        self.enter_number(usd_value)
+
+        print("Entered the value for the Converted From field - will click on the Converted to field")
         self.click(self.CONVERTED_TO_FIELD)
 
         output = self.find(self.CONVERSION_RESULT).text
