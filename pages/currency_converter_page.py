@@ -188,7 +188,7 @@ class CurrencyConverterPage(BasePage):
 
         time.sleep(2)
 
-        print("Entered GBP into the 1st field - will confirm currency selection")
+        print("Entered USD into the 1st field - will confirm currency selection")
         self.click(self.CONFIRM_CURRENCY_SELECTION)
         print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
@@ -209,7 +209,7 @@ class CurrencyConverterPage(BasePage):
 
         time.sleep(2)
 
-        print("Entered TRY into the 1st field - will confirm currency selection")
+        print("Entered GBP into the 1st field - will confirm currency selection")
         self.click(self.CONFIRM_CURRENCY_SELECTION)
         print("Confirmed currency selection - will now click on the Save button")
         self.click(self.SAVE_BUTTON)
@@ -231,7 +231,65 @@ class CurrencyConverterPage(BasePage):
 
         return output
 
+    # convert_eur_to_mxn
+    def convert_eur_to_mxn(self, eur_value):
+        print("Will convert EUR to MXN")
 
+        print("Will select the EUR currency option for the 1st field")
+        self.click(self.FROM_ARROW)
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("EUR")
+
+        time.sleep(2)
+
+        print("Entered EUR into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
+        self.click(self.SAVE_BUTTON)
+        print("Clicked on the Save button")
+
+        time.sleep(2)
+
+        print("Will select the MXN currency option for the 2nd field")
+        self.click(self.TO_ARROW)
+        print("Clicked on the From Arrow to display the 'Choose Currency' screen")
+        wait = WebDriverWait(self.driver, 10)
+        wait.until(EC.element_to_be_clickable(self.SEARCH_CURRENCY_HINT)).click()
+
+        time.sleep(2)
+
+        field = wait.until(EC.presence_of_element_located(self.FOCUSED_EDITTEXT))
+        field.send_keys("MXN")
+
+        time.sleep(2)
+
+        print("Entered MXN into the 1st field - will confirm currency selection")
+        self.click(self.CONFIRM_CURRENCY_SELECTION)
+        print("Confirmed currency selection - will now click on the Save button")
+        self.click(self.SAVE_BUTTON)
+        print("Clicked on the Save button")
+
+        time.sleep(2)
+
+        print("Will click on the C button to clear")
+        self.click(self.CLEAR_BUTTON)
+        print("Clicked on the C button")
+
+        self.enter_number(eur_value)
+
+        print("Entered the value for the Converted From field - will click on the Converted to field")
+        self.click(self.CONVERTED_TO_FIELD)
+
+        output = self.find(self.CONVERSION_RESULT).text
+        print(f"Conversion result: {output}")
+
+        return output
 
 
 
