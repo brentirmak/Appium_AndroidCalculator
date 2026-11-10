@@ -1,5 +1,4 @@
 import pytest
-import time
 from pages.home_page import HomePage
 from utils.helpers import appium_transaction, capture_error_snapshot
 

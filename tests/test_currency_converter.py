@@ -38,7 +38,7 @@ def test_perform_usd_to_yen_conversion(driver):
 
             output_value = float(output.replace(",", ""))
 
-            print("Calculated the $ conversion- will confirm it's between 15,000 and 16,500 Yen")
+            print("Calculated the $ conversion - will confirm it's between 15,000 and 16,500 Yen")
             assert 15000 <= output_value <= 16500, (
                 f"Expected value between 15,000 and 16,500 but got {output_value}"
             )
@@ -63,10 +63,35 @@ def test_perform_gbp_to_lira_conversion(driver):
 
             output_value = float(output.replace(",", ""))
 
-            print("Calculated the GBP conversion- will confirm it's between 6000 and 7500 Turkish Lira")
+            print("Calculated the GBP conversion - will confirm it's between 6000 and 7500 Turkish Lira")
             assert 6000 <= output_value <= 7500, (
                 f"Expected value between 6000 and 7500 but got {output_value}"
             )
         except Exception:
             capture_error_snapshot(driver, "PerformGBPToTRLiraCurrencyConversion")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_usd_to_gbp_conversion(driver):
+    currency_converter_page = CurrencyConverterPage(driver)
+    side_menu_page = SideMenuPage(driver)
+
+    print("Will open the manu and click on the Currency Converter option")
+    side_menu_page.click_currency_converter()
+    print("Clicked on the Currency Converter option")
+    time.sleep(5)
+
+    with appium_transaction("Perform USD to GBP Currency Conversion"):
+        try:
+            print("Will calculate USD to GBP")
+            output = currency_converter_page.convert_usd_to_gbp()
+
+            output_value = float(output.replace(",", ""))
+
+            print("Calculated the USD conversion - will confirm it's between 65.00 and 80.00 GBP")
+            assert 65.00 <= output_value <= 80.00, (
+                f"Expected value between 65.00 and 80.00 but got {output_value}"
+            )
+        except Exception:
+            capture_error_snapshot(driver, "PerformUSDToGBPCurrencyConversion")
             raise
