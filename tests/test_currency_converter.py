@@ -84,13 +84,13 @@ def test_perform_usd_to_gbp_conversion(driver):
     with appium_transaction("Perform USD to GBP Currency Conversion"):
         try:
             print("Will calculate USD to GBP")
-            output = currency_converter_page.convert_usd_to_gbp()
+            output = currency_converter_page.convert_usd_to_gbp(395)
 
             output_value = float(output.replace(",", ""))
 
-            print("Calculated the USD conversion - will confirm it's between 65.00 and 80.00 GBP")
-            assert 65.00 <= output_value <= 80.00, (
-                f"Expected value between 65.00 and 80.00 but got {output_value}"
+            print("Calculated the USD conversion - will confirm it's between 280.00 and 320.00 GBP")
+            assert 280.00 <= output_value <= 320.00, (
+                f"Expected value between 280.00 and 320.00 but got {output_value}"
             )
         except Exception:
             capture_error_snapshot(driver, "PerformUSDToGBPCurrencyConversion")
