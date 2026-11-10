@@ -34,7 +34,7 @@ def test_perform_usd_to_yen_conversion(driver):
     with appium_transaction("Perform USD to Yen Currency Conversion"):
         try:
             print("Will calculate the USD to Japanese Yen")
-            output = currency_converter_page.convert_usd_to_yen(100)
+            output = currency_converter_page.convert_currency("USD", 100, "YEN")
 
             output_value = float(output.replace(",", ""))
 
@@ -51,7 +51,7 @@ def test_perform_gbp_to_lira_conversion(driver):
     currency_converter_page = CurrencyConverterPage(driver)
     side_menu_page = SideMenuPage(driver)
 
-    print("Will open the manu and click on the Currency Converter option")
+    print("Will open the menu and click on the Currency Converter option")
     side_menu_page.click_currency_converter()
     print("Clicked on the Currency Converter option")
     time.sleep(5)
@@ -59,7 +59,7 @@ def test_perform_gbp_to_lira_conversion(driver):
     with appium_transaction("Perform GBP to TR Lira Currency Conversion"):
         try:
             print("Will calculate the GBP to Turkish Lira")
-            output = currency_converter_page.convert_gbp_to_trl(100)
+            output = currency_converter_page.convert_currency("GBP", 100, "TRY")
 
             output_value = float(output.replace(",", ""))
 
@@ -76,7 +76,7 @@ def test_perform_usd_to_gbp_conversion(driver):
     currency_converter_page = CurrencyConverterPage(driver)
     side_menu_page = SideMenuPage(driver)
 
-    print("Will open the manu and click on the Currency Converter option")
+    print("Will open the menu and click on the Currency Converter option")
     side_menu_page.click_currency_converter()
     print("Clicked on the Currency Converter option")
     time.sleep(5)
@@ -84,7 +84,7 @@ def test_perform_usd_to_gbp_conversion(driver):
     with appium_transaction("Perform USD to GBP Currency Conversion"):
         try:
             print("Will calculate USD to GBP")
-            output = currency_converter_page.convert_usd_to_gbp(395)
+            output = currency_converter_page.convert_currency("USD", 395, "GBP")
 
             output_value = float(output.replace(",", ""))
 
@@ -102,7 +102,7 @@ def test_perform_eur_to_mxn_conversion(driver):
     currency_converter_page = CurrencyConverterPage(driver)
     side_menu_page = SideMenuPage(driver)
 
-    print("Will open the manu and click on the Currency Converter option")
+    print("Will open the menu and click on the Currency Converter option")
     side_menu_page.click_currency_converter()
     print("Clicked on the Currency Converter option")
     time.sleep(5)
@@ -110,13 +110,12 @@ def test_perform_eur_to_mxn_conversion(driver):
     with appium_transaction("Perform EUR to MXN Currency Conversion"):
         try:
             print("Will calculate EUR to MXN")
-            output = currency_converter_page.convert_eur_to_mxn(72695)
-
+            output = currency_converter_page.convert_currency("EUR", 100, "MXN")
             output_value = float(output.replace(",", ""))
 
-            print("Calculated the USD conversion - will confirm it's between 1,000,000 and 1,700,000 MXN")
-            assert 1000000.00 <= output_value <= 1700000.00, (
-                f"Expected value between 1000000 and 1700000 but got {output_value}"
+            print("Calculated the USD conversion - will confirm it's between 1,900 and 2,300 MXN")
+            assert 1900.00 <= output_value <= 2300.00, (
+                f"Expected value between 1,900 and 2,300 but got {output_value}"
             )
         except Exception:
             capture_error_snapshot(driver, "PerformEURToMXNCurrencyConversion")
