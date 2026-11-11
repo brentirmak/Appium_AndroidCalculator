@@ -120,3 +120,51 @@ def test_perform_eur_to_mxn_conversion(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformEURToMXNCurrencyConversion")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_cad_to_aud_conversion(driver):
+    currency_converter_page = CurrencyConverterPage(driver)
+    side_menu_page = SideMenuPage(driver)
+
+    print("Will open the menu and click on the Currency Converter option")
+    side_menu_page.click_currency_converter()
+    print("Clicked on the Currency Converter option")
+    time.sleep(5)
+
+    with appium_transaction("Perform EUR to MXN Currency Conversion"):
+        try:
+            print("Will calculate EUR to MXN")
+            output = currency_converter_page.convert_currency("CAD", 765, "AUD")
+            output_value = float(output.replace(",", ""))
+
+            print("Calculated the USD conversion - will confirm it's between 1,900 and 2,300 MXN")
+            assert 770.0 <= output_value <= 800.0, (
+                f"Expected value between 770.0 and 800.0 but got {output_value}"
+            )
+        except Exception:
+            capture_error_snapshot(driver, "PerformCADToAUDCurrencyConversion")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_cop_to_inr_conversion(driver):
+    currency_converter_page = CurrencyConverterPage(driver)
+    side_menu_page = SideMenuPage(driver)
+
+    print("Will open the menu and click on the Currency Converter option")
+    side_menu_page.click_currency_converter()
+    print("Clicked on the Currency Converter option")
+    time.sleep(5)
+
+    with appium_transaction("Perform COP to INR Currency Conversion"):
+        try:
+            print("Will calculate COP to INR")
+            output = currency_converter_page.convert_currency("COP", 325985, "INR")
+            output_value = float(output.replace(",", ""))
+
+            print("Calculated the COP conversion - will confirm it's between 9,000 and 10,000 INR")
+            assert 9000 <= output_value <= 10000, (
+                f"Expected value between 9000 and 10000 but got {output_value}"
+            )
+        except Exception:
+            capture_error_snapshot(driver, "PerformCOPToINRCurrencyConversion")
+            raise
