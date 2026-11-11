@@ -1,5 +1,7 @@
 from appium.webdriver.common.appiumby import AppiumBy
 from pages.base_page import BasePage
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 
 class UnitConverterPage(BasePage):
@@ -15,6 +17,17 @@ class UnitConverterPage(BasePage):
 
     TITLE = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")')
 
+    # UNIT DROPDOWN
+    CONVERSION_TYPE = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/tv_unit_name"]')
+    CHOOSE_UNIT_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Choose Unit")')
+    LENGTH_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Length")')
+    MASS_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Mass")')
+
+    # MASS
+    KG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("kg")')
+    LB_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("lb")')
+
+    # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
     IN_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(1)')
     M_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(2)')
@@ -24,7 +37,6 @@ class UnitConverterPage(BasePage):
     FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(6)')
     MM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(7)')
     DM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(8)')
-
 
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
@@ -68,6 +80,28 @@ class UnitConverterPage(BasePage):
         page_title = self.find(self.UNIT_CONVERTER_HEADER).text
         print("Page title: ", page_title)
         return self.exists(self.UNIT_CONVERTER_HEADER), page_title
+
+    def click_conversion_type_option(self):
+        print("Will click the conversion type menu")
+        self.click(self.CONVERSION_TYPE)
+        print("Clicked on the Conversion type menu")
+
+    def select_conversion_type_value(self, conversion_type):
+        if conversion_type == "Length":
+            print(f"Will select the {conversion_type} conversion type")
+            self.click(self.LENGTH_OPTION)
+            print(f"Clicked on the {conversion_type} option")
+
+        elif conversion_type == "Mass":
+            print(f"Will select the {conversion_type} conversion type")
+            self.click(self.MASS_OPTION)
+            print(f"Clicked on the {conversion_type} option")
+
+    def get_conversion_type(self):
+        element = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(self.CONVERSION_TYPE)
+        )
+        return element.text
 
     def select_from_unit(self, unit):
         print("Will select the from unit")

@@ -1,0 +1,54 @@
+import pytest
+import time
+from pages.side_menu_page import SideMenuPage
+from pages.home_page import HomePage
+from pages.unit_converter_page import UnitConverterPage
+from utils.helpers import appium_transaction, capture_error_snapshot
+
+@pytest.mark.timeout(300)
+def test_access_unit_converter(driver):
+    side_menu = SideMenuPage(driver)
+    unit_converter_page = UnitConverterPage(driver)
+    home = HomePage(driver)
+
+    with appium_transaction("Access Unit Converter"):
+        print("Checking to see if we're at Home screen")
+        if not home.load_landing_page():
+            print("Not at Home screen")
+        try:
+            print("Will click on the side menu item for Unit Converter")
+            side_menu.go_unit_converter()
+            is_displayed, page_title = unit_converter_page.verify_loaded()
+
+            assert is_displayed, "Unit Converter header is not displayed"
+            assert page_title == "Unit Converter", f"Expected page title 'Unit Converter' but found '{page_title}'"
+
+            unit_converter_page.click_conversion_type_option()
+            unit_converter_page.select_conversion_type_value("Mass")
+
+            conversion_type = unit_converter_page.get_conversion_type()
+            assert conversion_type == "Mass", f"Expected 'Mass' but got '{conversion_type}'"
+
+        except Exception:
+            capture_error_snapshot(driver, "AccessUnitConverter")
+            raise
+
+
+############################################################################################
+# CM
+############################################################################################
+'''
+@pytest.mark.timeout(175)
+def test_perform_cm_to_in_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform CmToIn Conversion1"):
+        try:
+            print("Will calculate the length in inches")
+            output = unit_converter_page.convert_cm_to_inches("400")
+            print("Calculated the length - will confirm it's 157.48 inches")
+            assert output == "157.48", f"Expected 157.48 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformCmToInConversion1")
+            raise
+'''

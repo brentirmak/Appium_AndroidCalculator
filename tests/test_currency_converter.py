@@ -1,3 +1,6 @@
+'''
+11/11/26 - 10 tests
+'''
 import pytest
 import time
 from pages.side_menu_page import SideMenuPage
@@ -22,6 +25,7 @@ def test_access_currency_converter(driver):
 
             assert is_displayed, "Currency Converter header is not displayed"
             assert page_title == "Currency Converter", f"Expected page title 'Currency Converter' but found '{page_title}'"
+
         except Exception:
             capture_error_snapshot(driver, "AccessCurrencyConverter")
             raise
@@ -215,4 +219,28 @@ def test_perform_hkd_to_jpy_conversion(driver):
             )
         except Exception:
             capture_error_snapshot(driver, "PerformHKDToJPYCurrencyConversion")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_try_to_eur_conversion(driver):
+    currency_converter_page = CurrencyConverterPage(driver)
+    side_menu_page = SideMenuPage(driver)
+
+    print("Will open the menu and click on the Currency Converter option")
+    side_menu_page.click_currency_converter()
+    print("Clicked on the Currency Converter option")
+    time.sleep(5)
+
+    with appium_transaction("Perform TRY to EUR Currency Conversion"):
+        try:
+            print("Will calculate TRY to EUR")
+            output = currency_converter_page.convert_currency("TRY", 663311, "EUR")
+            output_value = float(output.replace(",", ""))
+
+            print("Calculated the HKD conversion - will confirm it's between 1850000.00 and 2500000.00 EUR")
+            assert 11500.00 <= output_value <= 12500.00, (
+                f"Expected value between 11500 and 12500 but got {output_value}"
+            )
+        except Exception:
+            capture_error_snapshot(driver, "PerformTRYToEURCurrencyConversion")
             raise

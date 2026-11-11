@@ -22,6 +22,12 @@ def test_access_unit_converter(driver):
 
             assert is_displayed, "Unit Converter header is not displayed"
             assert page_title == "Unit Converter", f"Expected page title 'Unit Converter' but found '{page_title}'"
+
+            unit_converter_page.click_conversion_type_option()
+            unit_converter_page.select_conversion_type_value("Length")
+
+            conversion_type = unit_converter_page.get_conversion_type()
+            assert conversion_type == "Length", f"Expected 'Length' but got '{conversion_type}'"
         except Exception:
             capture_error_snapshot(driver, "AccessUnitConverter")
             raise
