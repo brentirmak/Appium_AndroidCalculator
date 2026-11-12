@@ -325,3 +325,55 @@ def test_perform_mg_to_kg_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMgToKgConversion2")
             raise
+
+def test_perform_mg_to_lb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToLb Conversion1"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_mg_to_lb("916247")
+            print("Calculated the mass - will confirm it's 2.019979 lb")
+            assert output == "2.019979", f"Expected 2.019979 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToLbConversion1")
+            raise
+
+def test_perform_mg_to_lb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToLb Conversion2"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_mg_to_lb("250000")
+            print("Calculated the mass - will confirm it's 0.55116 lb")
+            assert output == "0.55116", f"Expected 0.55116 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToLbConversion2")
+            raise
+
+def test_perform_mg_to_g_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToG Conversion1"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_mg_to_g("10000")
+            print("Calculated the mass - will confirm it's 10 g")
+            assert output == "10", f"Expected 10 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToGConversion1")
+            raise
+
+def test_perform_mg_to_g_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToG Conversion2"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_mg_to_g("123")
+            print("Calculated the mass - will confirm it's 0.123 g")
+            assert output == "0.123", f"Expected 0.123 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToGConversion2")
+            raise
