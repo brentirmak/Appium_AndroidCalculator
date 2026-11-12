@@ -138,6 +138,14 @@ class UnitConverterPage(BasePage):
                 print("Will click on the foot option")
                 self.click(self.FT_UNIT)
                 print("Clicked on the foot option")
+            if unit == "lb":
+                print("Will click on the lb option")
+                self.click(self.LB_UNIT)
+                print("Clicked on the lb option")
+            if unit == "kg":
+                print("Will click on the kg option")
+                self.click(self.KG_UNIT)
+                print("Clicked on the kg option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -176,6 +184,14 @@ class UnitConverterPage(BasePage):
                 print("Will click on the foot option")
                 self.click(self.FT_UNIT)
                 print("Clicked on the foot option")
+            if unit == "lb":
+                print("Will click on the lb option")
+                self.click(self.LB_UNIT)
+                print("Clicked on the lb option")
+            if unit == "kg":
+                print("Will click on the kg option")
+                self.click(self.KG_UNIT)
+                print("Clicked on the kg option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -705,3 +721,22 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_kg_to_lb(self, number1):
+        print("Will convert kg to lb")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
+        self.select_from_unit('kg')
+        print("Selected 'kg' for the from field - will select 'lb' for the to field")
+        self.select_to_unit('lb')
+        print(f"Selected lb for the to field - will enter {number1} into the kg field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the kg field - will check the lb value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+

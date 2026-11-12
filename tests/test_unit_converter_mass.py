@@ -35,20 +35,19 @@ def test_access_unit_converter(driver):
 
 
 ############################################################################################
-# CM
+# KG
 ############################################################################################
-'''
+
 @pytest.mark.timeout(175)
-def test_perform_cm_to_in_conversion1(driver):
+def test_perform_kg_to_lb_conversion1(driver):
     unit_converter_page = UnitConverterPage(driver)
 
-    with appium_transaction("Perform CmToIn Conversion1"):
+    with appium_transaction("Perform KgToLb Conversion1"):
         try:
-            print("Will calculate the length in inches")
-            output = unit_converter_page.convert_cm_to_inches("400")
-            print("Calculated the length - will confirm it's 157.48 inches")
-            assert output == "157.48", f"Expected 157.48 but got {output}"
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_kg_to_lb("2")
+            print("Calculated the mass - will confirm it's 4.40925 lbs")
+            assert output == "4.40925", f"Expected 4.40925 but got {output}"
         except Exception:
-            capture_error_snapshot(driver, "PerformCmToInConversion1")
+            capture_error_snapshot(driver, "PerformKgToLbConversion1")
             raise
-'''
