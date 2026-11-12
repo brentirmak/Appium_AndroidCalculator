@@ -104,3 +104,29 @@ def test_perform_kg_to_g_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformKgTogConversion1")
             raise
+
+def test_perform_kg_to_g_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgTog Conversion2"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_kg_to_g("0.9")
+            print("Calculated the mass - will confirm it's 900 g")
+            assert output == "900", f"Expected 900 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgTogConversion2")
+            raise
+
+def test_perform_kg_to_oz_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToOz Conversion1"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_kg_to_oz("4")
+            print("Calculated the mass - will confirm it's 141.096 oz")
+            assert output == "141.096", f"Expected 141.096 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToOzConversion1")
+            raise

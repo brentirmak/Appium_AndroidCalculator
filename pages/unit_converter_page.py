@@ -29,6 +29,7 @@ class UnitConverterPage(BasePage):
     LB_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("lb")')
     MG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mg")')
     G_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("g")')
+    OZ_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("oz")')
 
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
@@ -157,6 +158,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the g option")
                 self.click(self.G_UNIT)
                 print("Clicked on the g option")
+            if unit == "oz":
+                print("Will click on the oz option")
+                self.click(self.OZ_UNIT)
+                print("Clicked on the oz option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -211,6 +216,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the g option")
                 self.click(self.G_UNIT)
                 print("Clicked on the g option")
+            if unit == "oz":
+                print("Will click on the oz option")
+                self.click(self.OZ_UNIT)
+                print("Clicked on the oz option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -792,3 +801,19 @@ class UnitConverterPage(BasePage):
         result_element = self.find(self.RESULT1)
         return result_element.text
 
+    def convert_kg_to_oz(self, number1):
+        print("Will convert kg to oz")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
+        self.select_from_unit('kg')
+        print("Selected 'kg' for the from field - will select 'oz' for the to field")
+        self.select_to_unit('oz')
+        print(f"Selected oz for the to field - will enter {number1} into the kg field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the kg field - will check the oz value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
