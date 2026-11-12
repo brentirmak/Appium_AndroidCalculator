@@ -247,3 +247,29 @@ def test_perform_lb_to_g_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformLbToGConversion2")
             raise
+
+def test_perform_lb_to_oz_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform LbToOz Conversion1"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_lb_to_oz("0.008")
+            print("Calculated the mass - will confirm it's 0.128 oz")
+            assert output == "0.128", f"Expected 0.128 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLbToOzConversion1")
+            raise
+
+def test_perform_lb_to_oz_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform LbToOz Conversion2"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_lb_to_oz("0.00075")
+            print("Calculated the mass - will confirm it's 0.012 oz")
+            assert output == "0.012", f"Expected 0.012 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLbToOzConversion2")
+            raise
