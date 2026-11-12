@@ -273,3 +273,29 @@ def test_perform_lb_to_oz_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformLbToOzConversion2")
             raise
+
+def test_perform_lb_to_t_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform LbToT Conversion1"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_lb_to_t("689")
+            print("Calculated the mass - will confirm it's 0.31253 t")
+            assert output == "0.31253", f"Expected 0.31253 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLbToTConversion1")
+            raise
+
+def test_perform_lb_to_t_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform LbToT Conversion2"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_lb_to_t("3620")
+            print("Calculated the mass - will confirm it's 1.642 t")
+            assert output == "1.642", f"Expected 1.642 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLbToTConversion2")
+            raise
