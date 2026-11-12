@@ -78,3 +78,16 @@ def test_perform_kg_to_mg_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformKgToMgConversion1")
             raise
+
+def test_perform_kg_to_mg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToMg Conversion2"):
+        try:
+            print("Will calculate the mass in mg")
+            output = unit_converter_page.convert_kg_to_mg("0.35")
+            print("Calculated the mass - will confirm it's 350,000 mg")
+            assert output == "350,000", f"Expected 350,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToMgConversion2")
+            raise
