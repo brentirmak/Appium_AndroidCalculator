@@ -51,3 +51,17 @@ def test_perform_kg_to_lb_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformKgToLbConversion1")
             raise
+
+@pytest.mark.timeout(175)
+def test_perform_kg_to_lb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToLb Conversion2"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_kg_to_lb("950")
+            print("Calculated the mass - will confirm it's 2,094.39149 lbs")
+            assert output == "2,094.39149", f"Expected 2,094.39149 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToLbConversion2")
+            raise
