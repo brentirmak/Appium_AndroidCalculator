@@ -299,3 +299,29 @@ def test_perform_lb_to_t_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformLbToTConversion2")
             raise
+
+def test_perform_mg_to_kg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToKg Conversion1"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_mg_to_kg("1000000")
+            print("Calculated the mass - will confirm it's 1 kg")
+            assert output == "1", f"Expected 1 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToKgConversion1")
+            raise
+
+def test_perform_mg_to_kg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToKg Conversion2"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_mg_to_kg("9725000")
+            print("Calculated the mass - will confirm it's 9.725 kg")
+            assert output == "9.725", f"Expected 9.725 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToKgConversion2")
+            raise
