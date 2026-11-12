@@ -22,11 +22,13 @@ class UnitConverterPage(BasePage):
     CHOOSE_UNIT_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("Choose Unit")')
     LENGTH_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Length")')
     MASS_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Mass")')
+    AREA_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Area")')
 
     # MASS
     KG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("kg")')
     LB_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("lb")')
     MG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mg")')
+    G_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("g")')
 
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
@@ -151,6 +153,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the kg option")
                 self.click(self.KG_UNIT)
                 print("Clicked on the kg option")
+            if unit == "g":
+                print("Will click on the g option")
+                self.click(self.G_UNIT)
+                print("Clicked on the g option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -201,6 +207,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the mg option")
                 self.click(self.MG_UNIT)
                 print("Clicked on the mg option")
+            if unit == "g":
+                print("Will click on the g option")
+                self.click(self.G_UNIT)
+                print("Clicked on the g option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -761,6 +771,23 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the kg field - will check the mg value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_kg_to_g(self, number1):
+        print("Will convert kg to g")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
+        self.select_from_unit('kg')
+        print("Selected 'kg' for the from field - will select 'g' for the to field")
+        self.select_to_unit('g')
+        print(f"Selected g for the to field - will enter {number1} into the kg field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the kg field - will check the g value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
