@@ -130,3 +130,55 @@ def test_perform_kg_to_oz_conversion1(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformKgToOzConversion1")
             raise
+
+def test_perform_kg_to_oz_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToOz Conversion2"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_kg_to_oz("88")
+            print("Calculated the mass - will confirm it's 3,104.112 oz")
+            assert output == "3,104.112", f"Expected 3,104.112 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToOzConversion2")
+            raise
+
+def test_perform_kg_to_t_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToT Conversion1"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_kg_to_t("364855")
+            print("Calculated the mass - will confirm it's 364.855 t")
+            assert output == "364.855", f"Expected 364.855 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToTConversion1")
+            raise
+
+def test_perform_kg_to_t_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KgToT Conversion2"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_kg_to_t("2500")
+            print("Calculated the mass - will confirm it's 2.5 t")
+            assert output == "2.5", f"Expected 2.5 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKgToTConversion2")
+            raise
+
+def test_perform_lb_to_kg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform LbToKg Conversion1"):
+        try:
+            print("Will calculate the mass in Kg")
+            output = unit_converter_page.convert_lb_to_kg("970")
+            print("Calculated the mass - will confirm it's 439.9846 kg")
+            assert output == "439.9846", f"Expected 439.9846 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformLbToKgConversion1")
+            raise

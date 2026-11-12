@@ -30,6 +30,7 @@ class UnitConverterPage(BasePage):
     MG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mg")')
     G_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("g")')
     OZ_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("oz")')
+    TON_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("t")')
 
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
@@ -162,6 +163,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the oz option")
                 self.click(self.OZ_UNIT)
                 print("Clicked on the oz option")
+            if unit == "t":
+                print("Will click on the t option")
+                self.click(self.TON_UNIT)
+                print("Clicked on the t option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -220,6 +225,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the oz option")
                 self.click(self.OZ_UNIT)
                 print("Clicked on the oz option")
+            if unit == "t":
+                print("Will click on the t option")
+                self.click(self.TON_UNIT)
+                print("Clicked on the t option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
@@ -750,6 +759,10 @@ class UnitConverterPage(BasePage):
         result_element = self.find(self.RESULT1)
         return result_element.text
 
+    #**********************************************************************************************
+    # KG
+    #
+
     def convert_kg_to_lb(self, number1):
         print("Will convert kg to lb")
         print("Clearing previous input")
@@ -814,6 +827,43 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(number1)
         print(f"Entered {number1} into the kg field - will check the oz value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_kg_to_t(self, number1):
+        print("Will convert kg to t")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
+        self.select_from_unit('kg')
+        print("Selected 'kg' for the from field - will select 't' for the to field")
+        self.select_to_unit('t')
+        print(f"Selected t for the to field - will enter {number1} into the kg field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the kg field - will check the t value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    #**********************************************************************************************
+    # LB
+    #
+    def convert_lb_to_kg(self, number1):
+        print("Will convert lb to kg")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
+        self.select_from_unit('lb')
+        print("Selected 'lb' for the from field - will select 'kg' for the to field")
+        self.select_to_unit('kg')
+        print(f"Selected kg for the to field - will enter {number1} into the lb field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the lb field - will check the kg value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
