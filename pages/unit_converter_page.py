@@ -1006,3 +1006,20 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_mg_to_t(self, number1):
+        print("Will convert mg to t")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
+        self.select_from_unit('mg')
+        print("Selected 'mg' for the from field - will select 't' for the to field")
+        self.select_to_unit('t')
+        print(f"Selected t for the to field - will enter {number1} into the mg field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the mg field - will check the t value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text

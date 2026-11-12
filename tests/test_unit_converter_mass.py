@@ -403,3 +403,29 @@ def test_perform_mg_to_oz_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformMgToOzConversion2")
             raise
+
+def test_perform_mg_to_t_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToT Conversion1"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_mg_to_t("975000000")
+            print("Calculated the mass - will confirm it's 0.975 t")
+            assert output == "0.975", f"Expected 0.975 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToTConversion1")
+            raise
+
+def test_perform_mg_to_t_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform MgToT Conversion2"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_mg_to_t("350000")
+            print("Calculated the mass - will confirm it's 0.00035 t")
+            assert output == "0.00035", f"Expected 0.00035 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformMgToTConversion2")
+            raise
