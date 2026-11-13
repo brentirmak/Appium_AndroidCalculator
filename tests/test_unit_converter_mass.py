@@ -637,3 +637,29 @@ def test_perform_oz_to_mg_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformOzToMgConversion2")
             raise
+
+def test_perform_oz_to_g_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToG Conversion1"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_oz_to_g("1000")
+            print("Calculated the mass - will confirm it's 28,349.49254 g")
+            assert output == "28,349.49254", f"Expected 28,349.49254 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToGConversion1")
+            raise
+
+def test_perform_oz_to_g_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToG Conversion2"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_oz_to_g("0.8")
+            print("Calculated the mass - will confirm it's 22.67959 g")
+            assert output == "22.67959", f"Expected 22.67959 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToGConversion2")
+            raise

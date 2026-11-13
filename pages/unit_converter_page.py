@@ -1166,3 +1166,20 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_oz_to_g(self, number1):
+        print("Will convert oz to g")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
+        self.select_from_unit('oz')
+        print("Selected 'oz' for the from field - will select 'g' for the to field")
+        self.select_to_unit('g')
+        print(f"Selected g for the to field - will enter {number1} into the oz field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the oz field - will check the g value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
