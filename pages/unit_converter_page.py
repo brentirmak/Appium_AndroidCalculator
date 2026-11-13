@@ -1132,3 +1132,37 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_oz_to_lb(self, number1):
+        print("Will convert oz to lb")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
+        self.select_from_unit('oz')
+        print("Selected 'oz' for the from field - will select 'lb' for the to field")
+        self.select_to_unit('lb')
+        print(f"Selected lb for the to field - will enter {number1} into the oz field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the oz field - will check the lb value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_oz_to_mg(self, number1):
+        print("Will convert oz to mg")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
+        self.select_from_unit('oz')
+        print("Selected 'oz' for the from field - will select 'mg' for the to field")
+        self.select_to_unit('mg')
+        print(f"Selected mg for the to field - will enter {number1} into the oz field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the oz field - will check the mg value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text

@@ -585,3 +585,55 @@ def test_perform_oz_to_kg_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformOzToKgConversion2")
             raise
+
+def test_perform_oz_to_lb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToLb Conversion1"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_oz_to_lb("905")
+            print("Calculated the mass - will confirm it's 55.56244 lb")
+            assert output == "55.56244", f"Expected 55.56244 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToLbConversion1")
+            raise
+
+def test_perform_oz_to_lb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToLb Conversion2"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_oz_to_lb("3891.33")
+            print("Calculated the mass - will confirm it's 243.20786 lb")
+            assert output == "243.20786", f"Expected 243.20786 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToLbConversion2")
+            raise
+
+def test_perform_oz_to_mg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToMg Conversion1"):
+        try:
+            print("Will calculate the mass in mg")
+            output = unit_converter_page.convert_oz_to_mg("0.55")
+            print("Calculated the mass - will confirm it's 15,592.2209 mg")
+            assert output == "15,592.2209", f"Expected 15,592.2209 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToMgConversion1")
+            raise
+
+def test_perform_oz_to_mg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToMg Conversion2"):
+        try:
+            print("Will calculate the mass in mg")
+            output = unit_converter_page.convert_oz_to_mg("0.0095")
+            print("Calculated the mass - will confirm it's 269.32018 mg")
+            assert output == "269.32018", f"Expected 269.32018 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToMgConversion2")
+            raise
