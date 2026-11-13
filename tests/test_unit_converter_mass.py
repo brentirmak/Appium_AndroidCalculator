@@ -689,3 +689,55 @@ def test_perform_oz_to_t_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformOzToTConversion2")
             raise
+
+def test_perform_t_to_kg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToKg Conversion1"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_t_to_kg("1.5")
+            print("Calculated the mass - will confirm it's 1,500 kg")
+            assert output == "1,500", f"Expected 1,500 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToKgConversion1")
+            raise
+
+def test_perform_t_to_kg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToKg Conversion2"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_t_to_kg("0.65")
+            print("Calculated the mass - will confirm it's 650 kg")
+            assert output == "650", f"Expected 650 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToKgConversion2")
+            raise
+
+def test_perform_t_to_lb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToLb Conversion1"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_t_to_lb("0.03")
+            print("Calculated the mass - will confirm it's 66.13868 lb")
+            assert output == "66.13868", f"Expected 66.13868 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToLbConversion1")
+            raise
+
+def test_perform_t_to_lb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToLb Conversion2"):
+        try:
+            print("Will calculate the mass in lb")
+            output = unit_converter_page.convert_t_to_lb("22.8")
+            print("Calculated the mass - will confirm it's 50,265.39578 lb")
+            assert output == "50,265.39578", f"Expected 50,265.39578 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToLbConversion2")
+            raise
