@@ -593,8 +593,8 @@ def test_perform_oz_to_lb_conversion1(driver):
         try:
             print("Will calculate the mass in lb")
             output = unit_converter_page.convert_oz_to_lb("905")
-            print("Calculated the mass - will confirm it's 55.56244 lb")
-            assert output == "55.56244", f"Expected 55.56244 but got {output}"
+            print("Calculated the mass - will confirm it's 56.56244 lb")
+            assert output == "56.56244", f"Expected 56.56244 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformOzToLbConversion1")
             raise
@@ -740,4 +740,82 @@ def test_perform_t_to_lb_conversion2(driver):
             assert output == "50,265.39578", f"Expected 50,265.39578 but got {output}"
         except Exception:
             capture_error_snapshot(driver, "PerformTToLbConversion2")
+            raise
+
+def test_perform_t_to_mg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToMg Conversion1"):
+        try:
+            print("Will calculate the mass in mg")
+            output = unit_converter_page.convert_t_to_mg("0.009")
+            print("Calculated the mass - will confirm it's 9,000,000 mg")
+            assert output == "9,000,000", f"Expected 9,000,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToMgConversion1")
+            raise
+
+def test_perform_t_to_mg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToMg Conversion2"):
+        try:
+            print("Will calculate the mass in mg")
+            output = unit_converter_page.convert_t_to_mg("0.00065")
+            print("Calculated the mass - will confirm it's 650,000 mg")
+            assert output == "650,000", f"Expected 650,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToMgConversion2")
+            raise
+
+def test_perform_t_to_g_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToG Conversion1"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_t_to_g("0.289")
+            print("Calculated the mass - will confirm it's 289,000 g")
+            assert output == "289,000", f"Expected 289,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToGConversion1")
+            raise
+
+def test_perform_t_to_g_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToG Conversion2"):
+        try:
+            print("Will calculate the mass in g")
+            output = unit_converter_page.convert_t_to_g("6.4")
+            print("Calculated the mass - will confirm it's 6,400,000 g")
+            assert output == "6,400,000", f"Expected 6,400,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToGConversion2")
+            raise
+
+def test_perform_t_to_oz_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToOz Conversion1"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_t_to_oz("50")
+            print("Calculated the mass - will confirm it's 1,763,700 oz")
+            assert output == "1,763,700", f"Expected 1,763,700 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToOzConversion1")
+            raise
+
+def test_perform_t_to_oz_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform TToOz Conversion2"):
+        try:
+            print("Will calculate the mass in oz")
+            output = unit_converter_page.convert_t_to_oz("0.115")
+            print("Calculated the mass - will confirm it's 4,056.51 oz")
+            assert output == "4,056.51", f"Expected 4,056.51 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformTToOzConversion2")
             raise

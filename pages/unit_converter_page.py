@@ -1238,3 +1238,54 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    def convert_t_to_mg(self, number1):
+        print("Will convert t to mg")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
+        self.select_from_unit('t')
+        print("Selected 't' for the from field - will select 'mg' for the to field")
+        self.select_to_unit('mg')
+        print(f"Selected mg for the to field - will enter {number1} into the t field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the t field - will check the mg value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_t_to_g(self, number1):
+        print("Will convert t to g")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
+        self.select_from_unit('t')
+        print("Selected 't' for the from field - will select 'g' for the to field")
+        self.select_to_unit('g')
+        print(f"Selected g for the to field - will enter {number1} into the t field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the t field - will check the g value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_t_to_oz(self, number1):
+        print("Will convert t to oz")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
+        self.select_from_unit('t')
+        print("Selected 't' for the from field - will select 'oz' for the to field")
+        self.select_to_unit('oz')
+        print(f"Selected oz for the to field - will enter {number1} into the t field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the t field - will check the oz value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
