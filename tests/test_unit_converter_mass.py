@@ -533,3 +533,55 @@ def test_perform_g_to_oz_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformGToOzConversion2")
             raise
+
+def test_perform_g_to_t_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform GToT Conversion1"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_g_to_t("35000000")
+            print("Calculated the mass - will confirm it's 35 t")
+            assert output == "35", f"Expected 35 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformGToOzConversion1")
+            raise
+
+def test_perform_g_to_t_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform GToT Conversion2"):
+        try:
+            print("Will calculate the mass in t")
+            output = unit_converter_page.convert_g_to_t("275000")
+            print("Calculated the mass - will confirm it's 0.275 t")
+            assert output == "0.275", f"Expected 0.275 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformGToOzConversion2")
+            raise
+
+def test_perform_oz_to_kg_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToKg Conversion1"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_oz_to_kg("3625")
+            print("Calculated the mass - will confirm it's 102.76691 kg")
+            assert output == "102.76691", f"Expected 102.76691 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToKgConversion1")
+            raise
+
+def test_perform_oz_to_kg_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform OzToKg Conversion2"):
+        try:
+            print("Will calculate the mass in kg")
+            output = unit_converter_page.convert_oz_to_kg("490")
+            print("Calculated the mass - will confirm it's 13.89125 kg")
+            assert output == "13.89125", f"Expected 13.89125 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformOzToKgConversion2")
+            raise
