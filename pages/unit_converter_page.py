@@ -1023,3 +1023,40 @@ class UnitConverterPage(BasePage):
 
         result_element = self.find(self.RESULT1)
         return result_element.text
+
+    #**********************************************************************************************
+    # G
+    #
+    def convert_g_to_kg(self, number1):
+        print("Will convert g to kg")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
+        self.select_from_unit('g')
+        print("Selected 'gg' for the from field - will select 'kg' for the to field")
+        self.select_to_unit('kg')
+        print(f"Selected kg for the to field - will enter {number1} into the g field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the g field - will check the kg value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_g_to_lb(self, number1):
+        print("Will convert g to lb")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
+        self.select_from_unit('g')
+        print("Selected 'g' for the from field - will select 'lb' for the to field")
+        self.select_to_unit('lb')
+        print(f"Selected lb for the to field - will enter {number1} into the g field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(number1)
+        print(f"Entered {number1} into the g field - will check the lb value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
