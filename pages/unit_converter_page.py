@@ -8,13 +8,10 @@ class UnitConverterPage(BasePage):
 
     UNIT_CONVERTER_HEADER = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Unit Converter")')
     HOME_ICON_UNIT_CONVERTER = (AppiumBy.XPATH, '//android.widget.TextView[@text="Unit Converter"]')
-
     CONVERT_FROM_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(0)')
     CONVERT_TO_ARROW = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/iv_arrow").instance(1)')
-
     FROM_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/et_value").instance(0)')
     TO_FIELD = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/et_value").instance(1)')
-
     TITLE = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/tv_title")')
 
     # UNIT DROPDOWN
@@ -43,6 +40,7 @@ class UnitConverterPage(BasePage):
     MM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(7)')
     DM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(8)')
 
+    # CALCULATOR KEYS
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
     NUM1 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_1"]')
     NUM2 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_2"]')
@@ -108,7 +106,7 @@ class UnitConverterPage(BasePage):
         )
         return element.text
 
-    def select_from_unit(self, unit):
+    def select_length_from_unit(self, unit):
         print("Will select the from unit")
         self.click(self.CONVERT_FROM_ARROW)
         print("Will verify that the title is 'Choose Unit'")
@@ -143,34 +141,10 @@ class UnitConverterPage(BasePage):
                 print("Will click on the foot option")
                 self.click(self.FT_UNIT)
                 print("Clicked on the foot option")
-            if unit == "lb":
-                print("Will click on the lb option")
-                self.click(self.LB_UNIT)
-                print("Clicked on the lb option")
-            if unit == "mg":
-                print("Will click on the mg option")
-                self.click(self.MG_UNIT)
-                print("Clicked on the mg option")
-            if unit == "kg":
-                print("Will click on the kg option")
-                self.click(self.KG_UNIT)
-                print("Clicked on the kg option")
-            if unit == "g":
-                print("Will click on the g option")
-                self.click(self.G_UNIT)
-                print("Clicked on the g option")
-            if unit == "oz":
-                print("Will click on the oz option")
-                self.click(self.OZ_UNIT)
-                print("Clicked on the oz option")
-            if unit == "t":
-                print("Will click on the t option")
-                self.click(self.TON_UNIT)
-                print("Clicked on the t option")
         else:
             print("We are NOT on the 'Choose Unit' page")
 
-    def select_to_unit(self, unit):
+    def select_length_to_unit(self, unit):
         print("Will select the to unit")
         self.click(self.CONVERT_TO_ARROW)
         print("Will verify that the title is 'Choose Unit'")
@@ -205,6 +179,50 @@ class UnitConverterPage(BasePage):
                 print("Will click on the foot option")
                 self.click(self.FT_UNIT)
                 print("Clicked on the foot option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_mass_from_unit(self, unit):
+        print("Will select the from unit")
+        self.click(self.CONVERT_FROM_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "lb":
+                print("Will click on the lb option")
+                self.click(self.LB_UNIT)
+                print("Clicked on the lb option")
+            if unit == "mg":
+                print("Will click on the mg option")
+                self.click(self.MG_UNIT)
+                print("Clicked on the mg option")
+            if unit == "kg":
+                print("Will click on the kg option")
+                self.click(self.KG_UNIT)
+                print("Clicked on the kg option")
+            if unit == "g":
+                print("Will click on the g option")
+                self.click(self.G_UNIT)
+                print("Clicked on the g option")
+            if unit == "oz":
+                print("Will click on the oz option")
+                self.click(self.OZ_UNIT)
+                print("Clicked on the oz option")
+            if unit == "t":
+                print("Will click on the t option")
+                self.click(self.TON_UNIT)
+                print("Clicked on the t option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_mass_to_unit(self, unit):
+        print("Will select the to unit")
+        self.click(self.CONVERT_TO_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
             if unit == "kg":
                 print("Will click on the kg option")
                 self.click(self.KG_UNIT)
@@ -232,1060 +250,36 @@ class UnitConverterPage(BasePage):
         else:
             print("We are NOT on the 'Choose Unit' page")
 
-    def convert_cm_to_inches(self, number1):
-        print("Will convert cm to inches")
+    def convert_length(self,length_from, length_from_value, length_to):
+        print(f"Will convert {length_from} to {length_to}")
         print("Clearing previous input")
         self.click(self.CLEAR_BTN)
 
-        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
-        self.select_from_unit('cm')
-        print("Selected 'cm' for the from field - will select 'inches' for the to field")
-        self.select_to_unit('inches')
-        print(f"Selected inches for the to field - will enter {number1} into the cm field")
+        print(f"Clicked on the Clear button - will make sure {length_from} is selected for the from field")
+        self.select_length_from_unit(length_from)
+        print(f"Selected {length_from} for the from field - will select {length_to} for the to field")
+        self.select_length_to_unit(length_to)
+        print(f"Selected inches for the to field - will enter {length_from_value} into the cm field")
         self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the cm field - will check the inches value")
+        self.enter_number(length_from_value)
+        print(f"Entered {length_from_value} into the {length_from} field - will check the {length_to} value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
 
-    def convert_cm_to_meter(self, number1):
-        print("Will convert cm to meters")
+    def convert_mass(self, mass_from, mass_from_value, mass_to):
+        print(f"Will convert {mass_from} to {mass_to}")
         print("Clearing previous input")
         self.click(self.CLEAR_BTN)
 
-        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
-        self.select_from_unit('cm')
-        print("Selected 'cm' for the from field - will select 'meters' for the to field")
-        self.select_to_unit('meter')
-        print(f"Selected meters for the to field - will enter {number1} into the cm field")
+        print(f"Clicked on the Clear button - will make sure {mass_from} is selected for the from field")
+        self.select_mass_from_unit(mass_from)
+        print(f"Selected {mass_from} for the from field - will select {mass_to} for the to field")
+        self.select_mass_to_unit(mass_to)
+        print(f"Selected {mass_to} for the to field - will enter {mass_from_value} into the {mass_from} field")
         self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the cm field - will check the meters value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_cm_to_km(self, number1):
-        print("Will convert cm to km")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
-        self.select_from_unit('cm')
-        print("Selected 'cm' for the from field - will select 'km' for the to field")
-        self.select_to_unit('kilometer')
-        print(f"Selected kilometers for the to field - will enter {number1} into the cm field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the cm field - will check the kms value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_cm_to_mile(self, number1):
-        print("Will convert cm to mile")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
-        self.select_from_unit('cm')
-        print("Selected 'cm' for the from field - will select 'mile' for the to field")
-        self.select_to_unit('mile')
-        print(f"Selected kilometers for the to field - will enter {number1} into the cm field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the cm field - will check the mile(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_cm_to_yards(self, number1):
-        print("Will convert cm to yards")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'cm' is selected for the from field")
-        self.select_from_unit('cm')
-        print("Selected 'cm' for the from field - will select 'yards' for the to field")
-        self.select_to_unit('yd')
-        print(f"Selected kilometers for the to field - will enter {number1} into the cm field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the cm field - will check the yard(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_inch_to_cm(self, number1):
-        print("Will convert inch to cm")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
-        self.select_from_unit('inches')
-        print("Selected 'inch' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('cm')
-        print(f"Selected cm for the to field - will enter {number1} into the inches field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the inch field - will check the cm value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_inch_to_meter(self, number1):
-        print("Will convert inch to m")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
-        self.select_from_unit('inches')
-        print("Selected 'inch' for the from field - will select 'm' for the to field")
-        self.select_to_unit('meter')
-        print(f"Selected meter for the to field - will enter {number1} into the inches field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the inch field - will check the m value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_inch_to_kilometer(self, number1):
-        print("Will convert inch to km")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
-        self.select_from_unit('inches')
-        print("Selected 'inch' for the from field - will select 'km' for the to field")
-        self.select_to_unit('kilometer')
-        print(f"Selected kilometer for the to field - will enter {number1} into the inches field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the inch field - will check the km value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_inch_to_mile(self, number1):
-        print("Will convert inch to mile")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
-        self.select_from_unit('inches')
-        print("Selected 'inch' for the from field - will select 'mile' for the to field")
-        self.select_to_unit('mile')
-        print(f"Selected mile for the to field - will enter {number1} into the inches field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the inch field - will check the mile(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_inch_to_yard(self, number1):
-        print("Will convert inch to yard")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'inch' is selected for the from field")
-        self.select_from_unit('inches')
-        print("Selected 'inch' for the from field - will select 'yard' for the to field")
-        self.select_to_unit('yd')
-        print(f"Selected yd for the to field - will enter {number1} into the inches field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the inch field - will check the yard(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_meter_to_cm(self, number1):
-        print("Will convert meter to cm")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
-        self.select_from_unit('meter')
-        print("Selected 'meter' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('cm')
-        print(f"Selected cm for the to field - will enter {number1} into the meter field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the meter field - will check the cm value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_meter_to_inch(self, number1):
-        print("Will convert meter to inch")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
-        self.select_from_unit('meter')
-        print("Selected 'meter' for the from field - will select 'inch' for the to field")
-        self.select_to_unit('inches')
-        print(f"Selected inch for the to field - will enter {number1} into the meter field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the meter field - will check the inch value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_meter_to_km(self, number1):
-        print("Will convert meter to km")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
-        self.select_from_unit('meter')
-        print("Selected 'meter' for the from field - will select 'km' for the to field")
-        self.select_to_unit('kilometer')
-        print(f"Selected km for the to field - will enter {number1} into the meter field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the meter field - will check the km value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_meter_to_mile(self, number1):
-        print("Will convert meter to mile")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
-        self.select_from_unit('meter')
-        print("Selected 'meter' for the from field - will select 'mile' for the to field")
-        self.select_to_unit('mile')
-        print(f"Selected mile for the to field - will enter {number1} into the meter field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the meter field - will check the mile value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_meter_to_yard(self, number1):
-        print("Will convert meter to yard")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'meter' is selected for the from field")
-        self.select_from_unit('meter')
-        print("Selected 'meter' for the from field - will select 'yard' for the to field")
-        self.select_to_unit('yd')
-        print(f"Selected yd for the to field - will enter {number1} into the meter field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the meter field - will check the yard value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_km_to_cm(self, number1):
-        print("Will convert km to cm")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
-        self.select_from_unit('kilometer')
-        print("Selected 'km' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('cm')
-        print(f"Selected cm for the to field - will enter {number1} into the km field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the km field - will check the cm value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_km_to_inches(self, number1):
-        print("Will convert km to inches")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
-        self.select_from_unit('kilometer')
-        print("Selected 'km' for the from field - will select 'inches' for the to field")
-        self.select_to_unit('inches')
-        print(f"Selected inches for the to field - will enter {number1} into the km field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the km field - will check the inches value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_km_to_meters(self, number1):
-        print("Will convert km to meters")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
-        self.select_from_unit('kilometer')
-        print("Selected 'km' for the from field - will select 'meters' for the to field")
-        self.select_to_unit('meter')
-        print(f"Selected meters for the to field - will enter {number1} into the km field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the km field - will check the meters value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_km_to_miles(self, number1):
-        print("Will convert km to miles")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
-        self.select_from_unit('kilometer')
-        print("Selected 'km' for the from field - will select 'meters' for the to field")
-        self.select_to_unit('mile')
-        print(f"Selected miles for the to field - will enter {number1} into the km field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the km field - will check the mile(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_km_to_yd(self, number1):
-        print("Will convert km to yards")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'km' is selected for the from field")
-        self.select_from_unit('kilometer')
-        print("Selected 'km' for the from field - will select 'yd' for the to field")
-        self.select_to_unit('yd')
-        print(f"Selected yards for the to field - will enter {number1} into the km field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the km field - will check the yard(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_miles_to_cm(self, number1):
-        print("Will convert miles to cm")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
-        self.select_from_unit('mile')
-        print("Selected 'miles' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('cm')
-        print(f"Selected cm for the to field - will enter {number1} into the miles field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the miles field - will check the cm value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_miles_to_inches(self, number1):
-        print("Will convert miles to inches")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
-        self.select_from_unit('mile')
-        print("Selected 'miles' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('inches')
-        print(f"Selected inches for the to field - will enter {number1} into the miles field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the miles field - will check the inches value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_miles_to_meters(self, number1):
-        print("Will convert miles to meters")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
-        self.select_from_unit('mile')
-        print("Selected 'miles' for the from field - will select 'meters' for the to field")
-        self.select_to_unit('meter')
-        print(f"Selected meter for the to field - will enter {number1} into the miles field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the miles field - will check the meter value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_miles_to_kilometers(self, number1):
-        print("Will convert miles to kilometers")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
-        self.select_from_unit('mile')
-        print("Selected 'miles' for the from field - will select 'kilometers' for the to field")
-        self.select_to_unit('kilometer')
-        print(f"Selected meter for the to field - will enter {number1} into the miles field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the miles field - will check the km value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_miles_to_yards(self, number1):
-        print("Will convert miles to yards")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'miles' is selected for the from field")
-        self.select_from_unit('mile')
-        print("Selected 'miles' for the from field - will select 'yards' for the to field")
-        self.select_to_unit('yd')
-        print(f"Selected yd for the to field - will enter {number1} into the miles field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the miles field - will check the yd value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_cm(self, number1):
-        print("Will convert yards to cm")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'cm' for the to field")
-        self.select_to_unit('cm')
-        print(f"Selected cm for the to field - will enter {number1} into the yards field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the cm value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_inches(self, number1):
-        print("Will convert yards to inches")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'inches' for the to field")
-        self.select_to_unit('inches')
-        print(f"Selected inches for the to field - will enter {number1} into the yards field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the inches value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_meters(self, number1):
-        print("Will convert yards to meters")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'meter' for the to field")
-        self.select_to_unit('meter')
-        print(f"Selected meter for the to field - will enter {number1} into the yards field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the meters value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_kilometers(self, number1):
-        print("Will convert yards to kilometers")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'kilometer' for the to field")
-        self.select_to_unit('kilometer')
-        print(f"Selected kilometer for the to field - will enter {number1} into the yards field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the kilometer(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_miles(self, number1):
-        print("Will convert yards to miles")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'miles' for the to field")
-        self.select_to_unit('mile')
-        print(f"Selected miles for the to field - will enter {number1} into the yards field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the mile(s) value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_yards_to_ft(self, number1):
-        print("Will convert yards to ft")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'yards' is selected for the from field")
-        self.select_from_unit('yd')
-        print("Selected 'yards' for the from field - will select 'ft' for the to field")
-        self.select_to_unit('ft')
-        print(f"Selected yards for the to field - will enter {number1} into the ft field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the yards field - will check the ft value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # KG
-    #
-
-    def convert_kg_to_lb(self, number1):
-        print("Will convert kg to lb")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
-        self.select_from_unit('kg')
-        print("Selected 'kg' for the from field - will select 'lb' for the to field")
-        self.select_to_unit('lb')
-        print(f"Selected lb for the to field - will enter {number1} into the kg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the kg field - will check the lb value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_kg_to_mg(self, number1):
-        print("Will convert kg to mg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
-        self.select_from_unit('kg')
-        print("Selected 'kg' for the from field - will select 'mg' for the to field")
-        self.select_to_unit('mg')
-        print(f"Selected mg for the to field - will enter {number1} into the kg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the kg field - will check the mg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_kg_to_g(self, number1):
-        print("Will convert kg to g")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
-        self.select_from_unit('kg')
-        print("Selected 'kg' for the from field - will select 'g' for the to field")
-        self.select_to_unit('g')
-        print(f"Selected g for the to field - will enter {number1} into the kg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the kg field - will check the g value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_kg_to_oz(self, number1):
-        print("Will convert kg to oz")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
-        self.select_from_unit('kg')
-        print("Selected 'kg' for the from field - will select 'oz' for the to field")
-        self.select_to_unit('oz')
-        print(f"Selected oz for the to field - will enter {number1} into the kg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the kg field - will check the oz value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_kg_to_t(self, number1):
-        print("Will convert kg to t")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'kg' is selected for the from field")
-        self.select_from_unit('kg')
-        print("Selected 'kg' for the from field - will select 't' for the to field")
-        self.select_to_unit('t')
-        print(f"Selected t for the to field - will enter {number1} into the kg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the kg field - will check the t value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # LB
-    #
-    def convert_lb_to_kg(self, number1):
-        print("Will convert lb to kg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
-        self.select_from_unit('lb')
-        print("Selected 'lb' for the from field - will select 'kg' for the to field")
-        self.select_to_unit('kg')
-        print(f"Selected kg for the to field - will enter {number1} into the lb field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the lb field - will check the kg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_lb_to_mg(self, number1):
-        print("Will convert lb to mg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
-        self.select_from_unit('lb')
-        print("Selected 'lb' for the from field - will select 'mg' for the to field")
-        self.select_to_unit('mg')
-        print(f"Selected mg for the to field - will enter {number1} into the lb field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the lb field - will check the mg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_lb_to_g(self, number1):
-        print("Will convert lb to g")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
-        self.select_from_unit('lb')
-        print("Selected 'lb' for the from field - will select 'g' for the to field")
-        self.select_to_unit('g')
-        print(f"Selected g for the to field - will enter {number1} into the lb field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the lb field - will check the g value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_lb_to_oz(self, number1):
-        print("Will convert lb to oz")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
-        self.select_from_unit('lb')
-        print("Selected 'lb' for the from field - will select 'oz' for the to field")
-        self.select_to_unit('oz')
-        print(f"Selected oz for the to field - will enter {number1} into the lb field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the lb field - will check the oz value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_lb_to_t(self, number1):
-        print("Will convert lb to t")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'lb' is selected for the from field")
-        self.select_from_unit('lb')
-        print("Selected 'lb' for the from field - will select 't' for the to field")
-        self.select_to_unit('t')
-        print(f"Selected t for the to field - will enter {number1} into the lb field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the lb field - will check the t value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # MG
-    #
-    def convert_mg_to_kg(self, number1):
-        print("Will convert mg to kg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
-        self.select_from_unit('mg')
-        print("Selected 'mg' for the from field - will select 'kg' for the to field")
-        self.select_to_unit('kg')
-        print(f"Selected kg for the to field - will enter {number1} into the mg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the mg field - will check the kg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_mg_to_lb(self, number1):
-        print("Will convert mg to lb")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
-        self.select_from_unit('mg')
-        print("Selected 'mg' for the from field - will select 'lb' for the to field")
-        self.select_to_unit('lb')
-        print(f"Selected lb for the to field - will enter {number1} into the mg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the mg field - will check the lb value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_mg_to_g(self, number1):
-        print("Will convert mg to g")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
-        self.select_from_unit('mg')
-        print("Selected 'mg' for the from field - will select 'g' for the to field")
-        self.select_to_unit('g')
-        print(f"Selected g for the to field - will enter {number1} into the mg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the mg field - will check the g value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_mg_to_oz(self, number1):
-        print("Will convert mg to oz")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
-        self.select_from_unit('mg')
-        print("Selected 'mg' for the from field - will select 'oz' for the to field")
-        self.select_to_unit('oz')
-        print(f"Selected oz for the to field - will enter {number1} into the mg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the mg field - will check the oz value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_mg_to_t(self, number1):
-        print("Will convert mg to t")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'mg' is selected for the from field")
-        self.select_from_unit('mg')
-        print("Selected 'mg' for the from field - will select 't' for the to field")
-        self.select_to_unit('t')
-        print(f"Selected t for the to field - will enter {number1} into the mg field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the mg field - will check the t value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # G
-    #
-    def convert_g_to_kg(self, number1):
-        print("Will convert g to kg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
-        self.select_from_unit('g')
-        print("Selected 'gg' for the from field - will select 'kg' for the to field")
-        self.select_to_unit('kg')
-        print(f"Selected kg for the to field - will enter {number1} into the g field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the g field - will check the kg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_g_to_lb(self, number1):
-        print("Will convert g to lb")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
-        self.select_from_unit('g')
-        print("Selected 'g' for the from field - will select 'lb' for the to field")
-        self.select_to_unit('lb')
-        print(f"Selected lb for the to field - will enter {number1} into the g field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the g field - will check the lb value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_g_to_mg(self, number1):
-        print("Will convert g to mg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
-        self.select_from_unit('g')
-        print("Selected 'g' for the from field - will select 'mg' for the to field")
-        self.select_to_unit('mg')
-        print(f"Selected mg for the to field - will enter {number1} into the g field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the g field - will check the mg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_g_to_oz(self, number1):
-        print("Will convert g to oz")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
-        self.select_from_unit('g')
-        print("Selected 'g' for the from field - will select 'oz' for the to field")
-        self.select_to_unit('oz')
-        print(f"Selected oz for the to field - will enter {number1} into the g field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the g field - will check the oz value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_g_to_t(self, number1):
-        print("Will convert g to t")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'g' is selected for the from field")
-        self.select_from_unit('g')
-        print("Selected 'g' for the from field - will select 't' for the to field")
-        self.select_to_unit('t')
-        print(f"Selected t for the to field - will enter {number1} into the g field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the g field - will check the t value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # OZ
-    #
-
-    def convert_oz_to_kg(self, number1):
-        print("Will convert oz to kg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
-        self.select_from_unit('oz')
-        print("Selected 'oz' for the from field - will select 'kg' for the to field")
-        self.select_to_unit('kg')
-        print(f"Selected kg for the to field - will enter {number1} into the oz field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the oz field - will check the kg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_oz_to_lb(self, number1):
-        print("Will convert oz to lb")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
-        self.select_from_unit('oz')
-        print("Selected 'oz' for the from field - will select 'lb' for the to field")
-        self.select_to_unit('lb')
-        print(f"Selected lb for the to field - will enter {number1} into the oz field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the oz field - will check the lb value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_oz_to_mg(self, number1):
-        print("Will convert oz to mg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
-        self.select_from_unit('oz')
-        print("Selected 'oz' for the from field - will select 'mg' for the to field")
-        self.select_to_unit('mg')
-        print(f"Selected mg for the to field - will enter {number1} into the oz field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the oz field - will check the mg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_oz_to_g(self, number1):
-        print("Will convert oz to g")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
-        self.select_from_unit('oz')
-        print("Selected 'oz' for the from field - will select 'g' for the to field")
-        self.select_to_unit('g')
-        print(f"Selected g for the to field - will enter {number1} into the oz field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the oz field - will check the g value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_oz_to_t(self, number1):
-        print("Will convert oz to t")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 'oz' is selected for the from field")
-        self.select_from_unit('oz')
-        print("Selected 'oz' for the from field - will select 't' for the to field")
-        self.select_to_unit('t')
-        print(f"Selected t for the to field - will enter {number1} into the oz field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the oz field - will check the t value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    #**********************************************************************************************
-    # T
-    #
-
-    def convert_t_to_kg(self, number1):
-        print("Will convert t to kg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
-        self.select_from_unit('t')
-        print("Selected 't' for the from field - will select 'kg' for the to field")
-        self.select_to_unit('kg')
-        print(f"Selected kg for the to field - will enter {number1} into the t field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the t field - will check the kg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_t_to_lb(self, number1):
-        print("Will convert t to lb")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
-        self.select_from_unit('t')
-        print("Selected 't' for the from field - will select 'lb' for the to field")
-        self.select_to_unit('lb')
-        print(f"Selected lb for the to field - will enter {number1} into the t field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the t field - will check the lb value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_t_to_mg(self, number1):
-        print("Will convert t to mg")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
-        self.select_from_unit('t')
-        print("Selected 't' for the from field - will select 'mg' for the to field")
-        self.select_to_unit('mg')
-        print(f"Selected mg for the to field - will enter {number1} into the t field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the t field - will check the mg value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_t_to_g(self, number1):
-        print("Will convert t to g")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
-        self.select_from_unit('t')
-        print("Selected 't' for the from field - will select 'g' for the to field")
-        self.select_to_unit('g')
-        print(f"Selected g for the to field - will enter {number1} into the t field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the t field - will check the g value")
-
-        result_element = self.find(self.RESULT1)
-        return result_element.text
-
-    def convert_t_to_oz(self, number1):
-        print("Will convert t to oz")
-        print("Clearing previous input")
-        self.click(self.CLEAR_BTN)
-
-        print("Clicked on the Clear button - will make sure 't' is selected for the from field")
-        self.select_from_unit('t')
-        print("Selected 't' for the from field - will select 'oz' for the to field")
-        self.select_to_unit('oz')
-        print(f"Selected oz for the to field - will enter {number1} into the t field")
-        self.click(self.FROM_FIELD)
-        self.enter_number(number1)
-        print(f"Entered {number1} into the t field - will check the oz value")
+        self.enter_number(mass_from_value)
+        print(f"Entered {mass_from_value} into the {mass_from} field - will check the {mass_to} value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
