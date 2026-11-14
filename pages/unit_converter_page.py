@@ -21,14 +21,6 @@ class UnitConverterPage(BasePage):
     MASS_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Mass")')
     AREA_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Area")')
 
-    # MASS
-    KG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("kg")')
-    LB_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("lb")')
-    MG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mg")')
-    G_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("g")')
-    OZ_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("oz")')
-    TON_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("t")')
-
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
     IN_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(1)')
@@ -39,6 +31,28 @@ class UnitConverterPage(BasePage):
     FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(6)')
     MM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(7)')
     DM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(8)')
+
+    # MASS
+    KG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("kg")')
+    LB_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("lb")')
+    MG_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mg")')
+    G_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("g")')
+    OZ_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("oz")')
+    TON_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("t")')
+
+    # AREA
+    SQUARE_M_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("m²")')
+    SQUARE_INCH_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("in²")')
+    SQUARE_FT_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ft²")')
+    SQUARE_MILE_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mi²")')
+    SQUARE_YD_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("yd²")')
+    SQUARE_MM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mm²")')
+    SQUARE_CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("cm²")')
+    SQUARE_DM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("dm²")')
+    SQUARE_KM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("km²")')
+    HA_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ha")')
+    AC_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ac")')
+
 
     # CALCULATOR KEYS
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
@@ -94,10 +108,13 @@ class UnitConverterPage(BasePage):
             print(f"Will select the {conversion_type} conversion type")
             self.click(self.LENGTH_OPTION)
             print(f"Clicked on the {conversion_type} option")
-
         elif conversion_type == "Mass":
             print(f"Will select the {conversion_type} conversion type")
             self.click(self.MASS_OPTION)
+            print(f"Clicked on the {conversion_type} option")
+        elif conversion_type == "Area":
+            print(f"Will select the {conversion_type} conversion type")
+            self.click(self.AREA_OPTION)
             print(f"Clicked on the {conversion_type} option")
 
     def get_conversion_type(self):
@@ -250,6 +267,74 @@ class UnitConverterPage(BasePage):
         else:
             print("We are NOT on the 'Choose Unit' page")
 
+    def select_area_from_unit(self, unit):
+        print("Will select the from unit")
+        self.click(self.CONVERT_FROM_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "m²":
+                print("Will click on the m² option")
+                self.click(self.SQUARE_M_UNIT)
+                print("Clicked on the m² option")
+            if unit == "in²":
+                print("Will click on the in² option")
+                self.click(self.SQUARE_INCH_UNIT)
+                print("Clicked on the in² option")
+            if unit == "ft²":
+                print("Will click on the ft² option")
+                self.click(self.SQUARE_FT_UNIT)
+                print("Clicked on the ft² option")
+            if unit == "mi²":
+                print("Will click on the mi² option")
+                self.click(self.SQUARE_MILE_UNIT)
+                print("Clicked on the mi² option")
+            if unit == "yd²":
+                print("Will click on the yd² option")
+                self.click(self.SQUARE_YD_UNIT)
+                print("Clicked on the yd² option")
+            if unit == "mm²":
+                print("Will click on the mm² option")
+                self.click(self.SQUARE_MM_UNIT)
+                print("Clicked on the mm² option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_area_to_unit(self, unit):
+        print("Will select the to unit")
+        self.click(self.CONVERT_TO_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "m²":
+                print("Will click on the m² option")
+                self.click(self.SQUARE_M_UNIT)
+                print("Clicked on the m² option")
+            if unit == "in²":
+                print("Will click on the in² option")
+                self.click(self.SQUARE_INCH_UNIT)
+                print("Clicked on the in² option")
+            if unit == "ft²":
+                print("Will click on the ft² option")
+                self.click(self.SQUARE_FT_UNIT)
+                print("Clicked on the ft² option")
+            if unit == "mi²":
+                print("Will click on the mi² option")
+                self.click(self.SQUARE_MILE_UNIT)
+                print("Clicked on the mi² option")
+            if unit == "yd²":
+                print("Will click on the yd² option")
+                self.click(self.SQUARE_YD_UNIT)
+                print("Clicked on the yd² option")
+            if unit == "mm²":
+                print("Will click on the mm² option")
+                self.click(self.SQUARE_MM_UNIT)
+                print("Clicked on the mm² option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
     def convert_length(self,length_from, length_from_value, length_to):
         print(f"Will convert {length_from} to {length_to}")
         print("Clearing previous input")
@@ -280,6 +365,23 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(mass_from_value)
         print(f"Entered {mass_from_value} into the {mass_from} field - will check the {mass_to} value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_area(self, area_from, area_from_value, area_to):
+        print(f"Will convert {area_from} to {area_to}")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print(f"Clicked on the Clear button - will make sure {area_from} is selected for the from field")
+        self.select_area_from_unit(area_from)
+        print(f"Selected {area_from} for the from field - will select {area_to} for the to field")
+        self.select_area_to_unit(area_to)
+        print(f"Selected {area_to} for the to field - will enter {area_from_value} into the {area_from} field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(area_from_value)
+        print(f"Entered {area_from_value} into the {area_from} field - will check the {area_to} value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
