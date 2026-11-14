@@ -339,3 +339,147 @@ def test_perform_square_in_to_square_mm_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "Perform_in²_to_mm²_Conversion2")
             raise
+
+############################################################################################
+# ft²
+############################################################################################
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_m_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_m² Conversion1"):
+        try:
+            print("Will calculate the area in m²")
+            output = unit_converter_page.convert_area("ft²","5","m²")
+            print("Calculated the area - will confirm it's 0.46452 m²")
+            assert output == "0.46452", f"Expected 0.46452 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_m²_Conversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_m_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_m² Conversion2"):
+        try:
+            print("Will calculate the area in m²")
+            output = unit_converter_page.convert_area("ft²","29834","m²")
+            print("Calculated the area - will confirm it's 2,771.6693 m²")
+            assert output == "2,771.6693", f"Expected 2,771.6693 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_m²_Conversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_in_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_in² Conversion1"):
+        try:
+            print("Will calculate the area in in²")
+            output = unit_converter_page.convert_area("ft²","0.81","in²")
+            print("Calculated the area - will confirm it's 116.63977 in²")
+            assert output == "116.63977", f"Expected 116.63977 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_in²_Conversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_in_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_in² Conversion2"):
+        try:
+            print("Will calculate the area in in²")
+            output = unit_converter_page.convert_area("ft²","66","in²")
+            print("Calculated the area - will confirm it's 9,503.98099 in²")
+            assert output == "9,503.98099", f"Expected 9,503.98099 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_in²_Conversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_mi_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_mi² Conversion1"):
+        try:
+            print("Will calculate the area in mi²")
+            output = unit_converter_page.convert_area("ft²","1004400","mi²")
+            print("Calculated the area - will confirm it's 0.036028 mi²")
+            assert output == "0.036028", f"Expected 0.036028 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_mi²_Conversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_mi_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_mi² Conversion2"):
+        try:
+            print("Will calculate the area in mi²")
+            output = unit_converter_page.convert_area("ft²","33000000","mi²")
+            print("Calculated the area - will confirm it's 1.18371 mi²")
+            assert output == "1.18371", f"Expected 1.18371 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_mi²_Conversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_yd_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_yd² Conversion1"):
+        try:
+            print("Will calculate the area in yd²")
+            output = unit_converter_page.convert_area("ft²","0.68","yd²")
+            print("Calculated the area - will confirm it's 0.075556 yd²")
+            assert output == "0.075556", f"Expected 0.075556 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_yd²_Conversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_yd_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_yd² Conversion2"):
+        try:
+            print("Will calculate the area in yd²")
+            output = unit_converter_page.convert_area("ft²","324","yd²")
+            print("Calculated the area - will confirm it's 36 yd²")
+            assert output == "36", f"Expected 36 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_yd²_Conversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_mm_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_mm² Conversion1"):
+        try:
+            print("Will calculate the area in mm²")
+            output = unit_converter_page.convert_area("ft²","2.5","mm²")
+            print("Calculated the area - will confirm it's 232,257.6 mm²")
+            assert output == "232,257.6", f"Expected 232,257.6 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_mm²_Conversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_square_ft_to_square_mm_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform ft²_to_mm² Conversion2"):
+        try:
+            print("Will calculate the area in mm²")
+            output = unit_converter_page.convert_area("ft²","0.07","mm²")
+            print("Calculated the area - will confirm it's 6,503.2128 mm²")
+            assert output == "6,503.2128", f"Expected 6,503.2128 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "Perform_ft²_to_mm²_Conversion2")
+            raise
