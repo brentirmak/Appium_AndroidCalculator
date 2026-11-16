@@ -63,12 +63,17 @@ class HomePage(BasePage):
                 except:
                     print("Close icon not found yet")
 
-            if counter == 10:
+            if counter == 3 or counter == 6 or counter == 9:
                 print("Ad may have a different look and feel - will attempt to close it")
                 self.dismiss_test_ad_alt()
                 print("Attempted to close the ad with the different look and feel")
 
-            if counter == 30:
+            if counter == 4 or counter == 7 or counter == 10:
+                print("Ad may have a different look and feel - will attempt to close it")
+                self.dismiss_test_ad_alt()
+                print("Attempted to close the ad with the different look and feel")
+
+            if counter == 15:
                 print("Need to break out of loop and fail test")
                 return False
 
@@ -101,6 +106,9 @@ class HomePage(BasePage):
 
     def dismiss_test_ad_alt(self):
         self.driver.execute_script("mobile: clickGesture", {"x": 999, "y": 99})
+
+    def dismiss_test_ad_alt2(self):
+        self.driver.execute_script("mobile: clickGesture", {"x": 135, "y": 2280})
 
     def get_run_type(self):
         if "JENKINS_SERVER_COOKIE" in os.environ or "BUILD_NUMBER" in os.environ:
