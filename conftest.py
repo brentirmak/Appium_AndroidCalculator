@@ -475,9 +475,10 @@ def pytest_runtest_makereport(item, call):
             status = "FAIL"
 
         duration = f"{report.duration:.2f}s"
-        transaction = getattr(item, "transaction_name", "Execution")
+        transaction = getattr(item, "transaction_name", None)
 
-        _store(test_name, transaction, status, duration, current_timestamp)
+        if transaction:
+            _store(test_name, transaction, status, duration, current_timestamp)
 
     elif report.when == "teardown" and report.failed:
         # e.g. the session-scoped driver fixture failing during final cleanup
