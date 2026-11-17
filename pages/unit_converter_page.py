@@ -21,6 +21,7 @@ class UnitConverterPage(BasePage):
     MASS_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Mass")')
     AREA_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Area")')
     VOLUME_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Volume")')
+    TIME_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Time")')
 
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
@@ -61,6 +62,14 @@ class UnitConverterPage(BasePage):
     DL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("dL")')
     HL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("hL")')
     KL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("kL")')
+
+    # TIME
+    HR_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("h")')
+    SEC_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("s")')
+    MS_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ms")')
+    MICROS_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("µs")')
+    NS_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ns")')
+    MIN_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("m")')
 
     # CALCULATOR KEYS
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
@@ -127,6 +136,10 @@ class UnitConverterPage(BasePage):
         elif conversion_type == "Volume":
             print(f"Will select the {conversion_type} conversion type")
             self.click(self.VOLUME_OPTION)
+            print(f"Clicked on the {conversion_type} option")
+        elif conversion_type == "Time":
+            print(f"Will select the {conversion_type} conversion type")
+            self.click(self.TIME_OPTION)
             print(f"Clicked on the {conversion_type} option")
 
     def get_conversion_type(self):
@@ -415,6 +428,74 @@ class UnitConverterPage(BasePage):
         else:
             print("We are NOT on the 'Choose Unit' page")
 
+    def select_time_from_unit(self, unit):
+        print("Will select the from unit")
+        self.click(self.CONVERT_FROM_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "h":
+                print("Will click on the h option")
+                self.click(self.HR_UNIT)
+                print("Clicked on the h option")
+            if unit == "s":
+                print("Will click on the s option")
+                self.click(self.SEC_UNIT)
+                print("Clicked on the s option")
+            if unit == "ms":
+                print("Will click on the ms option")
+                self.click(self.MS_UNIT)
+                print("Clicked on the ms option")
+            if unit == "µs":
+                print("Will click on the µs option")
+                self.click(self.MICROS_UNIT)
+                print("Clicked on the µs option")
+            if unit == "ns":
+                print("Will click on the ns option")
+                self.click(self.NS_UNIT)
+                print("Clicked on the ns option")
+            if unit == "min":
+                print("Will click on the min option")
+                self.click(self.MIN_UNIT)
+                print("Clicked on the min option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_time_to_unit(self, unit):
+        print("Will select the to unit")
+        self.click(self.CONVERT_TO_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "h":
+                print("Will click on the h option")
+                self.click(self.HR_UNIT)
+                print("Clicked on the h option")
+            if unit == "s":
+                print("Will click on the s option")
+                self.click(self.SEC_UNIT)
+                print("Clicked on the s option")
+            if unit == "ms":
+                print("Will click on the ms option")
+                self.click(self.MS_UNIT)
+                print("Clicked on the ms option")
+            if unit == "µs":
+                print("Will click on the µs option")
+                self.click(self.MICROS_UNIT)
+                print("Clicked on the µs option")
+            if unit == "ns":
+                print("Will click on the ns option")
+                self.click(self.NS_UNIT)
+                print("Clicked on the ns option")
+            if unit == "min":
+                print("Will click on the min option")
+                self.click(self.MIN_UNIT)
+                print("Clicked on the min option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
     def convert_length(self,length_from, length_from_value, length_to):
         print(f"Will convert {length_from} to {length_to}")
         print("Clearing previous input")
@@ -479,6 +560,23 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(volume_from_value)
         print(f"Entered {volume_from_value} into the {volume_from} field - will check the {volume_to} value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_time(self, time_from, time_from_value, time_to):
+        print(f"Will convert {time_from} to {time_to}")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print(f"Clicked on the Clear button - will make sure {time_from} is selected for the from field")
+        self.select_time_from_unit(time_from)
+        print(f"Selected {time_from} for the from field - will select {time_to} for the to field")
+        self.select_time_to_unit(time_to)
+        print(f"Selected {time_to} for the to field - will enter {time_from_value} into the {time_from} field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(time_from_value)
+        print(f"Entered {time_from_value} into the {time_from} field - will check the {time_to} value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
