@@ -469,3 +469,147 @@ def test_perform_cl_to_kl_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformcLTokLConversion2")
             raise
+
+############################################################################################
+# dL
+############################################################################################
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_l_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLToL Conversion1"):
+        try:
+            print("Will calculate the volume in L")
+            output = unit_converter_page.convert_volume("dL","0.09","L")
+            print("Calculated the mass - will confirm it's 0.009 L")
+            assert output == "0.009", f"Expected 0.009 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLToLConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_l_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLToL Conversion2"):
+        try:
+            print("Will calculate the volume in L")
+            output = unit_converter_page.convert_volume("dL","65000","L")
+            print("Calculated the mass - will confirm it's 6,500 L")
+            assert output == "6,500", f"Expected 6,500 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLToLConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_ml_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTomL Conversion1"):
+        try:
+            print("Will calculate the volume in mL")
+            output = unit_converter_page.convert_volume("dL","22.073","mL")
+            print("Calculated the mass - will confirm it's 2,207.3 mL")
+            assert output == "2,207.3", f"Expected 2,207.3 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTomLConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_ml_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTomL Conversion2"):
+        try:
+            print("Will calculate the volume in mL")
+            output = unit_converter_page.convert_volume("dL","555","mL")
+            print("Calculated the mass - will confirm it's 55,500 mL")
+            assert output == "55,500", f"Expected 55,500 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTomLConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_cl_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTocL Conversion1"):
+        try:
+            print("Will calculate the volume in cL")
+            output = unit_converter_page.convert_volume("dL","9630","cL")
+            print("Calculated the mass - will confirm it's 96,300 cL")
+            assert output == "96,300", f"Expected 96,300 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTocLConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_cl_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTocL Conversion2"):
+        try:
+            print("Will calculate the volume in cL")
+            output = unit_converter_page.convert_volume("dL","77.250","cL")
+            print("Calculated the mass - will confirm it's 772.5 cL")
+            assert output == "772.5", f"Expected 772.5 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTocLConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_hl_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTohL Conversion1"):
+        try:
+            print("Will calculate the volume in hL")
+            output = unit_converter_page.convert_volume("dL","0.2","hL")
+            print("Calculated the mass - will confirm it's 0.0002 hL")
+            assert output == "0.0002", f"Expected 0.0002 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTohLConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_hl_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTohL Conversion2"):
+        try:
+            print("Will calculate the volume in hL")
+            output = unit_converter_page.convert_volume("dL","10000","hL")
+            print("Calculated the mass - will confirm it's 10 hL")
+            assert output == "10", f"Expected 10 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTohLConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_kl_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTokL Conversion1"):
+        try:
+            print("Will calculate the volume in kL")
+            output = unit_converter_page.convert_volume("dL","768231","kL")
+            print("Calculated the mass - will confirm it's 76.8231 kL")
+            assert output == "76.8231", f"Expected 76.8231 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTokLConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_dl_to_kl_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform dLTokL Conversion2"):
+        try:
+            print("Will calculate the volume in kL")
+            output = unit_converter_page.convert_volume("dL","2500","kL")
+            print("Calculated the mass - will confirm it's 0.25 kL")
+            assert output == "0.25", f"Expected 0.25 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformdLTokLConversion2")
+            raise
