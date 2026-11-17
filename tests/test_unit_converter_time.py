@@ -181,4 +181,147 @@ def test_perform_hr_to_min_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformHrToMinConversion2")
             raise
-        
+
+############################################################################################
+# SEC
+############################################################################################
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_hr_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToHr Conversion1"):
+        try:
+            print("Will calculate the time in hr")
+            output = unit_converter_page.convert_time("s","35000","h")
+            print("Calculated the mass - will confirm it's 9.72222 hr")
+            assert output == "9.72222", f"Expected 9.72222 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToHrConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_hr_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToHr Conversion2"):
+        try:
+            print("Will calculate the time in hr")
+            output = unit_converter_page.convert_time("s","1000000","h")
+            print("Calculated the mass - will confirm it's 277.77778 hr")
+            assert output == "277.77778", f"Expected 277.77778 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToHrConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_ms_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToMs Conversion1"):
+        try:
+            print("Will calculate the time in ms")
+            output = unit_converter_page.convert_time("s","3.85","ms")
+            print("Calculated the mass - will confirm it's 3,850 ms")
+            assert output == "3,850", f"Expected 3,850 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToMsConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_ms_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToMs Conversion2"):
+        try:
+            print("Will calculate the time in ms")
+            output = unit_converter_page.convert_time("s","502.97","ms")
+            print("Calculated the mass - will confirm it's 502,970 ms")
+            assert output == "502,970", f"Expected 502,970 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToMsConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_micros_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToµs Conversion1"):
+        try:
+            print("Will calculate the time in ms")
+            output = unit_converter_page.convert_time("s","9625","µs")
+            print("Calculated the mass - will confirm it's 9,625,000,000 µs")
+            assert output == "9,625,000,000", f"Expected 9,625,000,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToµsConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_micros_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToµs Conversion2"):
+        try:
+            print("Will calculate the time in ms")
+            output = unit_converter_page.convert_time("s","0.0005","µs")
+            print("Calculated the mass - will confirm it's 500 µs")
+            assert output == "500", f"Expected 500 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToµsConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_ns_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecTons Conversion1"):
+        try:
+            print("Will calculate the time in ns")
+            output = unit_converter_page.convert_time("s","0.080","ns")
+            print("Calculated the mass - will confirm it's 80,000,000 ns")
+            assert output == "80,000,000", f"Expected 80,000,000 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecTonsConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_ns_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecTons Conversion2"):
+        try:
+            print("Will calculate the time in ns")
+            output = unit_converter_page.convert_time("s","0.00000125","ns")
+            print("Calculated the mass - will confirm it's 1,250 ns")
+            assert output == "1,250", f"Expected 1,250 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecTonsConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_min_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToMin Conversion1"):
+        try:
+            print("Will calculate the time in min")
+            output = unit_converter_page.convert_time("s","3600","min")
+            print("Calculated the mass - will confirm it's 60 min")
+            assert output == "60", f"Expected 60 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToMinConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_sec_to_min_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform SecToMin Conversion2"):
+        try:
+            print("Will calculate the time in min")
+            output = unit_converter_page.convert_time("s","250000","min")
+            print("Calculated the mass - will confirm it's 4,166.66667 min")
+            assert output == "4,166.66667", f"Expected 4,166.66667 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformSecToMinConversion2")
+            raise
