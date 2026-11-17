@@ -20,6 +20,7 @@ class UnitConverterPage(BasePage):
     LENGTH_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Length")')
     MASS_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Mass")')
     AREA_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Area")')
+    VOLUME_OPTION = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("Volume")')
 
     # LENGTH
     CM_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().resourceId("calculator.currencyconverter.tipcalculator.unitconverter:id/root").instance(0)')
@@ -53,6 +54,13 @@ class UnitConverterPage(BasePage):
     HA_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ha")')
     AC_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("ac")')
 
+    # VOLUME
+    L_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().text("L")')
+    ML_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("mL")')
+    CL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("cL")')
+    DL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("dL")')
+    HL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("hL")')
+    KL_UNIT = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("kL")')
 
     # CALCULATOR KEYS
     NUM0 = (AppiumBy.XPATH,'//android.widget.TextView[@resource-id="calculator.currencyconverter.tipcalculator.unitconverter:id/btn_num_0"]')
@@ -115,6 +123,10 @@ class UnitConverterPage(BasePage):
         elif conversion_type == "Area":
             print(f"Will select the {conversion_type} conversion type")
             self.click(self.AREA_OPTION)
+            print(f"Clicked on the {conversion_type} option")
+        elif conversion_type == "Volume":
+            print(f"Will select the {conversion_type} conversion type")
+            self.click(self.VOLUME_OPTION)
             print(f"Clicked on the {conversion_type} option")
 
     def get_conversion_type(self):
@@ -335,6 +347,74 @@ class UnitConverterPage(BasePage):
         else:
             print("We are NOT on the 'Choose Unit' page")
 
+    def select_volume_from_unit(self, unit):
+        print("Will select the from unit")
+        self.click(self.CONVERT_FROM_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "L":
+                print("Will click on the L option")
+                self.click(self.L_UNIT)
+                print("Clicked on the L option")
+            if unit == "mL":
+                print("Will click on the mL option")
+                self.click(self.ML_UNIT)
+                print("Clicked on the mL option")
+            if unit == "cL":
+                print("Will click on the cL option")
+                self.click(self.CL_UNIT)
+                print("Clicked on the cL option")
+            if unit == "dL":
+                print("Will click on the dL option")
+                self.click(self.DL_UNIT)
+                print("Clicked on the dL option")
+            if unit == "hL":
+                print("Will click on the hL option")
+                self.click(self.HL_UNIT)
+                print("Clicked on the hL option")
+            if unit == "kL":
+                print("Will click on the kL option")
+                self.click(self.KL_UNIT)
+                print("Clicked on the kL option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
+    def select_volume_to_unit(self, unit):
+        print("Will select the to unit")
+        self.click(self.CONVERT_TO_ARROW)
+        print("Will verify that the title is 'Choose Unit'")
+        page_title = self.find(self.TITLE).text
+        if page_title == "Choose Unit":
+            print("We are on the 'Choose Unit' page")
+            if unit == "L":
+                print("Will click on the L option")
+                self.click(self.L_UNIT)
+                print("Clicked on the L option")
+            if unit == "mL":
+                print("Will click on the mL option")
+                self.click(self.ML_UNIT)
+                print("Clicked on the mL option")
+            if unit == "cL":
+                print("Will click on the cL option")
+                self.click(self.CL_UNIT)
+                print("Clicked on the cL option")
+            if unit == "dL":
+                print("Will click on the dL option")
+                self.click(self.DL_UNIT)
+                print("Clicked on the dL option")
+            if unit == "hL":
+                print("Will click on the hL option")
+                self.click(self.HL_UNIT)
+                print("Clicked on the hL option")
+            if unit == "kL":
+                print("Will click on the kL option")
+                self.click(self.KL_UNIT)
+                print("Clicked on the kL option")
+        else:
+            print("We are NOT on the 'Choose Unit' page")
+
     def convert_length(self,length_from, length_from_value, length_to):
         print(f"Will convert {length_from} to {length_to}")
         print("Clearing previous input")
@@ -382,6 +462,23 @@ class UnitConverterPage(BasePage):
         self.click(self.FROM_FIELD)
         self.enter_number(area_from_value)
         print(f"Entered {area_from_value} into the {area_from} field - will check the {area_to} value")
+
+        result_element = self.find(self.RESULT1)
+        return result_element.text
+
+    def convert_volume(self, volume_from, volume_from_value, volume_to):
+        print(f"Will convert {volume_from} to {volume_to}")
+        print("Clearing previous input")
+        self.click(self.CLEAR_BTN)
+
+        print(f"Clicked on the Clear button - will make sure {volume_from} is selected for the from field")
+        self.select_volume_from_unit(volume_from)
+        print(f"Selected {volume_from} for the from field - will select {volume_to} for the to field")
+        self.select_volume_to_unit(volume_to)
+        print(f"Selected {volume_to} for the to field - will enter {volume_from_value} into the {volume_from} field")
+        self.click(self.FROM_FIELD)
+        self.enter_number(volume_from_value)
+        print(f"Entered {volume_from_value} into the {volume_from} field - will check the {volume_to} value")
 
         result_element = self.find(self.RESULT1)
         return result_element.text
