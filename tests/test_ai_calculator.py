@@ -57,9 +57,6 @@ def test_clear_chat_history(driver):
         except Exception:
             capture_error_snapshot(driver, "ClearChatHistory")
             raise
-'''
-
-11/6 - Disabled due to persistent "Error - something went wrong, please try again" errors
 
 @pytest.mark.timeout(175)
 def test_perform_ai_chat_calculation(driver):
@@ -84,9 +81,6 @@ def test_perform_2nd_ai_chat_calculation(driver):
 
     with appium_transaction("Perform 2nd AI Chat Calculation"):
         try:
-            #if not ai_calculator.verify_loaded():
-            #    ai_calculator.open_from_home()
-
             ai_calculator.click_ai_chat_back_button()
             ai_calculator.click_ai_chat_back_button()
             ai_calculator.open_from_home()
@@ -114,4 +108,3 @@ def test_perform_2nd_ai_chat_calculation(driver):
         except Exception:
             capture_error_snapshot(driver, "Perform2ndAIChatCalculation")
             raise
-'''
