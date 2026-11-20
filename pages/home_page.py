@@ -64,14 +64,14 @@ class HomePage(BasePage):
                     print("Close icon not found yet")
 
             if counter == 3 or counter == 6 or counter == 9:
-                print("Ad may have a different look and feel - will attempt to close it")
+                print("1st variation - Ad may have a different look and feel - will attempt to close it")
                 self.dismiss_test_ad_alt()
-                print("Attempted to close the ad with the different look and feel")
+                print("1st variation - Attempted to close the ad with the different look and feel")
 
             if counter == 4 or counter == 7 or counter == 10:
-                print("Ad may have a different look and feel - will attempt to close it")
-                self.dismiss_test_ad_alt()
-                print("Attempted to close the ad with the different look and feel")
+                print("2nd variation - Ad may have a different look and feel - will attempt to close it")
+                self.dismiss_test_ad_alt2()
+                print("2nd variation - Attempted to close the ad with the different look and feel")
 
             if counter == 15:
                 print("Need to break out of loop and fail test")
