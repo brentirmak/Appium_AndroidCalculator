@@ -457,3 +457,146 @@ def test_perform_b_to_bit_conversion2(driver):
         except Exception:
             capture_error_snapshot(driver, "PerformBToBitConversion2")
             raise
+
+############################################################################################
+# KB
+############################################################################################
+@pytest.mark.timeout(175)
+def test_perform_kb_to_gb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToGB Conversion1"):
+        try:
+            print("Will calculate the data in GB")
+            output = unit_converter_page.convert_data("KB","850000","GB")
+            print("Calculated the data conversion - will confirm it's 0.81062 GB")
+            assert output == "0.81062", f"Expected 0.81062 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToGBConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_gb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToGB Conversion2"):
+        try:
+            print("Will calculate the data in GB")
+            output = unit_converter_page.convert_data("KB","33333333","GB")
+            print("Calculated the data conversion - will confirm it's 31.78914 GB")
+            assert output == "31.78914", f"Expected 31.78914 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToGBConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_mb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToMB Conversion1"):
+        try:
+            print("Will calculate the data in MB")
+            output = unit_converter_page.convert_data("KB","325000","MB")
+            print("Calculated the data conversion - will confirm it's 317.38281 MB")
+            assert output == "317.38281", f"Expected 317.38281 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToMBConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_mb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToMB Conversion2"):
+        try:
+            print("Will calculate the data in MB")
+            output = unit_converter_page.convert_data("KB","0.999","MB")
+            print("Calculated the data conversion - will confirm it's 0.00097559 MB")
+            assert output == "0.00097559", f"Expected 0.00097559 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToMBConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_b_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToB Conversion1"):
+        try:
+            print("Will calculate the data in B")
+            output = unit_converter_page.convert_data("KB","611","B")
+            print("Calculated the data conversion - will confirm it's 625,664 B")
+            assert output == "625,664", f"Expected 625,664 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToBConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_b_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToB Conversion2"):
+        try:
+            print("Will calculate the data in B")
+            output = unit_converter_page.convert_data("KB","0.71","B")
+            print("Calculated the data conversion - will confirm it's 727.04 B")
+            assert output == "727.04", f"Expected 727.04 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToBConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_tb_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToTB Conversion1"):
+        try:
+            print("Will calculate the data in TB")
+            output = unit_converter_page.convert_data("KB","2224843","TB")
+            print("Calculated the data conversion - will confirm it's 0.002072 TB")
+            assert output == "0.002072", f"Expected 0.002072 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToTBConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_tb_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBToTB Conversion2"):
+        try:
+            print("Will calculate the data in TB")
+            output = unit_converter_page.convert_data("KB","5000000000","TB")
+            print("Calculated the data conversion - will confirm it's 4.65661 TB")
+            assert output == "4.65661", f"Expected 4.65661 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBToTBConversion2")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_bit_conversion1(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBTob Conversion1"):
+        try:
+            print("Will calculate the data in bits")
+            output = unit_converter_page.convert_data("KB","842","b")
+            print("Calculated the data conversion - will confirm it's 6,897,664 bits")
+            assert output == "6,897,664", f"Expected 6,897,664 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBTobConversion1")
+            raise
+
+@pytest.mark.timeout(175)
+def test_perform_kb_to_bit_conversion2(driver):
+    unit_converter_page = UnitConverterPage(driver)
+
+    with appium_transaction("Perform KBTob Conversion2"):
+        try:
+            print("Will calculate the data in bits")
+            output = unit_converter_page.convert_data("KB","0.005","b")
+            print("Calculated the data conversion - will confirm it's 40.96 bits")
+            assert output == "40.96", f"Expected 40.96 but got {output}"
+        except Exception:
+            capture_error_snapshot(driver, "PerformKBTobConversion2")
+            raise
